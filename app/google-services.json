@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "561827957625",
+    "project_id": "dbl-agenda-app",
+    "storage_bucket": "dbl-agenda-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561827957625:android:7ce93667f649f8ffdd3da8",
+        "android_client_info": {
+          "package_name": "com.example.agenda_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561827957625-fru84emjo05ull8ooh6esat6kg2esq24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe9kH8H4_8LJVGyq6cjL9VzS_2bgQi03Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561827957625-fru84emjo05ull8ooh6esat6kg2esq24.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
