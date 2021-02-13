@@ -4,14 +4,15 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class TaskSchedulerTest {
+    TaskScheduler schedule = new TaskScheduler();
 
     /** Test add task with invalid precondition: name = null **/
     @Test(expected = NullPointerException.class)
     public void testAddTask() {
-        TaskScheduler schedule = new TaskScheduler();
         schedule.addTask(null, "2:30","a","b",
                 "08-01-2020", "01-01-2020");
         fail("should have thrown "+ NullPointerException.class);
@@ -20,7 +21,6 @@ public class TaskSchedulerTest {
     /** Test add task with invalid precondition: duration = null **/
     @Test(expected = NullPointerException.class)
     public void testAddTask2() {
-        TaskScheduler schedule = new TaskScheduler();
         schedule.addTask("task1", null,"a","b",
                 "08-01-2020", "01-01-2020");
         fail("should have thrown "+ NullPointerException.class);
@@ -29,7 +29,6 @@ public class TaskSchedulerTest {
     /** Test add task with invalid precondition: intensity = null **/
     @Test(expected = NullPointerException.class)
     public void testAddTask3() {
-        TaskScheduler schedule = new TaskScheduler();
         schedule.addTask("task1", "2:30",null,"b",
                 "08-01-2020", "01-01-2020");
         fail("should have thrown "+ NullPointerException.class);
@@ -38,7 +37,6 @@ public class TaskSchedulerTest {
     /** Test add task with invalid precondition: difficulty = null **/
     @Test(expected = NullPointerException.class)
     public void testAddTask4() {
-        TaskScheduler schedule = new TaskScheduler();
         schedule.addTask("task1", "2:30","a",null,
                 "08-01-2020", "01-01-2020");
         fail("should have thrown "+ NullPointerException.class);
@@ -47,7 +45,6 @@ public class TaskSchedulerTest {
     /** Test add task with invalid precondition: deadline = null **/
     @Test(expected = NullPointerException.class)
     public void testAddTask5() {
-        TaskScheduler schedule = new TaskScheduler();
         schedule.addTask("task1", "2:30","a","b",
                 null, "01-01-2020");
         fail("should have thrown "+ NullPointerException.class);
@@ -56,18 +53,64 @@ public class TaskSchedulerTest {
     /** Test add task with invalid precondition: today = null **/
     @Test(expected = NullPointerException.class)
     public void testAddTask6() {
-        TaskScheduler schedule = new TaskScheduler();
         schedule.addTask("task1", "2:30","a","b",
                 "08-01-2020", null);
         fail("should have thrown "+ NullPointerException.class);
     }
 
     /** Test add task with invalid precondition: today <= deadline **/
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAddTask7() {
-        TaskScheduler schedule = new TaskScheduler();
         schedule.addTask("task1", "2:30","a","b",
-                "08-01-2020", "07-01-2020");
-        fail("should have thrown "+ NullPointerException.class);
+                "08-01-2020", "09-01-2020");
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    /** Test add task with invalid precondition: today <= deadline **/
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddTask8() {
+        schedule.addTask("task1", "2:30","a","b",
+                "08-01-2019", "07-02-2020");
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    /** Test add task with invalid precondition: today <= deadline **/
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddTask9() {
+        schedule.addTask("task1", "2:30","a","b",
+                "08-01-2020", "08-02-2020");
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    /** Test add task with invalid precondition: duration <= 0 **/
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddTask10() {
+        schedule.addTask("task1", "0:00","a","b",
+                "08-04-2020", "01-01-2020");
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    /** Test add task with no task **/
+    @Test()
+    public void testAddTask11() {
+        assertEquals(schedule.getSchedule().size(), 0);
+    }
+
+    /** Test add task with 1 task **/
+    @Test()
+    public void testAddTask12() {
+        schedule.addTask("task1", "2:30","a","b",
+                "08-02-2020", "18-01-2020");
+        assertEquals(schedule.getSchedule().size(), 1);
+    }
+
+    /** Test add task with 2 tasks **/
+    @Test()
+    public void testAddTask13() {
+        schedule.addTask("task1", "2:30","a","b",
+                "08-02-2020", "18-01-2020");
+        schedule.addTask("task2", "2:30","a","b",
+                "09-02-2020", "18-01-2020");
+        assertEquals(schedule.getSchedule().size(), 2);
     }
 }
