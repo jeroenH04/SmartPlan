@@ -52,9 +52,7 @@ public class TaskScheduler {
         int yearDifference = parseInt(deadline.substring(6))-parseInt(today.substring(6));
         int monthDifference = parseInt(deadline.substring(3,5))-parseInt(today.substring(3,5));
         int dayDifference = parseInt(deadline.substring(0,2))-parseInt(today.substring(0,2));
-        int totalHours = parseInt(duration.substring(0,duration.indexOf(":")));
-        int totalMinutes = parseInt(duration.substring(duration.indexOf(":")+1));
-        int totalTime = totalHours * 60 + totalMinutes;
+        int totalTime = getDurationMinutes(duration);
         if (yearDifference < 0 || (yearDifference == 0 && monthDifference < 0) ||
                 (yearDifference == 0 && monthDifference == 0 && dayDifference < 0) ) {
             throw new IllegalArgumentException("deadline <= today");
@@ -72,6 +70,14 @@ public class TaskScheduler {
 
     void updateSchedule() {
 
+    }
+
+
+    int getDurationMinutes(String duration) {
+        int totalHours = parseInt(duration.substring(0,duration.indexOf(":")));
+        int totalMinutes = parseInt(duration.substring(duration.indexOf(":")+1));
+        int totalTime = totalHours * 60 + totalMinutes;
+        return totalTime;
     }
 
     ArrayList<Task> getSchedule() {

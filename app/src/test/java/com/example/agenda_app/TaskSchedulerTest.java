@@ -113,4 +113,14 @@ public class TaskSchedulerTest {
                 "09-02-2020", "18-01-2020");
         assertEquals(schedule.getSchedule().size(), 2);
     }
+
+    /** Test remove task **/
+    @Test()
+    public void testGetDurationMinutes() {
+        assertEquals(schedule.getDurationMinutes("100:30"), 6030);
+        assertEquals(schedule.getDurationMinutes("0:00"), 0);
+        assertEquals(schedule.getDurationMinutes("5:11"), 311);
+        assertEquals(schedule.getDurationMinutes("0:01"), 1);
+    }
+
 }
