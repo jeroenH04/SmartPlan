@@ -59,12 +59,8 @@ public class TaskScheduler {
                 deadline == null || today == null) {
             throw new NullPointerException("precondition is validated");
         }
-        int yearDifference = parseInt(deadline.substring(6))-parseInt(today.substring(6));
-        int monthDifference = parseInt(deadline.substring(3,5))-parseInt(today.substring(3,5));
-        int dayDifference = parseInt(deadline.substring(0,2))-parseInt(today.substring(0,2));
         int totalTime = getDurationMinutes(duration);
-        if (yearDifference < 0 || (yearDifference == 0 && monthDifference < 0) ||
-                (yearDifference == 0 && monthDifference == 0 && dayDifference < 0) ) {
+        if (!compareDates(deadline, today)) {
             throw new IllegalArgumentException("deadline <= today");
         }
 
@@ -91,19 +87,17 @@ public class TaskScheduler {
 
         for (Task e : list) {
             int neededTime = e.totalTime;
-            System.out.println("needed time for task:"+neededTime);
             int minimum = 10000;
             String newTime = "";
             String bestDate = "";
 
             for (Map.Entry<String, String> entry : availability.entrySet()) {
                 int timeDifference = getDurationMinutes(entry.getValue()) - neededTime;
-                System.out.println("difference: "+timeDifference);
-                if (timeDifference >= 0 && timeDifference < minimum) {
+                if (timeDifference >= 0 && timeDifference < minimum &&
+                        compareDates(e.deadline, entry.getKey())) {
                     bestDate = entry.getKey();
                     newTime = timeIntToString(timeDifference);
                     minimum = timeDifference;
-                    System.out.println("new min difference: "+timeDifference);
                 }
             }
             availability.replace(bestDate, newTime);
@@ -119,15 +113,11 @@ public class TaskScheduler {
     int getDurationMinutes(String duration) {
         int totalHours = parseInt(duration.substring(0,duration.indexOf(":")));
         int totalMinutes = parseInt(duration.substring(duration.indexOf(":")+1));
-        int totalTime = totalHours * 60 + totalMinutes;
-        if (totalTime < 0) {
-            throw new IllegalArgumentException("duration <= 0");
-        }
-        return totalTime;
+        return totalHours * 60 + totalMinutes;
     }
 
     /*
-     * Replace the integer time value to a string time value
+     * Replace the integer time value (minutes) to a string time value "h:mm"
      *
      * @param int time
      */
@@ -139,6 +129,21 @@ public class TaskScheduler {
         } else {
             return hours + ":" + minutes;
         }
+    }
+
+    /*
+     * Replace the integer time value (minutes) to a string time value "h:mm"
+     *
+     * @param String deadline
+     * @param String today
+     * @post deadline > today
+     */
+    boolean compareDates(String deadline, String today) {
+        int yearDifference = parseInt(deadline.substring(6))-parseInt(today.substring(6));
+        int monthDifference = parseInt(deadline.substring(3,5))-parseInt(today.substring(3,5));
+        int dayDifference = parseInt(deadline.substring(0,2))-parseInt(today.substring(0,2));
+        return yearDifference >= 0 && (yearDifference != 0 || monthDifference >= 0) &&
+                (yearDifference != 0 || monthDifference != 0 || dayDifference > 0);
     }
 
     ArrayList<Task> getSchedule() {
