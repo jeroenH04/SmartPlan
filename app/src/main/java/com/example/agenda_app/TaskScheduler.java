@@ -15,6 +15,7 @@ import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
     private final ArrayList<Task> list = new ArrayList<>();
+    private final Map<String, String> availability = new HashMap<>();
 
     public static class Task {
         public String name;
@@ -76,15 +77,28 @@ public class TaskScheduler {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    Map<String, String> createSchedule() {
-        /* TO DO: change availability getter */
-        Map<String, String> availability = new HashMap<>();
+    void setAvailability(Map<String, String> input) {
         availability.put("15-02-2021", "2:00");
         availability.put("16-02-2021", "1:00");
         availability.put("17-02-2021", "4:00");
         availability.put("18-02-2021", "8:00");
+        for (Map.Entry<String, String> entry : input.entrySet()) {
+            entry.getKey(); // date
+            entry.getValue(); // time
+            availability.put(entry.getKey(), entry.getValue());
+        }
+    }
 
+    /* Create schedule of tasks based on availability
+    *
+    * @pre @code{availability.size() != 0}
+    * @throws IllegalArgumentException if @code{availability.size() == 0}
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    Map<String, String> createSchedule() {
+        if (availability.size() == 0) {
+            throw new IllegalArgumentException("precondition is validated");
+        }
         for (Task e : list) {
             int neededTime = e.totalTime;
             int minimum = 10000;

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class TaskSchedulerTest {
@@ -128,16 +130,27 @@ public class TaskSchedulerTest {
     /** Test compare dates **/
     @Test()
     public void testCompareDates() {
-        assertEquals(schedule.compareDates("15-02-2021","16-02-2021"), false);
-        assertEquals(schedule.compareDates("15-02-2021","15-02-2021"), false);
-        assertEquals(schedule.compareDates("15-02-2021","14-02-2021"), true);
-        assertEquals(schedule.compareDates("15-02-2021","16-01-2021"), true);
-        assertEquals(schedule.compareDates("15-02-2021","16-02-2020"), true);
+        assertFalse(schedule.compareDates("15-02-2021", "16-02-2021"));
+        assertFalse(schedule.compareDates("15-02-2021", "15-02-2021"));
+        assertTrue(schedule.compareDates("15-02-2021", "14-02-2021"));
+        assertTrue(schedule.compareDates("15-02-2021", "16-01-2021"));
+        assertTrue(schedule.compareDates("15-02-2021", "16-02-2020"));
+    }
+
+    /* Create basic availability for the scheduling algorithm */
+    Map<String, String> createBasicAvailability() {
+        Map<String, String> input = new HashMap<>();
+        input.put("15-02-2021", "2:00");
+        input.put("16-02-2021", "1:00");
+        input.put("17-02-2021", "4:00");
+        input.put("18-02-2021", "8:00");
+        return input;
     }
 
     /** Test of creating optimal schedule with 1 task **/
     @Test()
     public void testCreateSchedule() {
+        schedule.setAvailability(createBasicAvailability());
         schedule.addTask("task1", "3:30","a","b",
                 "18-02-2021", "14-01-2021");
         Map<String, String> testMap = new HashMap<>();
@@ -151,6 +164,7 @@ public class TaskSchedulerTest {
     /** Test of creating optimal schedule with 2 tasks **/
     @Test()
     public void testCreateSchedule2() {
+        schedule.setAvailability(createBasicAvailability());
         schedule.addTask("task1", "1:00","a","b",
                 "16-02-2021", "14-01-2021");
         schedule.addTask("task2", "3:00","a","b",
@@ -166,6 +180,7 @@ public class TaskSchedulerTest {
     /** Test of creating optimal schedule with 3 tasks **/
     @Test()
     public void testCreateSchedule3() {
+        schedule.setAvailability(createBasicAvailability());
         schedule.addTask("task1", "1:30","a","b",
                 "14-03-2021", "14-01-2021");
         schedule.addTask("task2", "0:30","a","b",
@@ -178,5 +193,14 @@ public class TaskSchedulerTest {
         testMap.put("17-02-2021", "0:01");
         testMap.put("18-02-2021", "8:00");
         assertEquals(schedule.createSchedule(), testMap);
+    }
+
+    /** Test of creating optimal schedule with no set availability **/
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateSchedule4() {
+        schedule.addTask("task1", "1:30","a","b",
+                "14-03-2021", "14-01-2021");
+        schedule.createSchedule();
+        fail("should have thrown "+ IllegalArgumentException.class);
     }
 }
