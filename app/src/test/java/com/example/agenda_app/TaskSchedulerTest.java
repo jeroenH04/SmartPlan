@@ -124,6 +124,15 @@ public class TaskSchedulerTest {
         fail("should have thrown " + IllegalArgumentException.class);
     }
 
+    /** Test get duration of tasks **/
+    @Test()
+    public void testTimeIntToString() {
+        assertEquals(schedule.timeIntToString(180), "3:00");
+        assertEquals(schedule.timeIntToString(181), "3:01");
+        assertEquals(schedule.timeIntToString(192), "3:12");
+    }
+
+
     /** Test of creating optimal schedule with 1 task **/
     @Test()
     public void testCreateSchedule() {
@@ -146,8 +155,8 @@ public class TaskSchedulerTest {
                 "09-02-2020", "18-01-2020");
         Map<String, String> testMap = new HashMap<>();
         testMap.put("15-02-2021", "2:00");
-        testMap.put("16-02-2021", "0:0");
-        testMap.put("17-02-2021", "1:0");
+        testMap.put("16-02-2021", "0:00");
+        testMap.put("17-02-2021", "1:00");
         testMap.put("18-02-2021", "8:00");
         assertEquals(schedule.createSchedule(), testMap);
     }
@@ -159,12 +168,12 @@ public class TaskSchedulerTest {
                 "08-02-2020", "18-01-2020");
         schedule.addTask("task2", "7:50","a","b",
                 "09-02-2020", "18-01-2020");
-        schedule.addTask("task3", "3:01","a","b",
+        schedule.addTask("task3", "3:59","a","b",
                 "09-02-2020", "18-01-2020");
         Map<String, String> testMap = new HashMap<>();
         testMap.put("15-02-2021", "2:00");
-        testMap.put("16-02-2021", "0:0");
-        testMap.put("17-02-2021", "0:59");
+        testMap.put("16-02-2021", "0:00");
+        testMap.put("17-02-2021", "0:01");
         testMap.put("18-02-2021", "0:10");
         assertEquals(schedule.createSchedule(), testMap);
     }

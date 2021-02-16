@@ -101,7 +101,7 @@ public class TaskScheduler {
                 System.out.println("difference: "+timeDifference);
                 if (timeDifference >= 0 && timeDifference < minimum) {
                     bestDate = entry.getKey();
-                    newTime = (timeDifference - (timeDifference % 60)) / 60+":"+(timeDifference % 60);
+                    newTime = timeIntToString(timeDifference);
                     minimum = timeDifference;
                     System.out.println("new min difference: "+timeDifference);
                 }
@@ -115,8 +115,6 @@ public class TaskScheduler {
      * Get the total time of a task in minutes
      *
      * @param String duration
-     * @pre @code{duration > 0}
-     * @throws IllegalArgumentException if @code{duration <= 0}
      */
     int getDurationMinutes(String duration) {
         int totalHours = parseInt(duration.substring(0,duration.indexOf(":")));
@@ -126,6 +124,21 @@ public class TaskScheduler {
             throw new IllegalArgumentException("duration <= 0");
         }
         return totalTime;
+    }
+
+    /*
+     * Replace the integer time value to a string time value
+     *
+     * @param int time
+     */
+    String timeIntToString(int time) {
+        int minutes = time % 60;
+        int hours = (time - minutes)/60;
+        if (minutes < 10) {
+            return hours + ":0" + minutes;
+        } else {
+            return hours + ":" + minutes;
+        }
     }
 
     ArrayList<Task> getSchedule() {
