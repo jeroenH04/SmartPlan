@@ -98,7 +98,7 @@ public class TaskSchedulerTest {
     public void testAddTask11() {
         schedule.addTask("task1", "2:30","a","b",
                 "08-02-2020", "18-01-2020");
-        assertEquals(schedule.getSchedule().size(), 1);
+        assertEquals(schedule.getTaskList().size(), 1);
     }
 
     /** Test add task with 2 tasks **/
@@ -108,7 +108,37 @@ public class TaskSchedulerTest {
                 "08-02-2020", "18-01-2020");
         schedule.addTask("task2", "2:30","a","b",
                 "09-02-2020", "18-01-2020");
-        assertEquals(schedule.getSchedule().size(), 2);
+        assertEquals(schedule.getTaskList().size(), 2);
+    }
+
+    /** Test remove task with 1 task **/
+    @Test()
+    public void testRemoveTask() {
+        schedule.addTask("task1", "2:30","a","b",
+                "08-02-2020", "18-01-2020");
+        assertEquals(schedule.getTaskList().size(), 1);
+        schedule.removeTask("task1");
+        assertEquals(schedule.getTaskList().size(), 0);
+    }
+
+    /** Test remove task with 1 task **/
+    @Test()
+    public void testRemoveTask2() {
+        schedule.addTask("task1", "2:30","a","b",
+                "08-02-2020", "18-01-2020");
+        schedule.addTask("task2", "2:30","a","b",
+                "09-02-2020", "18-01-2020");
+        assertEquals(schedule.getTaskList().size(), 2);
+        schedule.removeTask("task1");
+        schedule.removeTask("task2");
+        assertEquals(schedule.getTaskList().size(), 0);
+    }
+
+    /** Test remove task with invalid task name**/
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveTask3() {
+        schedule.removeTask("task");
+        fail("should have thrown "+ IllegalArgumentException.class);
     }
 
     /** Test get duration of tasks **/
@@ -151,7 +181,7 @@ public class TaskSchedulerTest {
     @Test()
     public void testCreateSchedule() {
         schedule.setAvailability(createBasicAvailability());
-        schedule.addTask("task1", "3:30","a","b",
+        schedule.addTask("task1", "3:30", "a", "b",
                 "18-02-2021", "14-01-2021");
         Map<String, String> testMap = new HashMap<>();
         testMap.put("15-02-2021", "2:00");
@@ -202,5 +232,31 @@ public class TaskSchedulerTest {
                 "14-03-2021", "14-01-2021");
         schedule.createSchedule();
         fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    /** Test of updating a schedule **/
+    @Test()
+    public void testUpdateSchedule() {
+        schedule.setAvailability(createBasicAvailability());
+        schedule.addTask("task1", "1:00","a","b",
+                "16-02-2021", "14-01-2021");
+        schedule.addTask("task2", "3:00","a","b",
+                "21-02-2021", "14-01-2021");
+        Map<String, String> testMap = new HashMap<>();
+        testMap.put("15-02-2021", "1:00");
+        testMap.put("16-02-2021", "1:00");
+        testMap.put("17-02-2021", "1:00");
+        testMap.put("18-02-2021", "8:00");
+        assertEquals(schedule.createSchedule(), testMap);
+
+        schedule.addTask("task3", "3:00","a","b",
+                "21-02-2021", "14-01-2021");
+
+        Map<String, String> testMap2 = new HashMap<>();
+        testMap2.put("15-02-2021", "1:00");
+        testMap2.put("16-02-2021", "1:00");
+        testMap2.put("17-02-2021", "1:00");
+        testMap2.put("18-02-2021", "5:00");
+        assertEquals(schedule.createSchedule(), testMap2);
     }
 }

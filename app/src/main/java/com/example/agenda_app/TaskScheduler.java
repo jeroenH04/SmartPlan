@@ -14,10 +14,11 @@ import static java.lang.Integer.min;
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
-    private final ArrayList<Task> list = new ArrayList<>();
+    private final ArrayList<Task> taskList = new ArrayList<>();
     private final Map<String, String> availability = new HashMap<>();
+    private final Map<String, Task> schedule = new HashMap<>();
 
-    public static class Task {
+    public class Task {
         public String name;
         public String duration;
         public String intensity;
@@ -51,7 +52,7 @@ public class TaskScheduler {
     *           deadline != null && today != null && deadline > today}
     * @throws NullPointerException if precondition is violated
     * @throws IllegalArgumentException if @code{deadline <= today}
-    * @modifies list
+    * @modifies taskList
     * @post
      */
     void addTask(String name, String duration, String intensity, String difficulty,
@@ -66,25 +67,34 @@ public class TaskScheduler {
         }
 
         Task task = new Task(name, duration, intensity, difficulty, deadline, today, totalTime);
-        list.add(task);
+        taskList.add(task);
     }
 
-    void removeTask() {
-
+    /* Set availability of user
+     *
+     * @param String taskName, task to be removed
+     * @pre @code{\exists i; taskList.contains(i); i.name == taskName}
+     * @modifies taskList
+     * @throws IllegalArgumentException if pre is violated
+     */
+    void removeTask(String taskName) {
+        for (Task e : taskList) {   // Loop over the task list to find the correct task
+            if (e.name.equals(taskName)) {
+                taskList.remove(e);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("precondition is validated");
     }
 
     void updateSchedule() {
-
     }
 
+    /* Set availability of user
+     *
+     */
     void setAvailability(Map<String, String> input) {
-        availability.put("15-02-2021", "2:00");
-        availability.put("16-02-2021", "1:00");
-        availability.put("17-02-2021", "4:00");
-        availability.put("18-02-2021", "8:00");
         for (Map.Entry<String, String> entry : input.entrySet()) {
-            entry.getKey(); // date
-            entry.getValue(); // time
             availability.put(entry.getKey(), entry.getValue());
         }
     }
@@ -99,7 +109,7 @@ public class TaskScheduler {
         if (availability.size() == 0) {
             throw new IllegalArgumentException("precondition is validated");
         }
-        for (Task e : list) {
+        for (Task e : taskList) {
             int neededTime = e.totalTime;
             int minimum = 10000;
             String newTime = "";
@@ -114,8 +124,14 @@ public class TaskScheduler {
                     minimum = timeDifference;
                 }
             }
-            availability.replace(bestDate, newTime);
+            if (bestDate == "") { // no date available
+                System.out.println("no date available for task: " + e.name);
+            } else {
+                schedule.put(bestDate, e);
+                availability.replace(bestDate, newTime);
+            }
         }
+        taskList.clear();
         return availability;
     }
 
@@ -160,9 +176,16 @@ public class TaskScheduler {
                 (yearDifference != 0 || monthDifference != 0 || dayDifference > 0);
     }
 
-    ArrayList<Task> getSchedule() {
-        return list;
+    /* Get created schedule
+     *
+     */
+    Map<String, Task> getSchedule() {
+        return schedule;
     }
 
+    /* Get task taskList
+     *
+     */
+    ArrayList<Task> getTaskList() { return taskList; }
 
 }
