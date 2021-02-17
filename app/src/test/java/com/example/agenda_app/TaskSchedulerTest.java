@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,59 @@ import static org.junit.Assert.fail;
 
 public class TaskSchedulerTest {
     TaskScheduler schedule = new TaskScheduler();
+
+    /** Test get duration of tasks **/
+    @Test()
+    public void testGetDurationMinutes() {
+        assertEquals(schedule.getDurationMinutes("100:30"), 6030);
+        assertEquals(schedule.getDurationMinutes("5:11"), 311);
+        assertEquals(schedule.getDurationMinutes("0:01"), 1);
+    }
+
+    /** Test get string value of integer time **/
+    @Test()
+    public void testTimeIntToString() {
+        assertEquals(schedule.timeIntToString(180), "3:00");
+        assertEquals(schedule.timeIntToString(181), "3:01");
+        assertEquals(schedule.timeIntToString(192), "3:12");
+    }
+
+    /** Test compare dates **/
+    @Test()
+    public void testCompareDates() {
+        assertFalse(schedule.compareDates("15-02-2021", "16-02-2021"));
+        assertFalse(schedule.compareDates("15-02-2021", "15-02-2021"));
+        assertTrue(schedule.compareDates("15-02-2021", "14-02-2021"));
+        assertTrue(schedule.compareDates("15-02-2021", "16-01-2021"));
+        assertTrue(schedule.compareDates("15-02-2021", "16-02-2020"));
+    }
+
+    /** Test unique names in the task list **/
+    @Test()
+    public void testUniqueNames() {
+        schedule.addTask("task1", "2:30","a","b",
+                "08-01-2020", "01-01-2020");
+        assertFalse(schedule.checkUniqueName("task1"));
+        assertTrue(schedule.checkUniqueName("task"));
+    }
+
+    /** Test unique names in the schedule list **/
+    @Test()
+    public void testUniqueNames2() {
+        schedule.setAvailability(createBasicAvailability());
+        schedule.addTask("task1", "2:30","a","b",
+                "20-02-2021", "01-01-2020");
+        schedule.createSchedule();
+        assertFalse(schedule.checkUniqueName("task1"));
+        assertTrue(schedule.checkUniqueName("task"));
+    }
+
+    /** Test unique names in the schedule list **/
+    @Test(expected = NullPointerException.class)
+    public void testUniqueNames3() {
+        schedule.checkUniqueName(null);
+        fail("should have thrown "+ NullPointerException.class);
+    }
 
     /** Test add task with invalid precondition: name = null **/
     @Test(expected = NullPointerException.class)
@@ -141,32 +195,6 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test get duration of tasks **/
-    @Test()
-    public void testGetDurationMinutes() {
-        assertEquals(schedule.getDurationMinutes("100:30"), 6030);
-        assertEquals(schedule.getDurationMinutes("5:11"), 311);
-        assertEquals(schedule.getDurationMinutes("0:01"), 1);
-    }
-
-    /** Test get string value of integer time **/
-    @Test()
-    public void testTimeIntToString() {
-        assertEquals(schedule.timeIntToString(180), "3:00");
-        assertEquals(schedule.timeIntToString(181), "3:01");
-        assertEquals(schedule.timeIntToString(192), "3:12");
-    }
-
-    /** Test compare dates **/
-    @Test()
-    public void testCompareDates() {
-        assertFalse(schedule.compareDates("15-02-2021", "16-02-2021"));
-        assertFalse(schedule.compareDates("15-02-2021", "15-02-2021"));
-        assertTrue(schedule.compareDates("15-02-2021", "14-02-2021"));
-        assertTrue(schedule.compareDates("15-02-2021", "16-01-2021"));
-        assertTrue(schedule.compareDates("15-02-2021", "16-02-2020"));
-    }
-
     /* Create basic availability for the scheduling algorithm */
     Map<String, String> createBasicAvailability() {
         Map<String, String> input = new HashMap<>();
@@ -175,6 +203,15 @@ public class TaskSchedulerTest {
         input.put("17-02-2021", "4:00");
         input.put("18-02-2021", "8:00");
         return input;
+    }
+
+    void showCreatedSchedule() {
+        Map<String, ArrayList<TaskScheduler.Task>> createdSchedule = schedule.getSchedule();
+        for (Map.Entry<String, ArrayList<TaskScheduler.Task>> entry : createdSchedule.entrySet()) {
+            for (TaskScheduler.Task e : entry.getValue()) {
+                System.out.println(entry.getKey() + " : "+ e.name);
+            }
+        }
     }
 
     /** Test of creating optimal schedule with 1 task **/
@@ -223,6 +260,7 @@ public class TaskSchedulerTest {
         testMap.put("17-02-2021", "0:01");
         testMap.put("18-02-2021", "8:00");
         assertEquals(schedule.createSchedule(), testMap);
+        showCreatedSchedule();
     }
 
     /** Test of creating optimal schedule with no set availability **/
@@ -234,9 +272,9 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test of updating a schedule **/
+    /** Test of creating optimal schedule with 3 tasks **/
     @Test()
-    public void testUpdateSchedule() {
+    public void testCreateSchedule5() {
         schedule.setAvailability(createBasicAvailability());
         schedule.addTask("task1", "1:00","a","b",
                 "16-02-2021", "14-01-2021");
