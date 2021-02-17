@@ -4,21 +4,17 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
-import static java.lang.Integer.min;
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
     private final ArrayList<Task> taskList = new ArrayList<>();
     private final Map<String, String> availability = new HashMap<>();
-    private final Map<String, Task> schedule = new HashMap<>();
+    private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
 
-    public class Task {
+    public static class Task {
         public String name;
         public String duration;
         public String intensity;
@@ -49,9 +45,10 @@ public class TaskScheduler {
     * @param String deadline
     * @param String today
     * @pre @code{name != null && duration != null && intensity != null && difficulty != null &&
-    *           deadline != null && today != null && deadline > today}
+    *           deadline != null && today != null && deadline > today} && name is unique
     * @throws NullPointerException if precondition is violated
     * @throws IllegalArgumentException if @code{deadline <= today}
+    * @throws IllegalArgumentException if name is not unique
     * @modifies taskList
     * @post
      */
@@ -64,6 +61,9 @@ public class TaskScheduler {
         int totalTime = getDurationMinutes(duration);
         if (!compareDates(deadline, today)) {
             throw new IllegalArgumentException("deadline <= today");
+        }
+        if (!checkUniqueName(name)) {
+            throw new IllegalArgumentException("name is not unique");
         }
 
         Task task = new Task(name, duration, intensity, difficulty, deadline, today, totalTime);
@@ -114,6 +114,7 @@ public class TaskScheduler {
             int minimum = 10000;
             String newTime = "";
             String bestDate = "";
+            ArrayList<Task> tasksOnDate = new ArrayList<>();
 
             for (Map.Entry<String, String> entry : availability.entrySet()) {
                 int timeDifference = getDurationMinutes(entry.getValue()) - neededTime;
@@ -124,10 +125,14 @@ public class TaskScheduler {
                     minimum = timeDifference;
                 }
             }
-            if (bestDate == "") { // no date available
+            if (bestDate.equals("")) { // no date available
                 System.out.println("no date available for task: " + e.name);
             } else {
-                schedule.put(bestDate, e);
+                if (schedule.containsKey(bestDate)) {
+                    tasksOnDate = schedule.get(bestDate);
+                }
+                tasksOnDate.add(e);
+                schedule.put(bestDate, tasksOnDate);
                 availability.replace(bestDate, newTime);
             }
         }
@@ -166,7 +171,7 @@ public class TaskScheduler {
      *
      * @param String deadline
      * @param String today
-     * @post deadline > today
+     * @returns deadline > today
      */
     boolean compareDates(String deadline, String today) {
         int yearDifference = parseInt(deadline.substring(6))-parseInt(today.substring(6));
@@ -176,10 +181,37 @@ public class TaskScheduler {
                 (yearDifference != 0 || monthDifference != 0 || dayDifference > 0);
     }
 
+    /*
+    * Check if the task name is unique; i.e. not used in the schedule or task list
+    *
+    * @param taskName
+    * @pre @code{taskName != null}
+    * @returns @code{(! \exists i; taskList.contains(i); i.name == taskName) &&
+    *                   (! \exists j; schedule.contains(j); j.name == taskName)}
+     */
+    boolean checkUniqueName(String taskName) {
+        if (taskName == null) {
+            throw new NullPointerException("precondition is validated");
+        }
+        for (Task e: taskList) {
+            if (e.name.equals(taskName)) {
+                return false;
+            }
+        }
+        for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
+            for (Task e : entry.getValue()) {
+                if (e.name.equals(taskName)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /* Get created schedule
      *
      */
-    Map<String, Task> getSchedule() {
+    Map<String, ArrayList<Task>> getSchedule() {
         return schedule;
     }
 
