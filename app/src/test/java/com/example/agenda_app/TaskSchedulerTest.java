@@ -205,11 +205,23 @@ public class TaskSchedulerTest {
         return input;
     }
 
+    /* Create advanced availability for the scheduling algorithm */
+    Map<String, String> createAdvancedAvailability() {
+        Map<String, String> input = new HashMap<>();
+        input.put("15-02-2021", "8:00");
+        input.put("16-02-2021", "5:00");
+        input.put("17-02-2021", "8:00");
+        input.put("18-02-2021", "3:00");
+        input.put("19-02-2021", "5:00");
+        input.put("20-02-2021", "8:00");
+        return input;
+    }
+
     void showCreatedSchedule() {
         Map<String, ArrayList<TaskScheduler.Task>> createdSchedule = schedule.getSchedule();
         for (Map.Entry<String, ArrayList<TaskScheduler.Task>> entry : createdSchedule.entrySet()) {
             for (TaskScheduler.Task e : entry.getValue()) {
-                System.out.println(entry.getKey() + " : "+ e.name);
+                System.out.println(entry.getKey() + " : "+ e.name + " : " + e.duration);
             }
         }
     }
@@ -260,7 +272,6 @@ public class TaskSchedulerTest {
         testMap.put("17-02-2021", "0:01");
         testMap.put("18-02-2021", "8:00");
         assertEquals(schedule.createSchedule(), testMap);
-        showCreatedSchedule();
     }
 
     /** Test of creating optimal schedule with no set availability **/
@@ -296,5 +307,56 @@ public class TaskSchedulerTest {
         testMap2.put("17-02-2021", "1:00");
         testMap2.put("18-02-2021", "5:00");
         assertEquals(schedule.createSchedule(), testMap2);
+    }
+
+    /** Test of intensity checker: intensity = relaxed, duration < relaxed duration (2 hours)**/
+    @Test()
+    public void testIntensityChecker() {
+        schedule.addTask("task1", "1:00","relaxed","b",
+                "16-02-2021", "14-01-2021");
+        assertEquals(schedule.getTaskList().size(), 1);
+    }
+
+    /** Test of intensity checker: intensity = relaxed, duration > relaxed duration (2 hours)**/
+    @Test()
+    public void testIntensityChecker2() {
+        schedule.addTask("task1", "6:00","relaxed","b",
+                "16-02-2021", "14-01-2021");
+        assertEquals(schedule.getTaskList().size(), 3);
+    }
+
+    /** Test of intensity checker: intensity = normal, duration < normal duration (4 hours)**/
+    @Test()
+    public void testIntensityChecker3() {
+        schedule.addTask("task1", "1:00","normal","b",
+                "16-02-2021", "14-01-2021");
+        assertEquals(schedule.getTaskList().size(), 1);
+    }
+
+    /** Test of intensity checker: intensity = normal, duration > normal duration (4 hours)**/
+    @Test()
+    public void testIntensityChecker4() {
+        schedule.setAvailability(createAdvancedAvailability());
+        schedule.addTask("task1", "15:00","normal","b",
+                "23-02-2021", "14-01-2021");
+        assertEquals(schedule.getTaskList().size(), 4);
+        schedule.createSchedule();
+        showCreatedSchedule();
+    }
+
+    /** Test of intensity checker: intensity = intense, duration < normal duration (8 hours)**/
+    @Test()
+    public void testIntensityChecker5() {
+        schedule.addTask("task1", "1:00","intense","b",
+                "16-02-2021", "14-01-2021");
+        assertEquals(schedule.getTaskList().size(), 1);
+    }
+
+    /** Test of intensity checker: intensity = intense, duration > normal duration (8 hours)**/
+    @Test()
+    public void testIntensityChecker6() {
+        schedule.addTask("task1", "16:00","intense","b",
+                "16-02-2021", "14-01-2021");
+        assertEquals(schedule.getTaskList().size(), 2);
     }
 }

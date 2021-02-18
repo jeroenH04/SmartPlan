@@ -7,6 +7,8 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.Integer.max;
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
@@ -68,6 +70,7 @@ public class TaskScheduler {
 
         Task task = new Task(name, duration, intensity, difficulty, deadline, today, totalTime);
         taskList.add(task);
+        checkIntensity(task); // check the set intensity and split the task accordingly
     }
 
     /* Set availability of user
@@ -92,10 +95,81 @@ public class TaskScheduler {
 
     /* Set availability of user
      *
+     * @param Map<String, String> input, map containing availability per day
      */
     void setAvailability(Map<String, String> input) {
         for (Map.Entry<String, String> entry : input.entrySet()) {
             availability.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    /* Check intensity of task and split it into smaller tasks
+     *
+     * @param Task task
+     * @pre @code{task.intensity == 'relaxed' || task.intensity == 'normal'
+     *              || task.intensity = 'intense'}
+     * @modifies taskList
+     * @post
+     */
+    void checkIntensity(Task task) {
+        int numberOfTasks;
+        String newDuration;
+        Task newTask;
+        switch (task.intensity) {
+            case "relaxed":
+                numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) / 120.0);
+                for (int i = 1; i <= numberOfTasks; ++i) {
+                    if (i < numberOfTasks) {
+                        newDuration = timeIntToString(120);
+                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                                task.deadline, task.today, 120);
+                    }
+                    else {
+                        newDuration = timeIntToString(getDurationMinutes(task.duration) % 120);
+                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                                task.deadline, task.today,
+                                getDurationMinutes(task.duration) % 120);
+                    }
+                    taskList.add(newTask);
+                }
+                taskList.remove(task);
+                break;
+            case "normal":
+                numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) / 240.0);
+                for (int i = 1; i <= numberOfTasks; ++i) {
+                    if (i < numberOfTasks) {
+                        newDuration = timeIntToString(240);
+                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                                task.deadline, task.today, 240);
+                    }
+                    else {
+                        newDuration = timeIntToString(getDurationMinutes(task.duration) % 240);
+                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                                task.deadline, task.today,
+                                getDurationMinutes(task.duration) % 240);
+                    }
+                    taskList.add(newTask);
+                }
+                taskList.remove(task);
+                break;
+            case "intense":
+                numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) / 480.0);
+                for (int i = 1; i <= numberOfTasks; ++i) {
+                    if (i < numberOfTasks) {
+                        newDuration = timeIntToString(480);
+                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                                task.deadline, task.today, 480);
+                    }
+                    else {
+                        newDuration = timeIntToString(getDurationMinutes(task.duration) % 480);
+                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                                task.deadline, task.today,
+                                getDurationMinutes(task.duration) % 480);
+                    }
+                    taskList.add(newTask);
+                }
+                taskList.remove(task);
+                break;
         }
     }
 
@@ -126,7 +200,7 @@ public class TaskScheduler {
                 }
             }
             if (bestDate.equals("")) { // no date available
-                System.out.println("no date available for task: " + e.name);
+                System.out.println("no date available for task: " + e.name + ":" + e.duration);
             } else {
                 if (schedule.containsKey(bestDate)) {
                     tasksOnDate = schedule.get(bestDate);
@@ -210,6 +284,7 @@ public class TaskScheduler {
 
     /* Get created schedule
      *
+     * @returns Map<String, ArrayList<Task>> schedule
      */
     Map<String, ArrayList<Task>> getSchedule() {
         return schedule;
@@ -217,6 +292,7 @@ public class TaskScheduler {
 
     /* Get task taskList
      *
+     * @returns ArrayList<Task> taskList
      */
     ArrayList<Task> getTaskList() { return taskList; }
 
