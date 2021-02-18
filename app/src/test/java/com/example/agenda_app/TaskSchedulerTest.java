@@ -1,7 +1,5 @@
 package com.example.agenda_app;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -237,7 +235,8 @@ public class TaskSchedulerTest {
         testMap.put("16-02-2021", "1:00");
         testMap.put("17-02-2021", "0:30");
         testMap.put("18-02-2021", "8:00");
-        assertEquals(schedule.createSchedule(), testMap);
+        schedule.createSchedule();
+        assertEquals(schedule.getNewAvailability(), testMap);
     }
 
     /** Test of creating optimal schedule with 2 tasks **/
@@ -253,7 +252,8 @@ public class TaskSchedulerTest {
         testMap.put("16-02-2021", "1:00");
         testMap.put("17-02-2021", "1:00");
         testMap.put("18-02-2021", "8:00");
-        assertEquals(schedule.createSchedule(), testMap);
+        schedule.createSchedule();
+        assertEquals(schedule.getNewAvailability(), testMap);
     }
 
     /** Test of creating optimal schedule with 3 tasks **/
@@ -271,7 +271,8 @@ public class TaskSchedulerTest {
         testMap.put("16-02-2021", "1:00");
         testMap.put("17-02-2021", "0:01");
         testMap.put("18-02-2021", "8:00");
-        assertEquals(schedule.createSchedule(), testMap);
+        schedule.createSchedule();
+        assertEquals(schedule.getNewAvailability(), testMap);
     }
 
     /** Test of creating optimal schedule with no set availability **/
@@ -296,7 +297,8 @@ public class TaskSchedulerTest {
         testMap.put("16-02-2021", "1:00");
         testMap.put("17-02-2021", "1:00");
         testMap.put("18-02-2021", "8:00");
-        assertEquals(schedule.createSchedule(), testMap);
+        schedule.createSchedule();
+        assertEquals(schedule.getNewAvailability(), testMap);
 
         schedule.addTask("task3", "3:00","a","b",
                 "21-02-2021", "14-01-2021");
@@ -306,7 +308,8 @@ public class TaskSchedulerTest {
         testMap2.put("16-02-2021", "1:00");
         testMap2.put("17-02-2021", "1:00");
         testMap2.put("18-02-2021", "5:00");
-        assertEquals(schedule.createSchedule(), testMap2);
+        schedule.createSchedule();
+        assertEquals(schedule.getNewAvailability(), testMap2);
     }
 
     /** Test of intensity checker: intensity = relaxed, duration < relaxed duration (2 hours)**/

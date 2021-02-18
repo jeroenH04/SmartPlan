@@ -1,19 +1,20 @@
 package com.example.agenda_app;
 
 import android.os.Build;
-
 import androidx.annotation.RequiresApi;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.lang.Integer.max;
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
+    // Initialize arraylist containing all tasks to be scheduled
     private final ArrayList<Task> taskList = new ArrayList<>();
+
+    // Initialize map containing availability ("date","hours")
     private final Map<String, String> availability = new HashMap<>();
+
+    // Initialize map containing schedule ("date",tasks)
     private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
 
     public static class Task {
@@ -56,18 +57,22 @@ public class TaskScheduler {
      */
     void addTask(String name, String duration, String intensity, String difficulty,
                  String deadline, String today) {
+        // check if no parameter is null
         if (name == null || duration == null || intensity == null || difficulty == null ||
                 deadline == null || today == null) {
             throw new NullPointerException("precondition is validated");
         }
-        int totalTime = getDurationMinutes(duration);
+        // check if the deadline has not passed yet
         if (!compareDates(deadline, today)) {
             throw new IllegalArgumentException("deadline <= today");
         }
+        // check if the given name is not used before
         if (!checkUniqueName(name)) {
             throw new IllegalArgumentException("name is not unique");
         }
 
+        // calculate the total time in minutes of the task
+        int totalTime = getDurationMinutes(duration);
         Task task = new Task(name, duration, intensity, difficulty, deadline, today, totalTime);
         taskList.add(task);
         checkIntensity(task); // check the set intensity and split the task accordingly
@@ -113,73 +118,52 @@ public class TaskScheduler {
      */
     void checkIntensity(Task task) {
         int numberOfTasks;
+        int intensityNumber;
         String newDuration;
         Task newTask;
         switch (task.intensity) {
             case "relaxed":
-                numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) / 120.0);
-                for (int i = 1; i <= numberOfTasks; ++i) {
-                    if (i < numberOfTasks) {
-                        newDuration = timeIntToString(120);
-                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                                task.deadline, task.today, 120);
-                    }
-                    else {
-                        newDuration = timeIntToString(getDurationMinutes(task.duration) % 120);
-                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                                task.deadline, task.today,
-                                getDurationMinutes(task.duration) % 120);
-                    }
-                    taskList.add(newTask);
-                }
-                taskList.remove(task);
+                intensityNumber = 120; // 2 hours
                 break;
             case "normal":
-                numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) / 240.0);
-                for (int i = 1; i <= numberOfTasks; ++i) {
-                    if (i < numberOfTasks) {
-                        newDuration = timeIntToString(240);
-                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                                task.deadline, task.today, 240);
-                    }
-                    else {
-                        newDuration = timeIntToString(getDurationMinutes(task.duration) % 240);
-                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                                task.deadline, task.today,
-                                getDurationMinutes(task.duration) % 240);
-                    }
-                    taskList.add(newTask);
-                }
-                taskList.remove(task);
+                intensityNumber = 240; // 4 hours
                 break;
             case "intense":
-                numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) / 480.0);
-                for (int i = 1; i <= numberOfTasks; ++i) {
-                    if (i < numberOfTasks) {
-                        newDuration = timeIntToString(480);
-                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                                task.deadline, task.today, 480);
-                    }
-                    else {
-                        newDuration = timeIntToString(getDurationMinutes(task.duration) % 480);
-                        newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                                task.deadline, task.today,
-                                getDurationMinutes(task.duration) % 480);
-                    }
-                    taskList.add(newTask);
-                }
-                taskList.remove(task);
+                intensityNumber = 480; // 8 hours
                 break;
+            default:
+                return;
         }
+        // calculate the new number of tasks
+        numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) /
+                (double) intensityNumber);
+        for (int i = 1; i <= numberOfTasks; ++i) {
+            if (i < numberOfTasks) {
+                // the new duration of the first tasks is in correspondence to the intensity
+                newDuration = timeIntToString(intensityNumber);
+                newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                        task.deadline, task.today, intensityNumber);
+            }
+            else {
+                // the new duration of the last task is the remaining time (time < intensity)
+                newDuration = timeIntToString(getDurationMinutes(task.duration) % intensityNumber);
+                newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                        task.deadline, task.today,
+                        getDurationMinutes(task.duration) % intensityNumber);
+            }
+            taskList.add(newTask); // add the new task to the task list
+        }
+        taskList.remove(task); // remove the old task from the task list
     }
+
 
     /* Create schedule of tasks based on availability
     *
     * @pre @code{availability.size() != 0}
     * @throws IllegalArgumentException if @code{availability.size() == 0}
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    Map<String, String> createSchedule() {
+    @RequiresApi(api = Build.VERSION_CODES.N) // needed to use .replace()
+    void createSchedule() {
         if (availability.size() == 0) {
             throw new IllegalArgumentException("precondition is validated");
         }
@@ -202,6 +186,8 @@ public class TaskScheduler {
             if (bestDate.equals("")) { // no date available
                 System.out.println("no date available for task: " + e.name + ":" + e.duration);
             } else {
+                // Check if there is already a task planned for this date, if so, add the task
+                // to the existing arraylist
                 if (schedule.containsKey(bestDate)) {
                     tasksOnDate = schedule.get(bestDate);
                 }
@@ -210,8 +196,7 @@ public class TaskScheduler {
                 availability.replace(bestDate, newTime);
             }
         }
-        taskList.clear();
-        return availability;
+        taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
     }
 
     /*
@@ -288,6 +273,14 @@ public class TaskScheduler {
      */
     Map<String, ArrayList<Task>> getSchedule() {
         return schedule;
+    }
+
+    /* Get updated availability
+     *
+     * @returns Map<String, String> availability
+     */
+    Map<String, String> getNewAvailability() {
+        return availability;
     }
 
     /* Get task taskList
