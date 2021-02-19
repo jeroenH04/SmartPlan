@@ -2,6 +2,7 @@ package com.example.agenda_app;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -193,6 +194,41 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
+    /** Test complete task with 1 task **/
+    @Test()
+    public void testCompleteTask() {
+        schedule.setAvailability(createBasicAvailability());
+        schedule.addTask("task1", "2:30","a","b",
+                "08-03-2021", "18-01-2020");
+        schedule.createSchedule();
+        assertEquals(schedule.getSchedule().size(), 1);
+        schedule.completeTask("task1");
+        assertEquals(schedule.getSchedule().size(), 0);
+    }
+
+    /** Test complete task with 2 tasks **/
+    @Test()
+    public void testCompleteTask2() {
+        schedule.setAvailability(createBasicAvailability());
+        schedule.addTask("task1", "1:00","a","b",
+                "16-02-2021", "18-01-2020");
+        schedule.addTask("task2", "1:00","a","b",
+                "16-02-2021", "18-01-2020");
+        schedule.createSchedule();
+        assertEquals(schedule.getSchedule().size(), 1);
+        schedule.completeTask("task1");
+        assertEquals(schedule.getSchedule().size(), 1);
+        schedule.completeTask("task2");
+        assertEquals(schedule.getSchedule().size(), 0);
+    }
+    /** Test complete task with invalid task name**/
+    @Test(expected = IllegalArgumentException.class)
+    public void testCompleteTask3() {
+        schedule.completeTask("task");
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+
     /* Create basic availability for the scheduling algorithm */
     Map<String, String> createBasicAvailability() {
         Map<String, String> input = new HashMap<>();
@@ -216,9 +252,9 @@ public class TaskSchedulerTest {
     }
 
     void showCreatedSchedule() {
-        Map<String, ArrayList<TaskScheduler.Task>> createdSchedule = schedule.getSchedule();
-        for (Map.Entry<String, ArrayList<TaskScheduler.Task>> entry : createdSchedule.entrySet()) {
-            for (TaskScheduler.Task e : entry.getValue()) {
+        Map<String, ArrayList<Task>> createdSchedule = schedule.getSchedule();
+        for (Map.Entry<String, ArrayList<Task>> entry : createdSchedule.entrySet()) {
+            for (Task e : entry.getValue()) {
                 System.out.println(entry.getKey() + " : "+ e.name + " : " + e.duration);
             }
         }
@@ -361,5 +397,26 @@ public class TaskSchedulerTest {
         schedule.addTask("task1", "16:00","intense","b",
                 "16-02-2021", "14-01-2021");
         assertEquals(schedule.getTaskList().size(), 2);
+    }
+
+    /** Test of deadline sorter **/
+    @Test()
+    public void testDeadlineSorter() {
+        schedule.setAvailability(createBasicAvailability());
+        ArrayList<Task> unsortedList = new ArrayList<>();
+        ArrayList<Task> sortedList = new ArrayList<>();
+        Task task1 = new Task("task1", "2:00","intense","b",
+                "25-02-2021", "14-01-2021", 120);
+        Task task2 = new Task("task2", "2:00","intense","b",
+                "24-02-2021", "14-01-2021", 120);
+        Task task3 = new Task("task3", "2:00","intense","b",
+                "23-02-2021", "14-01-2021", 120);
+        Task task4 = new Task("task4", "2:00","intense","b",
+                "16-02-2021", "14-01-2021", 120);
+        unsortedList.add(task1); unsortedList.add(task2); unsortedList.add(task3);
+        unsortedList.add(task4);
+        sortedList.add(task4); sortedList.add(task3); sortedList.add(task2); sortedList.add(task1);
+        unsortedList.sort(new DeadlineSorter());
+        assertEquals(unsortedList, sortedList);
     }
 }

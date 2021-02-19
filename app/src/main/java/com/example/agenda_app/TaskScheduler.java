@@ -3,6 +3,7 @@ package com.example.agenda_app;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import static java.lang.Integer.parseInt;
@@ -16,27 +17,6 @@ public class TaskScheduler {
 
     // Initialize map containing schedule ("date",tasks)
     private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
-
-    public static class Task {
-        public String name;
-        public String duration;
-        public String intensity;
-        public String difficulty;
-        public String deadline;
-        public String today;
-        public int totalTime;
-
-        public Task(String name, String duration, String intensity, String difficulty,
-                    String deadline, String today, int totalTime) {
-            this.name = name;
-            this.duration = duration;
-            this.intensity = intensity;
-            this.difficulty = difficulty;
-            this.deadline = deadline;
-            this.today = today;
-            this.totalTime = totalTime;
-        }
-    }
 
     /*
     * Add task to the schedule
@@ -78,7 +58,7 @@ public class TaskScheduler {
         checkIntensity(task); // check the set intensity and split the task accordingly
     }
 
-    /* Set availability of user
+    /* Remove task from task list
      *
      * @param String taskName, task to be removed
      * @pre @code{\exists i; taskList.contains(i); i.name == taskName}
@@ -92,7 +72,29 @@ public class TaskScheduler {
                 return;
             }
         }
-        throw new IllegalArgumentException("precondition is validated");
+        throw new IllegalArgumentException("There exists no task in the tasklist with this name");
+    }
+
+    /* Remove task from schedule
+     *
+     * @param String taskName, task to be removed
+     * @pre @code{\exists i; schedule.contains(i); i.name == taskName}
+     * @modifies schedule
+     * @throws IllegalArgumentException if pre is violated
+     */
+    void completeTask(String taskName) {
+        for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
+            for (Task e : entry.getValue()) {
+                if (e.name.equals(taskName)) {
+                    entry.getValue().remove(e);
+                    if (entry.getValue().isEmpty()) {
+                        schedule.remove(entry.getKey());
+                    }
+                    return;
+                }
+            }
+        }
+        throw new IllegalArgumentException("There exists no task in the schedule with this name");
     }
 
     void updateSchedule() {
@@ -165,8 +167,10 @@ public class TaskScheduler {
     @RequiresApi(api = Build.VERSION_CODES.N) // needed to use .replace()
     void createSchedule() {
         if (availability.size() == 0) {
-            throw new IllegalArgumentException("precondition is validated");
+            throw new IllegalArgumentException("no availability has been set");
         }
+        taskList.sort(new DeadlineSorter()); // sort the task list on deadline
+        System.out.println(taskList);
         for (Task e : taskList) {
             int neededTime = e.totalTime;
             int minimum = 10000;
