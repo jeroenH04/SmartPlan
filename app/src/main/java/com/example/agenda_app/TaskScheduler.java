@@ -14,13 +14,13 @@ public class TaskScheduler {
     // Initialize arraylist containing all tasks to be scheduled
     private final ArrayList<Task> taskList = new ArrayList<>();
 
-    // Initialize map containing availability ("date","hours")
-    private final Map<String, String> availability = new HashMap<>();
+    // Initialize arraylist containing all availability
+    private final ArrayList<Availability> availabilityList = new ArrayList<>();
 
     // Initialize map containing schedule ("date",tasks)
     private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
 
-    // intensity in hours of different modes
+    // default intensity in minutes of different modes
     private int relaxedIntensity = 120;
     private int normalIntensity = 240;
     private int intenseIntensity = 480;
@@ -74,7 +74,7 @@ public class TaskScheduler {
      */
     void removeTask(String taskName) {
         for (Task e : taskList) {   // Loop over the task list to find the correct task
-            if (e.name.equals(taskName)) {
+            if (e.getName().equals(taskName)) {
                 taskList.remove(e);
                 return;
             }
@@ -92,7 +92,7 @@ public class TaskScheduler {
     void completeTask(String taskName) {
         for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue()) {
-                if (e.name.equals(taskName)) {
+                if (e.getName().equals(taskName)) {
                     entry.getValue().remove(e);
                     if (entry.getValue().isEmpty()) {
                         schedule.remove(entry.getKey());
@@ -104,17 +104,25 @@ public class TaskScheduler {
         throw new IllegalArgumentException("There exists no task in the schedule with this name");
     }
 
-    void updateSchedule() {
+    /* Add availability of user
+     *
+     * @param String date, date of availability
+     * @param String time, time of availability
+     * @modifies availabilityList
+     * @post @code{availabilityList.contains(new Availability(date, time))}
+     */
+    void addAvailability(String date, String time) { // i.e. "26-02-2021","8:00-16:00"
+        Availability avail = new Availability(date, time);
+        availabilityList.add(avail);
     }
 
-    /* Set availability of user
+    /* Clear availability of user
      *
-     * @param Map<String, String> input, map containing availability per day
+     * @modifies availabilityList
+     * @post @code{availabilityList.size() == 0}
      */
-    void setAvailability(Map<String, String> input) {
-        for (Map.Entry<String, String> entry : input.entrySet()) {
-            availability.put(entry.getKey(), entry.getValue());
-        }
+    void clearAvailability() {
+        availabilityList.clear();
     }
 
     /* Set the intensity of the different modes
@@ -148,7 +156,7 @@ public class TaskScheduler {
         int intensityNumber;
         String newDuration;
         Task newTask;
-        switch (task.intensity) {
+        switch (task.getIntensity()) {
             case "relaxed":
                 intensityNumber = relaxedIntensity;
                 break;
@@ -162,21 +170,22 @@ public class TaskScheduler {
                 return;
         }
         // calculate the new number of tasks
-        numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) /
+        numberOfTasks = (int) Math.ceil(getDurationMinutes(task.getDuration()) /
                 (double) intensityNumber);
         for (int i = 1; i <= numberOfTasks; ++i) {
             if (i < numberOfTasks) {
                 // the new duration of the first tasks is in correspondence to the intensity
                 newDuration = timeIntToString(intensityNumber);
-                newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                        task.deadline, task.today, intensityNumber);
+                newTask = new Task(task.getName(), newDuration, task.getIntensity(),
+                        task.getDifficulty(), task.getDeadline(), task.getToday(), intensityNumber);
             }
             else {
                 // the new duration of the last task is the remaining time (time < intensity)
-                newDuration = timeIntToString(getDurationMinutes(task.duration) % intensityNumber);
-                newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
-                        task.deadline, task.today,
-                        getDurationMinutes(task.duration) % intensityNumber);
+                newDuration = timeIntToString(getDurationMinutes(task.getDuration()) %
+                        intensityNumber);
+                newTask = new Task(task.getName(), newDuration, task.getIntensity(),
+                        task.getDifficulty(), task.getDeadline(), task.getToday(),
+                        getDurationMinutes(task.getDuration()) % intensityNumber);
             }
             taskList.add(newTask); // add the new task to the task list
         }
@@ -191,28 +200,39 @@ public class TaskScheduler {
      */
     @RequiresApi(api = Build.VERSION_CODES.N) // needed to use .replace()
     void createSchedule() {
-        if (availability.size() == 0) {
+        if (availabilityList.size() == 0) {
             throw new IllegalArgumentException("no availability has been set");
         }
         taskList.sort(new DeadlineSorter()); // sort the task list on deadline
         for (Task e : taskList) {
-            int neededTime = e.totalTime;
+            int neededTime = e.getTotalTime();
             int minimum = 10000;
+            int index = -1;
             String newTime = "";
             String bestDate = "";
             ArrayList<Task> tasksOnDate = new ArrayList<>();
 
-            for (Map.Entry<String, String> entry : availability.entrySet()) {
-                int timeDifference = getDurationMinutes(entry.getValue()) - neededTime;
+            for (Availability avail : availabilityList) {
+                int timeDifference = getDurationMinutes(avail.getDuration()) - neededTime;
                 if (timeDifference >= 0 && timeDifference < minimum &&
-                        compareDates(e.deadline, entry.getKey())) {
-                    bestDate = entry.getKey();
+                        compareDates(e.getDeadline(), avail.getDate())) {
+                    bestDate = avail.getDate();
+                    index = availabilityList.indexOf(avail);
                     newTime = timeIntToString(timeDifference);
                     minimum = timeDifference;
                 }
             }
+//            for (Map.Entry<String, String> entry : availability.entrySet()) {
+//                int timeDifference = getDurationMinutes(entry.getValue()) - neededTime;
+//                if (timeDifference >= 0 && timeDifference < minimum &&
+//                        compareDates(e.getDeadline(), entry.getKey())) {
+//                    bestDate = entry.getKey();
+//                    newTime = timeIntToString(timeDifference);
+//                    minimum = timeDifference;
+//                }
+//            }
             if (bestDate.equals("")) { // no date available
-                System.out.println("no date available for task: " + e.name + ":" + e.duration);
+                System.out.println("no date available for task: " + e.getName() + ":" + e.getDuration());
             } else {
                 // Check if there is already a task planned for this date, if so, add the task
                 // to the existing arraylist
@@ -221,7 +241,8 @@ public class TaskScheduler {
                 }
                 tasksOnDate.add(e);
                 schedule.put(bestDate, tasksOnDate);
-                availability.replace(bestDate, newTime);
+                Availability newAvail = new Availability(bestDate, newTime);
+                availabilityList.set(index,newAvail);
             }
         }
         taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
@@ -281,13 +302,13 @@ public class TaskScheduler {
             throw new NullPointerException("precondition is validated");
         }
         for (Task e: taskList) {
-            if (e.name.equals(taskName)) {
+            if (e.getName().equals(taskName)) {
                 return false;
             }
         }
         for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue()) {
-                if (e.name.equals(taskName)) {
+                if (e.getName().equals(taskName)) {
                     return false;
                 }
             }
@@ -305,10 +326,10 @@ public class TaskScheduler {
 
     /* Get updated availability
      *
-     * @returns Map<String, String> availability
+     * @returns ArrayList<Availability> availabilityList
      */
-    Map<String, String> getNewAvailability() {
-        return availability;
+    ArrayList<Availability> getNewAvailability() {
+        return availabilityList;
     }
 
     /* Get task taskList

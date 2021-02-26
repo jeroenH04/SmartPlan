@@ -53,7 +53,7 @@ public class TaskSchedulerTest {
     /** Test unique names in the schedule list **/
     @Test()
     public void testUniqueNames2() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         schedule.addTask("task1", "2:30","a","b",
                 "20-02-2021", "01-01-2020");
         schedule.createSchedule();
@@ -197,7 +197,7 @@ public class TaskSchedulerTest {
     /** Test complete task with 1 task **/
     @Test()
     public void testCompleteTask() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         schedule.addTask("task1", "2:30","a","b",
                 "08-03-2021", "18-01-2020");
         schedule.createSchedule();
@@ -209,7 +209,7 @@ public class TaskSchedulerTest {
     /** Test complete task with 2 tasks **/
     @Test()
     public void testCompleteTask2() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         schedule.addTask("task1", "1:00","a","b",
                 "16-02-2021", "18-01-2020");
         schedule.addTask("task2", "1:00","a","b",
@@ -221,6 +221,7 @@ public class TaskSchedulerTest {
         schedule.completeTask("task2");
         assertEquals(schedule.getSchedule().size(), 0);
     }
+
     /** Test complete task with invalid task name**/
     @Test(expected = IllegalArgumentException.class)
     public void testCompleteTask3() {
@@ -228,34 +229,47 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
+    /** Test add availability **/
+    @Test()
+    public void testAddAvailability() {
+        schedule.addAvailability("26-02-2021","8:00");
+        assertEquals(schedule.getNewAvailability().size(),1);
+        schedule.addAvailability("28-02-2021","8:00");
+        assertEquals(schedule.getNewAvailability().size(),2);
+    }
+
+    /** Test add availability **/
+    @Test()
+    public void testClearAvailability() {
+        schedule.addAvailability("26-02-2021","8:00");
+        assertEquals(schedule.getNewAvailability().size(),1);
+        schedule.clearAvailability();
+        assertEquals(schedule.getNewAvailability().size(),0);
+    }
 
     /* Create basic availability for the scheduling algorithm */
-    Map<String, String> createBasicAvailability() {
-        Map<String, String> input = new HashMap<>();
-        input.put("15-02-2021", "2:00");
-        input.put("16-02-2021", "1:00");
-        input.put("17-02-2021", "4:00");
-        input.put("18-02-2021", "8:00");
-        return input;
+    void createBasicAvailability() {
+        schedule.addAvailability("15-02-2021", "2:00");
+        schedule.addAvailability("16-02-2021", "1:00");
+        schedule.addAvailability("17-02-2021", "4:00");
+        schedule.addAvailability("18-02-2021", "8:00");
     }
 
     /* Create advanced availability for the scheduling algorithm */
-    Map<String, String> createAdvancedAvailability() {
-        Map<String, String> input = new HashMap<>();
-        input.put("15-02-2021", "8:00");
-        input.put("16-02-2021", "5:00");
-        input.put("17-02-2021", "8:00");
-        input.put("18-02-2021", "3:00");
-        input.put("19-02-2021", "5:00");
-        input.put("20-02-2021", "8:00");
-        return input;
+    void createAdvancedAvailability() {
+        schedule.addAvailability("15-02-2021", "8:00");
+        schedule.addAvailability("16-02-2021", "5:00");
+        schedule.addAvailability("17-02-2021", "8:00");
+        schedule.addAvailability("18-02-2021", "3:00");
+        schedule.addAvailability("19-02-2021", "5:00");
+        schedule.addAvailability("20-02-2021", "8:00");
     }
 
     void showCreatedSchedule() {
         Map<String, ArrayList<Task>> createdSchedule = schedule.getSchedule();
         for (Map.Entry<String, ArrayList<Task>> entry : createdSchedule.entrySet()) {
             for (Task e : entry.getValue()) {
-                System.out.println(entry.getKey() + " : "+ e.name + " : " + e.duration);
+                System.out.println(entry.getKey() + " : "+ e.getName() + " : " + e.getDuration());
             }
         }
     }
@@ -263,52 +277,67 @@ public class TaskSchedulerTest {
     /** Test of creating optimal schedule with 1 task **/
     @Test()
     public void testCreateSchedule() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         schedule.addTask("task1", "3:30", "a", "b",
                 "18-02-2021", "14-01-2021");
-        Map<String, String> testMap = new HashMap<>();
-        testMap.put("15-02-2021", "2:00");
-        testMap.put("16-02-2021", "1:00");
-        testMap.put("17-02-2021", "0:30");
-        testMap.put("18-02-2021", "8:00");
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("15-02-2021", "2:00"));
+        testAvail.add(new Availability("16-02-2021", "1:00"));
+        testAvail.add(new Availability("17-02-2021", "0:30"));
+        testAvail.add(new Availability("18-02-2021", "8:00"));
         schedule.createSchedule();
-        assertEquals(schedule.getNewAvailability(), testMap);
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
     }
 
     /** Test of creating optimal schedule with 2 tasks **/
     @Test()
     public void testCreateSchedule2() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         schedule.addTask("task1", "1:00","a","b",
                 "16-02-2021", "14-01-2021");
         schedule.addTask("task2", "3:00","a","b",
                 "21-02-2021", "14-01-2021");
-        Map<String, String> testMap = new HashMap<>();
-        testMap.put("15-02-2021", "1:00");
-        testMap.put("16-02-2021", "1:00");
-        testMap.put("17-02-2021", "1:00");
-        testMap.put("18-02-2021", "8:00");
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("15-02-2021", "1:00"));
+        testAvail.add(new Availability("16-02-2021", "1:00"));
+        testAvail.add(new Availability("17-02-2021", "1:00"));
+        testAvail.add(new Availability("18-02-2021", "8:00"));
         schedule.createSchedule();
-        assertEquals(schedule.getNewAvailability(), testMap);
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
     }
 
     /** Test of creating optimal schedule with 3 tasks **/
     @Test()
     public void testCreateSchedule3() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         schedule.addTask("task1", "1:30","a","b",
                 "14-03-2021", "14-01-2021");
         schedule.addTask("task2", "0:30","a","b",
                 "16-02-2021", "14-01-2021");
         schedule.addTask("task3", "3:59","a","b",
                 "14-03-2021", "14-01-2021");
-        Map<String, String> testMap = new HashMap<>();
-        testMap.put("15-02-2021", "0:00");
-        testMap.put("16-02-2021", "1:00");
-        testMap.put("17-02-2021", "0:01");
-        testMap.put("18-02-2021", "8:00");
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("15-02-2021", "0:00"));
+        testAvail.add(new Availability("16-02-2021", "1:00"));
+        testAvail.add(new Availability("17-02-2021", "0:01"));
+        testAvail.add(new Availability("18-02-2021", "8:00"));
         schedule.createSchedule();
-        assertEquals(schedule.getNewAvailability(), testMap);
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
     }
 
     /** Test of creating optimal schedule with no set availability **/
@@ -323,29 +352,39 @@ public class TaskSchedulerTest {
     /** Test of creating optimal schedule with 3 tasks **/
     @Test()
     public void testCreateSchedule5() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         schedule.addTask("task1", "1:00","a","b",
                 "16-02-2021", "14-01-2021");
         schedule.addTask("task2", "3:00","a","b",
                 "21-02-2021", "14-01-2021");
-        Map<String, String> testMap = new HashMap<>();
-        testMap.put("15-02-2021", "1:00");
-        testMap.put("16-02-2021", "1:00");
-        testMap.put("17-02-2021", "1:00");
-        testMap.put("18-02-2021", "8:00");
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("15-02-2021", "1:00"));
+        testAvail.add(new Availability("16-02-2021", "1:00"));
+        testAvail.add(new Availability("17-02-2021", "1:00"));
+        testAvail.add(new Availability("18-02-2021", "8:00"));
         schedule.createSchedule();
-        assertEquals(schedule.getNewAvailability(), testMap);
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(), newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
 
         schedule.addTask("task3", "3:00","a","b",
                 "21-02-2021", "14-01-2021");
 
-        Map<String, String> testMap2 = new HashMap<>();
-        testMap2.put("15-02-2021", "1:00");
-        testMap2.put("16-02-2021", "1:00");
-        testMap2.put("17-02-2021", "1:00");
-        testMap2.put("18-02-2021", "5:00");
+        ArrayList<Availability> testAvail2 = new ArrayList<>();
+        testAvail2.add(new Availability("15-02-2021", "1:00"));
+        testAvail2.add(new Availability("16-02-2021", "1:00"));
+        testAvail2.add(new Availability("17-02-2021", "1:00"));
+        testAvail2.add(new Availability("18-02-2021", "5:00"));
         schedule.createSchedule();
-        assertEquals(schedule.getNewAvailability(), testMap2);
+        ArrayList<Availability> newAvail2 = schedule.getNewAvailability();
+        for (Availability e : testAvail2) {
+            int index = testAvail2.indexOf(e);
+            assertEquals(e.getDate(),newAvail2.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail2.get(index).getDuration());
+        }
     }
 
     /** Test of intensity setter, invalid pre **/
@@ -382,7 +421,7 @@ public class TaskSchedulerTest {
     /** Test of intensity checker: intensity = normal, duration > normal duration (4 hours)**/
     @Test()
     public void testIntensityChecker4() {
-        schedule.setAvailability(createAdvancedAvailability());
+        createAdvancedAvailability();
         schedule.addTask("task1", "15:00","normal","b",
                 "23-02-2021", "14-01-2021");
         assertEquals(schedule.getTaskList().size(), 4);
@@ -418,17 +457,17 @@ public class TaskSchedulerTest {
     /** Test of deadline sorter **/
     @Test()
     public void testDeadlineSorter() {
-        schedule.setAvailability(createBasicAvailability());
+        createBasicAvailability();
         ArrayList<Task> unsortedList = new ArrayList<>();
         ArrayList<Task> sortedList = new ArrayList<>();
         Task task1 = new Task("task1", "2:00","intense","b",
-                "25-02-2021", "14-01-2021", 120);
+                "25-02-2021", "14-01-2021",120);
         Task task2 = new Task("task2", "2:00","intense","b",
-                "24-02-2021", "14-01-2021", 120);
+                "24-02-2021", "14-01-2021",120);
         Task task3 = new Task("task3", "2:00","intense","b",
-                "23-02-2021", "14-01-2021", 120);
+                "23-02-2021", "14-01-2021",120);
         Task task4 = new Task("task4", "2:00","intense","b",
-                "16-02-2021", "14-01-2021", 120);
+                "16-02-2021", "14-01-2021",120);
         unsortedList.add(task1); unsortedList.add(task2); unsortedList.add(task3);
         unsortedList.add(task4);
         sortedList.add(task4); sortedList.add(task3); sortedList.add(task2); sortedList.add(task1);
