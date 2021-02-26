@@ -9,6 +9,8 @@ import java.util.Map;
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
+    // @TODO: enable time availability
+
     // Initialize arraylist containing all tasks to be scheduled
     private final ArrayList<Task> taskList = new ArrayList<>();
 
@@ -17,6 +19,11 @@ public class TaskScheduler {
 
     // Initialize map containing schedule ("date",tasks)
     private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
+
+    // intensity in hours of different modes
+    private int relaxedIntensity = 120;
+    private int normalIntensity = 240;
+    private int intenseIntensity = 480;
 
     /*
     * Add task to the schedule
@@ -110,6 +117,24 @@ public class TaskScheduler {
         }
     }
 
+    /* Set the intensity of the different modes
+    *
+    * @param integer relaxed, duration for relaxed mode in hours
+    * @param integer normal, duration for normal mode in hours
+    * @param integer intense, duration for intense mode in hours
+    * @pre @code{relaxed > 0 && normal > 0 && intense > 0}
+    * @throws IllegalArgumentException if pre is violated
+    * @modifies relaxedIntensity, normalIntensity, intenseIntensity
+     */
+    void setIntensity(int relaxed, int normal, int intense) {
+        if (relaxed <= 0 || normal <= 0 || intense <= 0) {
+            throw new IllegalArgumentException("intensity <= 0");
+        }
+        this.relaxedIntensity = relaxed * 60;
+        this.normalIntensity = normal * 60;
+        this.intenseIntensity = intense * 60;
+    }
+
     /* Check intensity of task and split it into smaller tasks
      *
      * @param Task task
@@ -125,13 +150,13 @@ public class TaskScheduler {
         Task newTask;
         switch (task.intensity) {
             case "relaxed":
-                intensityNumber = 120; // 2 hours
+                intensityNumber = relaxedIntensity;
                 break;
             case "normal":
-                intensityNumber = 240; // 4 hours
+                intensityNumber = normalIntensity;
                 break;
             case "intense":
-                intensityNumber = 480; // 8 hours
+                intensityNumber = intenseIntensity;
                 break;
             default:
                 return;
@@ -170,7 +195,6 @@ public class TaskScheduler {
             throw new IllegalArgumentException("no availability has been set");
         }
         taskList.sort(new DeadlineSorter()); // sort the task list on deadline
-        System.out.println(taskList);
         for (Task e : taskList) {
             int neededTime = e.totalTime;
             int minimum = 10000;

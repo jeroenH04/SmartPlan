@@ -348,6 +348,13 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getNewAvailability(), testMap2);
     }
 
+    /** Test of intensity setter, invalid pre **/
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetIntensity() {
+        schedule.setIntensity(0,4,8);
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
     /** Test of intensity checker: intensity = relaxed, duration < relaxed duration (2 hours)**/
     @Test()
     public void testIntensityChecker() {
@@ -397,6 +404,15 @@ public class TaskSchedulerTest {
         schedule.addTask("task1", "16:00","intense","b",
                 "16-02-2021", "14-01-2021");
         assertEquals(schedule.getTaskList().size(), 2);
+    }
+
+    /** Test of intensity checker: set intensity**/
+    @Test()
+    public void testIntensityChecker7() {
+        schedule.setIntensity(1,2,3);
+        schedule.addTask("task1", "16:00","relaxed","b",
+                "16-02-2021", "14-01-2021");
+        assertEquals(schedule.getTaskList().size(), 16);
     }
 
     /** Test of deadline sorter **/
