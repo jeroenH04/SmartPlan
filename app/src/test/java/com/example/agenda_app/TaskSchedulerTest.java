@@ -387,6 +387,28 @@ public class TaskSchedulerTest {
         }
     }
 
+    /** Test of creating optimal schedule with 2 tasks on same day **/
+    @Test()
+    public void testCreateSchedule6() {
+        createBasicAvailability();
+        schedule.addTask("task1", "1:30","a","b",
+                "16-02-2021", "14-01-2021");
+        schedule.addTask("task2", "0:30","a","b",
+                "16-02-2021", "14-01-2021");
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("15-02-2021", "12:00-12:00"));
+        testAvail.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail.add(new Availability("17-02-2021", "14:00-18:00"));
+        testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
+        schedule.createSchedule();
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
+    }
+
     /** Test of intensity setter, invalid pre **/
     @Test(expected = IllegalArgumentException.class)
     public void testSetIntensity() {
