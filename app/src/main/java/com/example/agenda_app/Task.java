@@ -20,6 +20,7 @@ public class Task{
         this.totalTime = totalTime;
     }
 
+    // Getters of Task.class parameters
     public String getName() { return name; }
     public String getDuration() { return duration; }
     public String getIntensity() { return intensity; }

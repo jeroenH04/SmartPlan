@@ -9,18 +9,16 @@ import java.util.Map;
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
-    // @TODO: enable time availability
-
-    // Initialize arraylist containing all tasks to be scheduled
+    // Initialize ArrayList containing all tasks to be scheduled
     private final ArrayList<Task> taskList = new ArrayList<>();
 
-    // Initialize arraylist containing all availability
+    // Initialize ArrayList containing all availability of user
     private final ArrayList<Availability> availabilityList = new ArrayList<>();
 
-    // Initialize map containing schedule ("date",tasks)
+    // Initialize map containing schedule (date,ArrayList<Task>)
     private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
 
-    // default intensity in minutes of different modes
+    // Default intensity in minutes of different modes
     private int relaxedIntensity = 120;
     private int normalIntensity = 240;
     private int intenseIntensity = 480;
@@ -75,7 +73,7 @@ public class TaskScheduler {
     void removeTask(String taskName) {
         for (Task e : taskList) {   // Loop over the task list to find the correct task
             if (e.getName().equals(taskName)) {
-                taskList.remove(e);
+                taskList.remove(e); // if task has been found, remove and stop
                 return;
             }
         }
@@ -93,9 +91,9 @@ public class TaskScheduler {
         for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue()) {
                 if (e.getName().equals(taskName)) {
-                    entry.getValue().remove(e);
-                    if (entry.getValue().isEmpty()) {
-                        schedule.remove(entry.getKey());
+                    entry.getValue().remove(e); // remove task from the array
+                    if (entry.getValue().isEmpty()) { // check if the array is now empty
+                        schedule.remove(entry.getKey()); // remove date in schedule
                     }
                     return;
                 }
@@ -204,12 +202,11 @@ public class TaskScheduler {
             throw new IllegalArgumentException("no availability has been set");
         }
         taskList.sort(new DeadlineSorter()); // sort the task list on deadline
+        // Loop over all tasks in the task list and compare it to all days in the availability
         for (Task e : taskList) {
             int neededTime = e.getTotalTime();
             int minimum = 10000;
             int index = -1;
-            int newTime = 0;
-            int timeUsed = 0;
             String bestDate = "";
             ArrayList<Task> tasksOnDate = new ArrayList<>();
 
@@ -217,11 +214,9 @@ public class TaskScheduler {
                 int timeDifference = getDurationMinutes(
                         avail.getAvailableTimeInt(avail.getDuration())) - neededTime;
                 if (timeDifference >= 0 && timeDifference < minimum &&
-                        compareDates(e.getDeadline(), avail.getDate())) {
+                        compareDates(e.getDeadline(), avail.getDate())) { // get the min. difference
                     bestDate = avail.getDate();
                     index = availabilityList.indexOf(avail);
-                    newTime = timeDifference;
-                    timeUsed = neededTime;
                     minimum = timeDifference;
                 }
             }
@@ -229,15 +224,13 @@ public class TaskScheduler {
                 System.out.println("no date available for task: " + e.getName() + ":" + e.getDuration());
             } else {
                 // Check if there is already a task planned for this date, if so, add the task
-                // to the existing arraylist
+                // to the existing ArrayList
                 if (schedule.containsKey(bestDate)) {
                     tasksOnDate = schedule.get(bestDate);
                 }
-                tasksOnDate.add(e);
-                schedule.put(bestDate, tasksOnDate);
-                availabilityList.get(index).updateDuration(neededTime);
-              //  Availability newAvail = new Availability(bestDate, newTime);
-              //  availabilityList.set(index,newAvail);
+                tasksOnDate.add(e); // add the task to the ArrayList
+                schedule.put(bestDate, tasksOnDate); // add the updated ArrayList to the schedule
+                availabilityList.get(index).updateDuration(neededTime); // update the availability
             }
         }
         taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list

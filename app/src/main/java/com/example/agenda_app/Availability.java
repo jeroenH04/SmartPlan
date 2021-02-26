@@ -38,17 +38,23 @@ public class Availability {
         if ((hourDifference == 0 && minutesDifference < 0) || (hourDifference < 0)) {
             throw new IllegalArgumentException("negative time available");
         }
+        // If minutesDifference < 0, decrease the hourDifference
         if (minutesDifference < 0) {
             minutesDifference = minutesDifference + 60;
             hourDifference--;
         }
         if (minutesDifference < 10) {
-            return hourDifference + ":0" + minutesDifference;
+            return hourDifference + ":0" + minutesDifference; // add leading zero, i.e. 1 -> 01
         } else {
             return hourDifference + ":" + minutesDifference;
         }
     }
 
+    /* Update the duration of the availability
+     *
+     * @param int neededTime, time needed to be removed from availability
+     * @modifies this.duration
+     */
     public void updateDuration(int neededTime) {
         int totalHours1 = parseInt(duration.substring(0,duration.indexOf(":")));
         int totalHours2 = parseInt(duration.substring(duration.indexOf("-")+1,
@@ -57,27 +63,27 @@ public class Availability {
                 duration.indexOf("-")));
         int totalMinutes2 = parseInt(duration.substring(duration.indexOf(":",
                 duration.indexOf(":")+1)+1));
-        int newHours = (int) Math.floor(neededTime / 60);
-        int newMinutes = neededTime - 60 * newHours;
-        if (totalMinutes1 + newMinutes >= 60) {
-            newHours++;
-            newMinutes = totalMinutes1 + newMinutes - 60;
+        int hoursNeeded = (int) Math.floor(neededTime / 60.0);
+        int minutesNeeded = neededTime - 60 * hoursNeeded;
+        if (totalMinutes1 + minutesNeeded >= 60) {
+            hoursNeeded++; // increase hours as new minutes >= 60
+            minutesNeeded = totalMinutes1 + minutesNeeded - 60;
         } else {
-            newMinutes += totalMinutes1;
+            minutesNeeded += totalMinutes1;
         }
-        newHours += totalHours1;
+        hoursNeeded += totalHours1;
 
-        String totalMinutesString1 = String.valueOf(newMinutes);
+        String totalMinutesString1 = String.valueOf(minutesNeeded);
         String totalMinutesString2 = String.valueOf(totalMinutes2);
-
-        if (totalMinutes2 == 0) {
+        // Make sure the numbers are of the correct format, i.e. hh:mm-hh:mm
+        if (totalMinutes2 == 0) { // if first minutes are 0, add another 0. i.e. 0 -> 00
             totalMinutesString2 = totalMinutes2 + "0";
         }
-        if (newMinutes == 0) {
-            totalMinutesString1 = newMinutes + "0";
+        if (minutesNeeded == 0) { // if second minutes are 0, add another 0. i.e. 0 -> 00
+            totalMinutesString1 = minutesNeeded + "0";
         }
-        this.duration = newHours + ":" + totalMinutesString1 + "-" +
-                totalHours2 + ":" + totalMinutesString2;
+        this.duration = hoursNeeded + ":" + totalMinutesString1 + "-" +
+                totalHours2 + ":" + totalMinutesString2; // update duration
     }
 
     @Override
