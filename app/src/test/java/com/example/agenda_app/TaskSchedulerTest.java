@@ -232,16 +232,16 @@ public class TaskSchedulerTest {
     /** Test add availability **/
     @Test()
     public void testAddAvailability() {
-        schedule.addAvailability("26-02-2021","8:00");
+        schedule.addAvailability("26-02-2021","8:00-16:00");
         assertEquals(schedule.getNewAvailability().size(),1);
-        schedule.addAvailability("28-02-2021","8:00");
+        schedule.addAvailability("28-02-2021","8:00-9:00");
         assertEquals(schedule.getNewAvailability().size(),2);
     }
 
     /** Test add availability **/
     @Test()
     public void testClearAvailability() {
-        schedule.addAvailability("26-02-2021","8:00");
+        schedule.addAvailability("26-02-2021","8:00-16:00");
         assertEquals(schedule.getNewAvailability().size(),1);
         schedule.clearAvailability();
         assertEquals(schedule.getNewAvailability().size(),0);
@@ -249,20 +249,20 @@ public class TaskSchedulerTest {
 
     /* Create basic availability for the scheduling algorithm */
     void createBasicAvailability() {
-        schedule.addAvailability("15-02-2021", "2:00");
-        schedule.addAvailability("16-02-2021", "1:00");
-        schedule.addAvailability("17-02-2021", "4:00");
-        schedule.addAvailability("18-02-2021", "8:00");
+        schedule.addAvailability("15-02-2021", "10:00-12:00");
+        schedule.addAvailability("16-02-2021", "9:00-10:00");
+        schedule.addAvailability("17-02-2021", "14:00-18:00");
+        schedule.addAvailability("18-02-2021", "8:50-16:50");
     }
 
     /* Create advanced availability for the scheduling algorithm */
     void createAdvancedAvailability() {
-        schedule.addAvailability("15-02-2021", "8:00");
-        schedule.addAvailability("16-02-2021", "5:00");
-        schedule.addAvailability("17-02-2021", "8:00");
-        schedule.addAvailability("18-02-2021", "3:00");
-        schedule.addAvailability("19-02-2021", "5:00");
-        schedule.addAvailability("20-02-2021", "8:00");
+        schedule.addAvailability("15-02-2021", "0:00-8:00");
+        schedule.addAvailability("16-02-2021", "5:00-10:00");
+        schedule.addAvailability("17-02-2021", "8:00-16:00");
+        schedule.addAvailability("18-02-2021", "3:15-6:15");
+        schedule.addAvailability("19-02-2021", "5:30-10:30");
+        schedule.addAvailability("20-02-2021", "8:00-16:00");
     }
 
     void showCreatedSchedule() {
@@ -281,10 +281,10 @@ public class TaskSchedulerTest {
         schedule.addTask("task1", "3:30", "a", "b",
                 "18-02-2021", "14-01-2021");
         ArrayList<Availability> testAvail = new ArrayList<>();
-        testAvail.add(new Availability("15-02-2021", "2:00"));
-        testAvail.add(new Availability("16-02-2021", "1:00"));
-        testAvail.add(new Availability("17-02-2021", "0:30"));
-        testAvail.add(new Availability("18-02-2021", "8:00"));
+        testAvail.add(new Availability("15-02-2021", "10:00-12:00"));
+        testAvail.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail.add(new Availability("17-02-2021", "17:30-18:00"));
+        testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
         ArrayList<Availability> newAvail = schedule.getNewAvailability();
         for (Availability e : testAvail) {
@@ -303,10 +303,10 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "3:00","a","b",
                 "21-02-2021", "14-01-2021");
         ArrayList<Availability> testAvail = new ArrayList<>();
-        testAvail.add(new Availability("15-02-2021", "1:00"));
-        testAvail.add(new Availability("16-02-2021", "1:00"));
-        testAvail.add(new Availability("17-02-2021", "1:00"));
-        testAvail.add(new Availability("18-02-2021", "8:00"));
+        testAvail.add(new Availability("15-02-2021", "11:00-12:00"));
+        testAvail.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail.add(new Availability("17-02-2021", "17:00-18:00"));
+        testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
         ArrayList<Availability> newAvail = schedule.getNewAvailability();
         for (Availability e : testAvail) {
@@ -327,10 +327,10 @@ public class TaskSchedulerTest {
         schedule.addTask("task3", "3:59","a","b",
                 "14-03-2021", "14-01-2021");
         ArrayList<Availability> testAvail = new ArrayList<>();
-        testAvail.add(new Availability("15-02-2021", "0:00"));
-        testAvail.add(new Availability("16-02-2021", "1:00"));
-        testAvail.add(new Availability("17-02-2021", "0:01"));
-        testAvail.add(new Availability("18-02-2021", "8:00"));
+        testAvail.add(new Availability("15-02-2021", "12:00-12:00"));
+        testAvail.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail.add(new Availability("17-02-2021", "17:59-18:00"));
+        testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
         ArrayList<Availability> newAvail = schedule.getNewAvailability();
         for (Availability e : testAvail) {
@@ -358,10 +358,10 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "3:00","a","b",
                 "21-02-2021", "14-01-2021");
         ArrayList<Availability> testAvail = new ArrayList<>();
-        testAvail.add(new Availability("15-02-2021", "1:00"));
-        testAvail.add(new Availability("16-02-2021", "1:00"));
-        testAvail.add(new Availability("17-02-2021", "1:00"));
-        testAvail.add(new Availability("18-02-2021", "8:00"));
+        testAvail.add(new Availability("15-02-2021", "11:00-12:00"));
+        testAvail.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail.add(new Availability("17-02-2021", "17:00-18:00"));
+        testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
         ArrayList<Availability> newAvail = schedule.getNewAvailability();
         for (Availability e : testAvail) {
@@ -374,10 +374,10 @@ public class TaskSchedulerTest {
                 "21-02-2021", "14-01-2021");
 
         ArrayList<Availability> testAvail2 = new ArrayList<>();
-        testAvail2.add(new Availability("15-02-2021", "1:00"));
-        testAvail2.add(new Availability("16-02-2021", "1:00"));
-        testAvail2.add(new Availability("17-02-2021", "1:00"));
-        testAvail2.add(new Availability("18-02-2021", "5:00"));
+        testAvail2.add(new Availability("15-02-2021", "11:00-12:00"));
+        testAvail2.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail2.add(new Availability("17-02-2021", "17:00-18:00"));
+        testAvail2.add(new Availability("18-02-2021", "11:50-16:50"));
         schedule.createSchedule();
         ArrayList<Availability> newAvail2 = schedule.getNewAvailability();
         for (Availability e : testAvail2) {

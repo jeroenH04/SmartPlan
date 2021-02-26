@@ -198,7 +198,7 @@ public class TaskScheduler {
     * @pre @code{availability.size() != 0}
     * @throws IllegalArgumentException if @code{availability.size() == 0}
      */
-    @RequiresApi(api = Build.VERSION_CODES.N) // needed to use .replace()
+    @RequiresApi(api = Build.VERSION_CODES.N) // needed for sort
     void createSchedule() {
         if (availabilityList.size() == 0) {
             throw new IllegalArgumentException("no availability has been set");
@@ -208,29 +208,23 @@ public class TaskScheduler {
             int neededTime = e.getTotalTime();
             int minimum = 10000;
             int index = -1;
-            String newTime = "";
+            int newTime = 0;
+            int timeUsed = 0;
             String bestDate = "";
             ArrayList<Task> tasksOnDate = new ArrayList<>();
 
             for (Availability avail : availabilityList) {
-                int timeDifference = getDurationMinutes(avail.getDuration()) - neededTime;
+                int timeDifference = getDurationMinutes(
+                        avail.getAvailableTimeInt(avail.getDuration())) - neededTime;
                 if (timeDifference >= 0 && timeDifference < minimum &&
                         compareDates(e.getDeadline(), avail.getDate())) {
                     bestDate = avail.getDate();
                     index = availabilityList.indexOf(avail);
-                    newTime = timeIntToString(timeDifference);
+                    newTime = timeDifference;
+                    timeUsed = neededTime;
                     minimum = timeDifference;
                 }
             }
-//            for (Map.Entry<String, String> entry : availability.entrySet()) {
-//                int timeDifference = getDurationMinutes(entry.getValue()) - neededTime;
-//                if (timeDifference >= 0 && timeDifference < minimum &&
-//                        compareDates(e.getDeadline(), entry.getKey())) {
-//                    bestDate = entry.getKey();
-//                    newTime = timeIntToString(timeDifference);
-//                    minimum = timeDifference;
-//                }
-//            }
             if (bestDate.equals("")) { // no date available
                 System.out.println("no date available for task: " + e.getName() + ":" + e.getDuration());
             } else {
@@ -241,8 +235,9 @@ public class TaskScheduler {
                 }
                 tasksOnDate.add(e);
                 schedule.put(bestDate, tasksOnDate);
-                Availability newAvail = new Availability(bestDate, newTime);
-                availabilityList.set(index,newAvail);
+                availabilityList.get(index).updateDuration(neededTime);
+              //  Availability newAvail = new Availability(bestDate, newTime);
+              //  availabilityList.set(index,newAvail);
             }
         }
         taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
