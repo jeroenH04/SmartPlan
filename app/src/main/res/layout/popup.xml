@@ -222,10 +222,11 @@
         android:background="#ffffff"
         android:ems="10"
         android:hint="  dd-mm-yyyy"
-        android:inputType="date"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="@+id/deadlineText"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/deadlineText"
         app:layout_constraintTop_toBottomOf="@+id/deadlineText" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,20 +2,28 @@ package com.example.agenda_app.ui.dashboard;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +32,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -74,15 +83,41 @@ public class DashboardFragment extends Fragment {
     }
 
     public void createNewTaskDialog() {
+        // Setup pop-up window
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this.getActivity());
         final View taskPopUpView = getLayoutInflater().inflate(R.layout.popup, null);
-
         Button newTaskSave = (Button) taskPopUpView.findViewById(R.id.saveButton);
         Button newTaskCancel = (Button) taskPopUpView.findViewById(R.id.cancelButton);
+        final EditText eText=(EditText) taskPopUpView.findViewById(R.id.newtask_deadline);
+
         dialogBuilder.setView(taskPopUpView);
         dialog = dialogBuilder.create();
-        dialog.show();
 
+        // Create date-picker for deadline
+        eText.setInputType(InputType.TYPE_NULL);
+        eText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                final NumberFormat f = new DecimalFormat("00");
+                // date picker dialog
+                DatePickerDialog picker = new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                eText.setText(f.format(dayOfMonth) + "-" + f.format(monthOfYear + 1) + "-" + year);
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
+
+        NumberPicker picker1;
+
+        dialog.show();
         newTaskSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,43 +130,43 @@ public class DashboardFragment extends Fragment {
                     EditText nameField = (EditText) taskPopUpView.findViewById(R.id.newtask_name);
                     final String name = nameField.getText().toString();
 
+                    // Get the tasks duration
+                    EditText durationField = (EditText) taskPopUpView.findViewById(R.id.newtask_duration);
+                    final String duration = durationField.getText().toString();
 
-                // Get the tasks duration
-                EditText durationField = (EditText) taskPopUpView.findViewById(R.id.newtask_duration);
-                final String duration = durationField.getText().toString();
+                    // Get the tasks deadline
+                    EditText deadlineField = (EditText) taskPopUpView.findViewById(R.id.newtask_deadline);
+                    final String deadline = deadlineField.getText().toString();
 
-                // Get the tasks deadline
-                EditText deadlineField = (EditText) taskPopUpView.findViewById(R.id.newtask_deadline);
-                final String deadline = deadlineField.getText().toString();
+                    // Get the tasks intensity
+                    RadioGroup intensityGroup = (RadioGroup) taskPopUpView.findViewById(R.id.intensityGroup);
+                    int selectedIdIntensity = intensityGroup.getCheckedRadioButtonId();
+                    RadioButton radioButtonIntens = (RadioButton) taskPopUpView.findViewById(selectedIdIntensity);
+                    final String intensity = (String) radioButtonIntens.getText();
 
-                // Get the tasks intensity
-                RadioGroup intensityGroup = (RadioGroup) taskPopUpView.findViewById(R.id.intensityGroup);
-                int selectedIdIntensity = intensityGroup.getCheckedRadioButtonId();
-                RadioButton radioButtonIntens = (RadioButton) taskPopUpView.findViewById(selectedIdIntensity);
-                final String intensity = (String) radioButtonIntens.getText();
+                    // Get the tasks intensity
+                    RadioGroup difficultyGroup = (RadioGroup) taskPopUpView.findViewById(R.id.difficultyGroup);
+                    int selectedIdDifficulty = difficultyGroup.getCheckedRadioButtonId();
+                    RadioButton radioButtonDiff = (RadioButton) taskPopUpView.findViewById(selectedIdDifficulty);
+                    final String difficulty = (String) radioButtonDiff.getText();
 
-                // Get the tasks intensity
-                RadioGroup difficultyGroup = (RadioGroup) taskPopUpView.findViewById(R.id.difficultyGroup);
-                int selectedIdDifficulty = difficultyGroup.getCheckedRadioButtonId();
-                RadioButton radioButtonDiff = (RadioButton) taskPopUpView.findViewById(selectedIdDifficulty);
-                final String difficulty = (String) radioButtonDiff.getText();
+                    // Add the task to the taskList
+                    scheduler.addTask(name, duration, intensity.toLowerCase(), difficulty.toLowerCase(), deadline, currentDate);
+                    System.out.println(scheduler.getTaskList());
 
-                // Add the task to the taskList
-                scheduler.addTask(name, duration, intensity.toLowerCase(), difficulty.toLowerCase(), deadline, currentDate);
-                System.out.println(scheduler.getTaskList());
-
-                // Update the taskList visualised in the dashboard fragment
-                final TextView taskList = getView().findViewById(R.id.taskList);
-                StringBuilder tasksString = new StringBuilder();
-                for (Task e : scheduler.getTaskList()) {
-                    if (!tasksString.toString().contains(e.getName())) {
-                        tasksString.append(e.getName()).append('\n');
+                    // Update the taskList visualised in the dashboard fragment
+                    final TextView taskList = getView().findViewById(R.id.taskList);
+                    taskList.setMovementMethod(new ScrollingMovementMethod());
+                    StringBuilder tasksString = new StringBuilder();
+                    for (Task e : scheduler.getTaskList()) {
+                        if (!tasksString.toString().contains(e.getName())) {
+                            tasksString.append(e.getName()).append('\n');
+                        }
                     }
-                }
-                taskList.setText(tasksString.toString());
+                    taskList.setText(tasksString.toString());
 
-                // Close pop-up window
-                dialog.dismiss();
+                    // Close pop-up window
+                    dialog.dismiss();
 
                 } catch (Exception e) {
                     if (e.getMessage().equals("name is not unique")) {
@@ -142,6 +177,7 @@ public class DashboardFragment extends Fragment {
                     } else {
                         alertView("All details should be filled in.");
                     }
+                    System.out.println(e);
                 }
             }
         });
