@@ -40,7 +40,7 @@ public class TaskScheduler {
     * @modifies taskList
     * @post
      */
-    void addTask(String name, String duration, String intensity, String difficulty,
+    public void addTask(String name, String duration, String intensity, String difficulty,
                  String deadline, String today) {
         // check if no parameter is null
         if (name == null || duration == null || intensity == null || difficulty == null ||
@@ -70,7 +70,7 @@ public class TaskScheduler {
      * @modifies taskList
      * @throws IllegalArgumentException if pre is violated
      */
-    void removeTask(String taskName) {
+    public void removeTask(String taskName) {
         for (Task e : taskList) {   // Loop over the task list to find the correct task
             if (e.getName().equals(taskName)) {
                 taskList.remove(e); // if task has been found, remove and stop
@@ -87,7 +87,7 @@ public class TaskScheduler {
      * @modifies schedule
      * @throws IllegalArgumentException if pre is violated
      */
-    void completeTask(String taskName) {
+    public void completeTask(String taskName) {
         for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue()) {
                 if (e.getName().equals(taskName)) {
@@ -109,7 +109,7 @@ public class TaskScheduler {
      * @modifies availabilityList
      * @post @code{availabilityList.contains(new Availability(date, time))}
      */
-    void addAvailability(String date, String time) { // i.e. "26-02-2021","8:00-16:00"
+    public void addAvailability(String date, String time) { // i.e. "26-02-2021","8:00-16:00"
         Availability avail = new Availability(date, time);
         availabilityList.add(avail);
     }
@@ -119,7 +119,7 @@ public class TaskScheduler {
      * @modifies availabilityList
      * @post @code{availabilityList.size() == 0}
      */
-    void clearAvailability() {
+    public void clearAvailability() {
         availabilityList.clear();
     }
 
@@ -132,7 +132,7 @@ public class TaskScheduler {
     * @throws IllegalArgumentException if pre is violated
     * @modifies relaxedIntensity, normalIntensity, intenseIntensity
      */
-    void setIntensity(int relaxed, int normal, int intense) {
+    public void setIntensity(int relaxed, int normal, int intense) {
         if (relaxed <= 0 || normal <= 0 || intense <= 0) {
             throw new IllegalArgumentException("intensity <= 0");
         }
@@ -149,7 +149,7 @@ public class TaskScheduler {
      * @modifies taskList
      * @post
      */
-    void checkIntensity(Task task) {
+    public void checkIntensity(Task task) {
         int numberOfTasks;
         int intensityNumber;
         String newDuration;
@@ -197,7 +197,7 @@ public class TaskScheduler {
     * @throws IllegalArgumentException if @code{availability.size() == 0}
      */
     @RequiresApi(api = Build.VERSION_CODES.N) // needed for sort
-    void createSchedule() {
+    public void createSchedule() {
         if (availabilityList.size() == 0) {
             throw new IllegalArgumentException("no availability has been set");
         }
@@ -269,7 +269,7 @@ public class TaskScheduler {
      * @param String today
      * @returns deadline > today
      */
-    boolean compareDates(String deadline, String today) {
+    public boolean compareDates(String deadline, String today) {
         int yearDifference = parseInt(deadline.substring(6))-parseInt(today.substring(6));
         int monthDifference = parseInt(deadline.substring(3,5))-parseInt(today.substring(3,5));
         int dayDifference = parseInt(deadline.substring(0,2))-parseInt(today.substring(0,2));
@@ -308,7 +308,7 @@ public class TaskScheduler {
      *
      * @returns Map<String, ArrayList<Task>> schedule
      */
-    Map<String, ArrayList<Task>> getSchedule() {
+    public Map<String, ArrayList<Task>> getSchedule() {
         return schedule;
     }
 
@@ -316,7 +316,7 @@ public class TaskScheduler {
      *
      * @returns ArrayList<Availability> availabilityList
      */
-    ArrayList<Availability> getNewAvailability() {
+    public ArrayList<Availability> getNewAvailability() {
         return availabilityList;
     }
 
@@ -324,6 +324,6 @@ public class TaskScheduler {
      *
      * @returns ArrayList<Task> taskList
      */
-    ArrayList<Task> getTaskList() { return taskList; }
+    public ArrayList<Task> getTaskList() { return taskList; }
 
 }
