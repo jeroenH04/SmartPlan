@@ -1,6 +1,9 @@
 package com.example.agenda_app.ui.dashboard;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +37,8 @@ public class DashboardFragment extends Fragment {
 
     private AlertDialog dialog;
 
+    TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         DashboardViewModel dashboardViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
@@ -56,13 +61,24 @@ public class DashboardFragment extends Fragment {
         return root;
     }
 
+    // Method to create alert
+    private void alertView( String message ) {
+        AlertDialog.Builder dialog2 = new AlertDialog.Builder(this.getActivity());
+        dialog2.setTitle( "Error!" )
+                .setIcon(R.drawable.ic_baseline_error_outline_24)
+                .setMessage(message)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                    }
+                }).show();
+    }
+
     public void createNewTaskDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this.getActivity());
         final View taskPopUpView = getLayoutInflater().inflate(R.layout.popup, null);
 
         Button newTaskSave = (Button) taskPopUpView.findViewById(R.id.saveButton);
         Button newTaskCancel = (Button) taskPopUpView.findViewById(R.id.cancelButton);
-
         dialogBuilder.setView(taskPopUpView);
         dialog = dialogBuilder.create();
         dialog.show();
@@ -70,16 +86,15 @@ public class DashboardFragment extends Fragment {
         newTaskSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // @TODO: This should be placed somewhere else..
-                TaskScheduler scheduler = new TaskScheduler();
-
                 // Get today's date
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                 String currentDate = sdf.format(new Date());
 
                 // Get the tasks name
-                EditText nameField = (EditText) taskPopUpView.findViewById(R.id.newtask_name);
-                final String name = nameField.getText().toString();
+                try {
+                    EditText nameField = (EditText) taskPopUpView.findViewById(R.id.newtask_name);
+                    final String name = nameField.getText().toString();
+
 
                 // Get the tasks duration
                 EditText durationField = (EditText) taskPopUpView.findViewById(R.id.newtask_duration);
@@ -101,18 +116,40 @@ public class DashboardFragment extends Fragment {
                 RadioButton radioButtonDiff = (RadioButton) taskPopUpView.findViewById(selectedIdDifficulty);
                 final String difficulty = (String) radioButtonDiff.getText();
 
+                // Add the task to the taskList
                 scheduler.addTask(name, duration, intensity.toLowerCase(), difficulty.toLowerCase(), deadline, currentDate);
                 System.out.println(scheduler.getTaskList());
 
-                //define save button
+                // Update the taskList visualised in the dashboard fragment
+                final TextView taskList = getView().findViewById(R.id.taskList);
+                StringBuilder tasksString = new StringBuilder();
+                for (Task e : scheduler.getTaskList()) {
+                    if (!tasksString.toString().contains(e.getName())) {
+                        tasksString.append(e.getName()).append('\n');
+                    }
+                }
+                taskList.setText(tasksString.toString());
+
+                // Close pop-up window
                 dialog.dismiss();
+
+                } catch (Exception e) {
+                    if (e.getMessage().equals("name is not unique")) {
+                        alertView("The task name should be unique");
+                    }
+                    else if (e.getMessage().equals("deadline <= today")) {
+                        alertView("The deadline cannot be in the past.");
+                    } else {
+                        alertView("All details should be filled in.");
+                    }
+                }
             }
         });
 
         newTaskCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //define cancel button
+                // Cancel pop-up
                 dialog.dismiss();
             }
         });
@@ -142,7 +179,6 @@ public class DashboardFragment extends Fragment {
                     normal.setBackgroundColor(Color.WHITE);
                     relaxed.setBackgroundColor(Color.WHITE);
                 }
-
             }
         });
 
@@ -175,4 +211,6 @@ public class DashboardFragment extends Fragment {
             }
         });
     }
+
+
 }
