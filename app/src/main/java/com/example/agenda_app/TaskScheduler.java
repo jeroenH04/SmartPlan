@@ -71,13 +71,18 @@ public class TaskScheduler {
      * @throws IllegalArgumentException if pre is violated
      */
     public void removeTask(String taskName) {
+        ArrayList<Task> toBeRemoved = new ArrayList<>(); // list of tasks that need to be removed
         for (Task e : taskList) {   // Loop over the task list to find the correct task
             if (e.getName().equals(taskName)) {
-                taskList.remove(e); // if task has been found, remove and stop
-                return;
+                toBeRemoved.add(e);
             }
         }
-        throw new IllegalArgumentException("There exists no task in the tasklist with this name");
+        if (toBeRemoved.size() == 0) {
+            throw new IllegalArgumentException("There exists no task in the tasklist with this name");
+        }
+        for (Task e : toBeRemoved) {
+            taskList.remove(e);
+        }
     }
 
     /* Remove task from schedule

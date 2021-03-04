@@ -27,6 +27,7 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -50,6 +51,8 @@ public class DashboardFragment extends Fragment {
 
     private AlertDialog dialog;
     private int prevBtnID;
+    private int buttonCount;
+    private ArrayList<Integer> buttonArrayList = new ArrayList<>();
 
 
     TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
@@ -77,8 +80,8 @@ public class DashboardFragment extends Fragment {
 
     // Method to create alert pop-up
     private void alertView( String message ) {
-        AlertDialog.Builder dialog2 = new AlertDialog.Builder(this.getActivity());
-        dialog2.setTitle( "Error!" )
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
+        alertDialog.setTitle( "Error!" )
                 .setIcon(R.drawable.ic_baseline_error_outline_24)
                 .setMessage(message)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -88,19 +91,40 @@ public class DashboardFragment extends Fragment {
     }
 
     // Method to create info pop-up for task
-    private void infoView( String name, String duration, String deadline, String intensity, String difficulty ) {
-        AlertDialog.Builder dialog2 = new AlertDialog.Builder(this.getActivity());
-        dialog2.setTitle( name.toUpperCase() )
+    private void infoView(final String name, String duration, String deadline, String intensity,
+                          String difficulty, final ConstraintLayout layout, final Button button, final ConstraintSet set ) {
+        AlertDialog.Builder infoDialog = new AlertDialog.Builder(this.getActivity());
+        infoDialog.setTitle( name.toUpperCase() )
                 .setIcon(R.drawable.ic_baseline_info_24)
                 .setMessage("The duration of this task is: " + duration + '\n' +
                             "The deadline of this task is: " + deadline + '\n' +
                             "Intensity is set to: " + intensity + '\n' +
-                            "difficulty is set to: " + difficulty + '\n'
+                            "difficulty is set to: " + difficulty + '\n' + button.getId()
                 )
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
                     }
-                }).show();
+                });
+        infoDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        System.out.println(scheduler.getTaskList().size());
+                        scheduler.removeTask(name); // remove the task from the task list
+                        System.out.println(scheduler.getTaskList().size());
+                        layout.removeView(button); // remove the button
+//                        buttonArrayList.remove(new Integer(button.getId()));
+//                        --buttonCount; // decrease the button counter
+//                        for (int btnID : buttonArrayList) {
+//                            System.out.println(btnID);
+//                            set.connect(btnID, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 150 );
+//                            set.connect(button.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+//                            set.connect(button.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+//                            set.constrainHeight(button.getId(), 100);
+//                            set.applyTo(layout);
+//                        }
+
+                    }
+                });
+        infoDialog.show();
     }
 
     public void createNewTaskDialog() {
@@ -187,38 +211,33 @@ public class DashboardFragment extends Fragment {
 //                    taskList.setText(tasksString.toString());
 
                     // Find the dashboard layout
-                    ConstraintLayout layout = (ConstraintLayout) getView().findViewById(R.id.dashboard_layout);
-                    ConstraintSet set = new ConstraintSet();
+                    final ConstraintLayout layout = (ConstraintLayout) getView().findViewById(R.id.dashboard_layout);
+                    final ConstraintSet set = new ConstraintSet();
                     set.clone(layout);
 
                     // Create new button for the task
                     final Button button = new Button(getActivity());
                     button.setText(name);
-                    Drawable img = button.getContext().getResources().getDrawable( R.drawable.ic_baseline_info_24 );
+                    @SuppressLint("UseCompatLoadingForDrawables") Drawable img = button.getContext().getDrawable( R.drawable.ic_baseline_info_24 );
                     button.setCompoundDrawablesWithIntrinsicBounds(null, null, img,null);
                     button.setId(name.hashCode()); // get unique ID from name
-
+                    buttonArrayList.add(button.getId());
                     button.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            infoView(name, duration, deadline, intensity, difficulty);
+                            infoView(name, duration, deadline, intensity, difficulty, layout, button, set);
                         }
                     });
 
-
-
                     layout.addView(button);
-                    if (prevBtnID == 0) { // if this is the first button, place at top
-                        set.connect(button.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 150);
-                    } else { // else place it under the previous button
-                        set.connect(button.getId(), ConstraintSet.TOP, prevBtnID, ConstraintSet.TOP, 75);
-                    }
+                    set.connect(button.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 150+buttonCount*75);
                     set.connect(button.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
                     set.connect(button.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
                     set.constrainHeight(button.getId(), 100);
                     prevBtnID = button.getId();
-                    set.applyTo(layout);
 
+                    set.applyTo(layout);
+                    ++buttonCount;
                     // Close pop-up window
                     dialog.dismiss();
 
