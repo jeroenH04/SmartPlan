@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
@@ -48,6 +49,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class DashboardFragment extends Fragment {
 
     private AlertDialog dialog;
+    private int prevBtnID;
+
 
     TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
 
@@ -78,6 +81,22 @@ public class DashboardFragment extends Fragment {
         dialog2.setTitle( "Error!" )
                 .setIcon(R.drawable.ic_baseline_error_outline_24)
                 .setMessage(message)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                    }
+                }).show();
+    }
+
+    // Method to create info pop-up for task
+    private void infoView( String name, String duration, String deadline, String intensity, String difficulty ) {
+        AlertDialog.Builder dialog2 = new AlertDialog.Builder(this.getActivity());
+        dialog2.setTitle( name.toUpperCase() )
+                .setIcon(R.drawable.ic_baseline_info_24)
+                .setMessage("The duration of this task is: " + duration + '\n' +
+                            "The deadline of this task is: " + deadline + '\n' +
+                            "Intensity is set to: " + intensity + '\n' +
+                            "difficulty is set to: " + difficulty + '\n'
+                )
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
                     }
@@ -130,7 +149,7 @@ public class DashboardFragment extends Fragment {
                 // Get the tasks name
                 try {
                     EditText nameField = (EditText) taskPopUpView.findViewById(R.id.newtask_name);
-                    final String name = nameField.getText().toString();
+                    final String name = nameField.getText().toString().toLowerCase();
 
                     // Get the tasks duration
                     EditText durationField = (EditText) taskPopUpView.findViewById(R.id.newtask_duration);
@@ -157,15 +176,49 @@ public class DashboardFragment extends Fragment {
                     System.out.println(scheduler.getTaskList());
 
                     // Update the taskList visualised in the dashboard fragment
-                    final TextView taskList = getView().findViewById(R.id.taskList);
-                    taskList.setMovementMethod(new ScrollingMovementMethod());
-                    StringBuilder tasksString = new StringBuilder();
-                    for (Task e : scheduler.getTaskList()) {
-                        if (!tasksString.toString().contains(e.getName())) {
-                            tasksString.append(e.getName()).append('\n');
+//                    final TextView taskList = getView().findViewById(R.id.taskList);
+//                    taskList.setMovementMethod(new ScrollingMovementMethod());
+//                    StringBuilder tasksString = new StringBuilder();
+//                    for (Task e : scheduler.getTaskList()) {
+//                        if (!tasksString.toString().contains(e.getName())) {
+//                            tasksString.append(e.getName()).append('\n');
+//                        }
+//                    }
+//                    taskList.setText(tasksString.toString());
+
+                    // Find the dashboard layout
+                    ConstraintLayout layout = (ConstraintLayout) getView().findViewById(R.id.dashboard_layout);
+                    ConstraintSet set = new ConstraintSet();
+                    set.clone(layout);
+
+                    // Create new button for the task
+                    final Button button = new Button(getActivity());
+                    button.setText(name);
+                    Drawable img = button.getContext().getResources().getDrawable( R.drawable.ic_baseline_info_24 );
+                    button.setCompoundDrawablesWithIntrinsicBounds(null, null, img,null);
+                    button.setId(name.hashCode()); // get unique ID from name
+
+                    button.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            infoView(name, duration, deadline, intensity, difficulty);
                         }
+                    });
+
+
+
+                    layout.addView(button);
+                    if (prevBtnID == 0) { // if this is the first button, place at top
+                        set.connect(button.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 150);
+                    } else { // else place it under the previous button
+                        set.connect(button.getId(), ConstraintSet.TOP, prevBtnID, ConstraintSet.TOP, 75);
                     }
-                    taskList.setText(tasksString.toString());
+                    set.connect(button.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0);
+                    set.connect(button.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+                    set.constrainHeight(button.getId(), 100);
+                    prevBtnID = button.getId();
+                    set.applyTo(layout);
+
                     // Close pop-up window
                     dialog.dismiss();
 

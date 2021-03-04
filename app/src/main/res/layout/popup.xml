@@ -86,6 +86,20 @@
         app:layout_constraintTop_toBottomOf="@+id/difficultyGroup"
         app:layout_constraintVertical_bias="0.042" />
 
+    <EditText
+        android:id="@+id/newtask_deadline"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="4dp"
+        android:background="#ffffff"
+        android:ems="10"
+        android:hint="  dd-mm-yyyy"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="@+id/deadlineText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/deadlineText"
+        app:layout_constraintTop_toBottomOf="@+id/deadlineText" />
+
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
@@ -207,6 +221,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="  hh:mm"
+        android:maxLength="5"
         android:inputType="time"
         android:background="#ffffff"
         app:layout_constraintEnd_toEndOf="@+id/timeText"
@@ -214,19 +229,6 @@
         app:layout_constraintStart_toStartOf="@+id/timeText"
         app:layout_constraintTop_toBottomOf="@+id/timeText" />
 
-    <EditText
-        android:id="@+id/newtask_deadline"
-        android:layout_width="300dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="4dp"
-        android:background="#ffffff"
-        android:ems="10"
-        android:hint="  dd-mm-yyyy"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="@+id/deadlineText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/deadlineText"
-        app:layout_constraintTop_toBottomOf="@+id/deadlineText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
