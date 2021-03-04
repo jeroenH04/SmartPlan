@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SplashActivity extends Activity {
     Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final FirebaseAuth fAuth;
+        fAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashfile);
 
@@ -16,8 +21,13 @@ public class SplashActivity extends Activity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent=new Intent(SplashActivity.this,Authentication.class);
-                startActivity(intent);
+                if(fAuth.getCurrentUser() == null) {
+                    Intent intent = new Intent(SplashActivity.this, Authentication.class);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
                 finish();
             }
         },3000);

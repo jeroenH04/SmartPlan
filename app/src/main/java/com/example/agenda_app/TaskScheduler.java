@@ -9,19 +9,14 @@ import java.util.Map;
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
-    // Initialize ArrayList containing all tasks to be scheduled
+    // Initialize arraylist containing all tasks to be scheduled
     private final ArrayList<Task> taskList = new ArrayList<>();
 
-    // Initialize ArrayList containing all availability of user
-    private final ArrayList<Availability> availabilityList = new ArrayList<>();
+    // Initialize map containing availability ("date","hours")
+    private final Map<String, String> availability = new HashMap<>();
 
-    // Initialize map containing schedule (date,ArrayList<Task>)
+    // Initialize map containing schedule ("date",tasks)
     private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
-
-    // Default intensity in minutes of different modes
-    private int relaxedIntensity = 120;
-    private int normalIntensity = 240;
-    private int intenseIntensity = 480;
 
     /*
     * Add task to the schedule
@@ -40,7 +35,7 @@ public class TaskScheduler {
     * @modifies taskList
     * @post
      */
-    public void addTask(String name, String duration, String intensity, String difficulty,
+    void addTask(String name, String duration, String intensity, String difficulty,
                  String deadline, String today) {
         // check if no parameter is null
         if (name == null || duration == null || intensity == null || difficulty == null ||
@@ -70,19 +65,14 @@ public class TaskScheduler {
      * @modifies taskList
      * @throws IllegalArgumentException if pre is violated
      */
-    public void removeTask(String taskName) {
-        ArrayList<Task> toBeRemoved = new ArrayList<>(); // list of tasks that need to be removed
+    void removeTask(String taskName) {
         for (Task e : taskList) {   // Loop over the task list to find the correct task
-            if (e.getName().equals(taskName)) {
-                toBeRemoved.add(e);
+            if (e.name.equals(taskName)) {
+                taskList.remove(e);
+                return;
             }
         }
-        if (toBeRemoved.size() == 0) {
-            throw new IllegalArgumentException("There exists no task in the tasklist with this name");
-        }
-        for (Task e : toBeRemoved) {
-            taskList.remove(e);
-        }
+        throw new IllegalArgumentException("There exists no task in the tasklist with this name");
     }
 
     /* Remove task from schedule
@@ -92,13 +82,13 @@ public class TaskScheduler {
      * @modifies schedule
      * @throws IllegalArgumentException if pre is violated
      */
-    public void completeTask(String taskName) {
+    void completeTask(String taskName) {
         for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue()) {
-                if (e.getName().equals(taskName)) {
-                    entry.getValue().remove(e); // remove task from the array
-                    if (entry.getValue().isEmpty()) { // check if the array is now empty
-                        schedule.remove(entry.getKey()); // remove date in schedule
+                if (e.name.equals(taskName)) {
+                    entry.getValue().remove(e);
+                    if (entry.getValue().isEmpty()) {
+                        schedule.remove(entry.getKey());
                     }
                     return;
                 }
@@ -107,43 +97,17 @@ public class TaskScheduler {
         throw new IllegalArgumentException("There exists no task in the schedule with this name");
     }
 
-    /* Add availability of user
-     *
-     * @param String date, date of availability
-     * @param String time, time of availability
-     * @modifies availabilityList
-     * @post @code{availabilityList.contains(new Availability(date, time))}
-     */
-    public void addAvailability(String date, String time) { // i.e. "26-02-2021","8:00-16:00"
-        Availability avail = new Availability(date, time);
-        availabilityList.add(avail);
+    void updateSchedule() {
     }
 
-    /* Clear availability of user
+    /* Set availability of user
      *
-     * @modifies availabilityList
-     * @post @code{availabilityList.size() == 0}
+     * @param Map<String, String> input, map containing availability per day
      */
-    public void clearAvailability() {
-        availabilityList.clear();
-    }
-
-    /* Set the intensity of the different modes
-    *
-    * @param integer relaxed, duration for relaxed mode in hours
-    * @param integer normal, duration for normal mode in hours
-    * @param integer intense, duration for intense mode in hours
-    * @pre @code{relaxed > 0 && normal > 0 && intense > 0}
-    * @throws IllegalArgumentException if pre is violated
-    * @modifies relaxedIntensity, normalIntensity, intenseIntensity
-     */
-    public void setIntensity(int relaxed, int normal, int intense) {
-        if (relaxed <= 0 || normal <= 0 || intense <= 0) {
-            throw new IllegalArgumentException("intensity <= 0");
+    void setAvailability(Map<String, String> input) {
+        for (Map.Entry<String, String> entry : input.entrySet()) {
+            availability.put(entry.getKey(), entry.getValue());
         }
-        this.relaxedIntensity = relaxed * 60;
-        this.normalIntensity = normal * 60;
-        this.intenseIntensity = intense * 60;
     }
 
     /* Check intensity of task and split it into smaller tasks
@@ -154,41 +118,40 @@ public class TaskScheduler {
      * @modifies taskList
      * @post
      */
-    public void checkIntensity(Task task) {
+    void checkIntensity(Task task) {
         int numberOfTasks;
         int intensityNumber;
         String newDuration;
         Task newTask;
-        switch (task.getIntensity()) {
+        switch (task.intensity) {
             case "relaxed":
-                intensityNumber = relaxedIntensity;
+                intensityNumber = 120; // 2 hours
                 break;
             case "normal":
-                intensityNumber = normalIntensity;
+                intensityNumber = 240; // 4 hours
                 break;
             case "intense":
-                intensityNumber = intenseIntensity;
+                intensityNumber = 480; // 8 hours
                 break;
             default:
                 return;
         }
         // calculate the new number of tasks
-        numberOfTasks = (int) Math.ceil(getDurationMinutes(task.getDuration()) /
+        numberOfTasks = (int) Math.ceil(getDurationMinutes(task.duration) /
                 (double) intensityNumber);
         for (int i = 1; i <= numberOfTasks; ++i) {
             if (i < numberOfTasks) {
                 // the new duration of the first tasks is in correspondence to the intensity
                 newDuration = timeIntToString(intensityNumber);
-                newTask = new Task(task.getName(), newDuration, task.getIntensity(),
-                        task.getDifficulty(), task.getDeadline(), task.getToday(), intensityNumber);
+                newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                        task.deadline, task.today, intensityNumber);
             }
             else {
                 // the new duration of the last task is the remaining time (time < intensity)
-                newDuration = timeIntToString(getDurationMinutes(task.getDuration()) %
-                        intensityNumber);
-                newTask = new Task(task.getName(), newDuration, task.getIntensity(),
-                        task.getDifficulty(), task.getDeadline(), task.getToday(),
-                        getDurationMinutes(task.getDuration()) % intensityNumber);
+                newDuration = timeIntToString(getDurationMinutes(task.duration) % intensityNumber);
+                newTask = new Task(task.name, newDuration, task.intensity, task.difficulty,
+                        task.deadline, task.today,
+                        getDurationMinutes(task.duration) % intensityNumber);
             }
             taskList.add(newTask); // add the new task to the task list
         }
@@ -201,41 +164,40 @@ public class TaskScheduler {
     * @pre @code{availability.size() != 0}
     * @throws IllegalArgumentException if @code{availability.size() == 0}
      */
-    @RequiresApi(api = Build.VERSION_CODES.N) // needed for sort
-    public void createSchedule() {
-        if (availabilityList.size() == 0) {
+    @RequiresApi(api = Build.VERSION_CODES.N) // needed to use .replace()
+    void createSchedule() {
+        if (availability.size() == 0) {
             throw new IllegalArgumentException("no availability has been set");
         }
         taskList.sort(new DeadlineSorter()); // sort the task list on deadline
-        // Loop over all tasks in the task list and compare it to all days in the availability
+        System.out.println(taskList);
         for (Task e : taskList) {
-            int neededTime = e.getTotalTime();
+            int neededTime = e.totalTime;
             int minimum = 10000;
-            int index = -1;
+            String newTime = "";
             String bestDate = "";
             ArrayList<Task> tasksOnDate = new ArrayList<>();
 
-            for (Availability avail : availabilityList) {
-                int timeDifference = getDurationMinutes(
-                        avail.getAvailableTimeInt(avail.getDuration())) - neededTime;
+            for (Map.Entry<String, String> entry : availability.entrySet()) {
+                int timeDifference = getDurationMinutes(entry.getValue()) - neededTime;
                 if (timeDifference >= 0 && timeDifference < minimum &&
-                        compareDates(e.getDeadline(), avail.getDate())) { // get the min. difference
-                    bestDate = avail.getDate();
-                    index = availabilityList.indexOf(avail);
+                        compareDates(e.deadline, entry.getKey())) {
+                    bestDate = entry.getKey();
+                    newTime = timeIntToString(timeDifference);
                     minimum = timeDifference;
                 }
             }
             if (bestDate.equals("")) { // no date available
-                System.out.println("no date available for task: " + e.getName() + ":" + e.getDuration());
+                System.out.println("no date available for task: " + e.name + ":" + e.duration);
             } else {
                 // Check if there is already a task planned for this date, if so, add the task
-                // to the existing ArrayList
+                // to the existing arraylist
                 if (schedule.containsKey(bestDate)) {
                     tasksOnDate = schedule.get(bestDate);
                 }
-                tasksOnDate.add(e); // add the task to the ArrayList
-                schedule.put(bestDate, tasksOnDate); // add the updated ArrayList to the schedule
-                availabilityList.get(index).updateDuration(neededTime); // update the availability
+                tasksOnDate.add(e);
+                schedule.put(bestDate, tasksOnDate);
+                availability.replace(bestDate, newTime);
             }
         }
         taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
@@ -244,17 +206,11 @@ public class TaskScheduler {
     /*
      * Get the total time of a task in minutes
      *
-     * @param String duration ("hh:mm")
-     * @pre mm < 60
-     * @throws IllegalArgument if pre is violated
-     * @returns int totalDuration
+     * @param String duration
      */
     int getDurationMinutes(String duration) {
         int totalHours = parseInt(duration.substring(0,duration.indexOf(":")));
         int totalMinutes = parseInt(duration.substring(duration.indexOf(":")+1));
-        if (totalMinutes >= 60) {
-            throw new IllegalArgumentException("minutes >= 60");
-        }
         return totalHours * 60 + totalMinutes;
     }
 
@@ -280,7 +236,7 @@ public class TaskScheduler {
      * @param String today
      * @returns deadline > today
      */
-    public boolean compareDates(String deadline, String today) {
+    boolean compareDates(String deadline, String today) {
         int yearDifference = parseInt(deadline.substring(6))-parseInt(today.substring(6));
         int monthDifference = parseInt(deadline.substring(3,5))-parseInt(today.substring(3,5));
         int dayDifference = parseInt(deadline.substring(0,2))-parseInt(today.substring(0,2));
@@ -301,13 +257,13 @@ public class TaskScheduler {
             throw new NullPointerException("precondition is validated");
         }
         for (Task e: taskList) {
-            if (e.getName().equals(taskName)) {
+            if (e.name.equals(taskName)) {
                 return false;
             }
         }
         for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue()) {
-                if (e.getName().equals(taskName)) {
+                if (e.name.equals(taskName)) {
                     return false;
                 }
             }
@@ -319,22 +275,22 @@ public class TaskScheduler {
      *
      * @returns Map<String, ArrayList<Task>> schedule
      */
-    public Map<String, ArrayList<Task>> getSchedule() {
+    Map<String, ArrayList<Task>> getSchedule() {
         return schedule;
     }
 
     /* Get updated availability
      *
-     * @returns ArrayList<Availability> availabilityList
+     * @returns Map<String, String> availability
      */
-    public ArrayList<Availability> getNewAvailability() {
-        return availabilityList;
+    Map<String, String> getNewAvailability() {
+        return availability;
     }
 
     /* Get task taskList
      *
      * @returns ArrayList<Task> taskList
      */
-    public ArrayList<Task> getTaskList() { return taskList; }
+    ArrayList<Task> getTaskList() { return taskList; }
 
 }

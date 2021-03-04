@@ -2,62 +2,57 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:orientation="vertical"
-    android:outlineProvider="none">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Task"
+        android:text="Task Name"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/newtask_name"
-        android:layout_width="300dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:background="#ffffff"
-        android:gravity="start"
-        android:hint="  name"
+        android:id="@+id/newcontactpopup_firstname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:hint="Task"
         android:singleLine="true"
+        android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/task"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/task"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/task" />
 
     <TextView
         android:id="@+id/timeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="Estimated Time Needed"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/newtask_name"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/newtask_name"
-        app:layout_constraintTop_toBottomOf="@+id/newtask_name" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newcontactpopup_firstname" />
 
     <TextView
         android:id="@+id/IntensityText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Intensity"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/newtask_duration"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/newtask_duration"
-        app:layout_constraintTop_toBottomOf="@+id/newtask_duration" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTime" />
 
     <TextView
         android:id="@+id/DifficultyText"
@@ -67,11 +62,11 @@
         android:text="Difficulty"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/intensityGroup"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/intensityGroup"
-        app:layout_constraintTop_toBottomOf="@+id/intensityGroup"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="0.146" />
 
     <TextView
         android:id="@+id/deadlineText"
@@ -80,25 +75,11 @@
         android:text="Deadline"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/difficultyGroup"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/difficultyGroup"
-        app:layout_constraintTop_toBottomOf="@+id/difficultyGroup"
-        app:layout_constraintVertical_bias="0.042" />
-
-    <EditText
-        android:id="@+id/newtask_deadline"
-        android:layout_width="300dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="4dp"
-        android:background="#ffffff"
-        android:ems="10"
-        android:hint="  dd-mm-yyyy"
-        android:focusable="false"
-        app:layout_constraintEnd_toEndOf="@+id/deadlineText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/deadlineText"
-        app:layout_constraintTop_toBottomOf="@+id/deadlineText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup2"
+        app:layout_constraintVertical_bias="0.072" />
 
     <Button
         android:id="@+id/saveButton"
@@ -106,11 +87,11 @@
         android:layout_height="wrap_content"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/newtask_deadline"
-        app:layout_constraintHorizontal_bias="0.117"
-        app:layout_constraintStart_toStartOf="@+id/difficultyGroup"
-        app:layout_constraintTop_toBottomOf="@+id/newtask_deadline"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.266"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDate"
+        app:layout_constraintVertical_bias="0.686" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -118,21 +99,20 @@
         android:layout_height="wrap_content"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/newtask_deadline"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/newtask_deadline"
-        app:layout_constraintTop_toBottomOf="@+id/newtask_deadline"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.764"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDate"
+        app:layout_constraintVertical_bias="0.686" />
 
     <RadioGroup
-        android:id="@+id/intensityGroup"
-        android:layout_width="300dp"
+        android:id="@+id/radioGroup"
+        android:layout_width="339dp"
         android:layout_height="35dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="14dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/IntensityText"
-        app:layout_constraintHorizontal_bias="0.004"
-        app:layout_constraintStart_toStartOf="@+id/IntensityText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/IntensityText">
 
         <RadioButton
@@ -140,44 +120,31 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Relaxed"
-            android:background="#ffffff"
-            android:button="@null"
-            android:gravity="center"
-            android:checked="false"/>
+            android:text="Relaxed" />
 
         <RadioButton
             android:id="@+id/normalBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Normal"
-            android:background="@color/colorAccent"
-            android:button="@null"
-            android:gravity="center"
-            android:checked="true" />
+            android:text="Normal" />
 
         <RadioButton
             android:id="@+id/intenseBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Intense"
-            android:background="#ffffff"
-            android:button="@null"
-            android:gravity="center"
-            android:checked="false" />
+            android:text="Intense" />
     </RadioGroup>
 
     <RadioGroup
-        android:id="@+id/difficultyGroup"
-        android:layout_width="300dp"
+        android:id="@+id/radioGroup2"
+        android:layout_width="339dp"
         android:layout_height="35dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="7dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/DifficultyText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/DifficultyText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DifficultyText">
 
         <RadioButton
@@ -185,50 +152,50 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Easy"
-            android:background="#ffffff"
-            android:button="@null"
-            android:gravity="center"
-            android:checked="false" />
+            android:text="Easy" />
 
         <RadioButton
             android:id="@+id/mediumBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Medium"
-            android:background="@color/colorAccent"
-            android:button="@null"
-            android:gravity="center"
-            android:checked="true"  />
+            android:text="Medium" />
 
         <RadioButton
             android:id="@+id/hardBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Hard"
-            android:background="#ffffff"
-            android:button="@null"
-            android:gravity="center"
-            android:checked="false" />
+            android:text="Hard" />
     </RadioGroup>
 
     <EditText
-        android:id="@+id/newtask_duration"
-        android:layout_width="300dp"
-        android:layout_height="30dp"
+        android:id="@+id/editTextTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:hint="hour:minutes"
         android:ems="10"
-        android:hint="  hh:mm"
-        android:maxLength="5"
         android:inputType="time"
-        android:background="#ffffff"
-        app:layout_constraintEnd_toEndOf="@+id/timeText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/timeText"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timeText" />
+
+    <EditText
+        android:id="@+id/editTextDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="dd/mm/yyyy"
+        android:inputType="date"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deadlineText" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
