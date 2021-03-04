@@ -174,7 +174,7 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getTaskList().size(), 0);
     }
 
-    /** Test remove task with 1 task **/
+    /** Test remove task with 2 tasks **/
     @Test()
     public void testRemoveTask2() {
         schedule.addTask("task1", "2:30","a","b",
@@ -192,6 +192,16 @@ public class TaskSchedulerTest {
     public void testRemoveTask3() {
         schedule.removeTask("task");
         fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    /** Test remove task with 1 task that is split into smaller tasks **/
+    @Test()
+    public void testRemoveTask5() {
+        schedule.addTask("task1", "16:00","relaxed","b",
+                "08-02-2020", "18-01-2020");
+        assertEquals(schedule.getTaskList().size(), 8);
+        schedule.removeTask("task1");
+        assertEquals(schedule.getTaskList().size(), 0);
     }
 
     /** Test complete task with 1 task **/
