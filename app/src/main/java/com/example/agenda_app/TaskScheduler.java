@@ -239,11 +239,17 @@ public class TaskScheduler {
     /*
      * Get the total time of a task in minutes
      *
-     * @param String duration
+     * @param String duration ("hh:mm")
+     * @pre mm < 60
+     * @throws IllegalArgument if pre is violated
+     * @returns int totalDuration
      */
     int getDurationMinutes(String duration) {
         int totalHours = parseInt(duration.substring(0,duration.indexOf(":")));
         int totalMinutes = parseInt(duration.substring(duration.indexOf(":")+1));
+        if (totalMinutes >= 60) {
+            throw new IllegalArgumentException("minutes >= 60");
+        }
         return totalHours * 60 + totalMinutes;
     }
 
