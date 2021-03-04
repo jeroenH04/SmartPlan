@@ -23,6 +23,13 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getDurationMinutes("0:01"), 1);
     }
 
+    /** Test get duration of tasks: pre is violated **/
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetDurationMinutes2() {
+        schedule.getDurationMinutes("00:60");
+        fail("should have thrown" + IllegalArgumentException.class);
+    }
+
     /** Test get string value of integer time **/
     @Test()
     public void testTimeIntToString() {
