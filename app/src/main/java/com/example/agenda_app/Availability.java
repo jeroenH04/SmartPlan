@@ -86,6 +86,7 @@ public class Availability {
                 totalHours2 + ":" + totalMinutesString2; // update duration
     }
 
+
     @Override
     public String toString() {
         return "[ date=" + date + ", duration=" + duration + "]";

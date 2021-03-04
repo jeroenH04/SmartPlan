@@ -22,13 +22,14 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getDurationMinutes("5:11"), 311);
         assertEquals(schedule.getDurationMinutes("0:01"), 1);
     }
-
+    
     /** Test get duration of tasks: pre is violated **/
     @Test(expected = IllegalArgumentException.class)
     public void testGetDurationMinutes2() {
         schedule.getDurationMinutes("00:60");
         fail("should have thrown" + IllegalArgumentException.class);
     }
+
 
     /** Test get string value of integer time **/
     @Test()
@@ -238,14 +239,13 @@ public class TaskSchedulerTest {
         schedule.completeTask("task2");
         assertEquals(schedule.getSchedule().size(), 0);
     }
-
     /** Test complete task with invalid task name**/
     @Test(expected = IllegalArgumentException.class)
     public void testCompleteTask3() {
         schedule.completeTask("task");
         fail("should have thrown "+ IllegalArgumentException.class);
     }
-
+    
     /** Test add availability **/
     @Test()
     public void testAddAvailability() {
@@ -282,6 +282,7 @@ public class TaskSchedulerTest {
         schedule.addAvailability("20-02-2021", "8:00-16:00");
     }
 
+
     void showCreatedSchedule() {
         Map<String, ArrayList<Task>> createdSchedule = schedule.getSchedule();
         for (Map.Entry<String, ArrayList<Task>> entry : createdSchedule.entrySet()) {
@@ -311,6 +312,7 @@ public class TaskSchedulerTest {
         }
     }
 
+
     /** Test of creating optimal schedule with 2 tasks **/
     @Test()
     public void testCreateSchedule2() {
@@ -332,7 +334,7 @@ public class TaskSchedulerTest {
             assertEquals(e.getDuration(), newAvail.get(index).getDuration());
         }
     }
-
+    
     /** Test of creating optimal schedule with 3 tasks **/
     @Test()
     public void testCreateSchedule3() {
@@ -356,6 +358,7 @@ public class TaskSchedulerTest {
             assertEquals(e.getDuration(), newAvail.get(index).getDuration());
         }
     }
+
 
     /** Test of creating optimal schedule with no set availability **/
     @Test(expected = IllegalArgumentException.class)
@@ -403,7 +406,7 @@ public class TaskSchedulerTest {
             assertEquals(e.getDuration(), newAvail2.get(index).getDuration());
         }
     }
-
+    
     /** Test of creating optimal schedule with 2 tasks on same day **/
     @Test()
     public void testCreateSchedule6() {
@@ -425,7 +428,7 @@ public class TaskSchedulerTest {
             assertEquals(e.getDuration(), newAvail.get(index).getDuration());
         }
     }
-
+    
     /** Test of intensity setter, invalid pre **/
     @Test(expected = IllegalArgumentException.class)
     public void testSetIntensity() {
@@ -483,7 +486,7 @@ public class TaskSchedulerTest {
                 "16-02-2021", "14-01-2021");
         assertEquals(schedule.getTaskList().size(), 2);
     }
-
+    
     /** Test of intensity checker: set intensity**/
     @Test()
     public void testIntensityChecker7() {
@@ -492,6 +495,7 @@ public class TaskSchedulerTest {
                 "16-02-2021", "14-01-2021");
         assertEquals(schedule.getTaskList().size(), 16);
     }
+
 
     /** Test of deadline sorter **/
     @Test()

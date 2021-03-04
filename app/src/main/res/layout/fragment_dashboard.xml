@@ -7,8 +7,7 @@
     android:id="@+id/dashboard_layout"
     android:background="@color/colorPrimary"
     tools:context=".ui.dashboard.DashboardFragment">
-
-
+    
     <TextView
         android:id="@+id/taskList"
         android:layout_width="wrap_content"
@@ -26,6 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.095" />
+
 
     <TextView
         android:id="@+id/text_dashboard"
@@ -53,7 +53,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.975" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-

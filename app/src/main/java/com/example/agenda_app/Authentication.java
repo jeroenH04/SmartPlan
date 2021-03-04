@@ -23,6 +23,7 @@ public class Authentication extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Authentication.this, Login.class));
+                finish();
             }
         });
 
@@ -32,6 +33,7 @@ public class Authentication extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Authentication.this,Register.class));
+                finish();
             }
         });
     }
