@@ -95,6 +95,27 @@ public class SettingsFragment extends Fragment {
                 }).show();
     }
 
+    // Method to create alert for deletion pop-up
+    private void alertDeleteView(final View availabilityPopUpView) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
+        alertDialog.setTitle( "Confirm Deletion" )
+                .setIcon(R.drawable.ic_baseline_error_outline_24)
+                .setMessage("Are you sure you want to permanently delete all your availability?")
+                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                    }
+                });
+        alertDialog.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void onClick(DialogInterface dialoginterface, int i) {
+                scheduler.clearAvailability(); // clear the tasklist
+                drawAvailability(availabilityPopUpView); // clear all the buttons from the screen
+                buttonArrayList.clear(); // clear the button ArrayList
+            }
+        });
+        alertDialog.show();
+    }
+
     /* Create new dialog to show the availability of/to the user
      */
     @RequiresApi(api = Build.VERSION_CODES.N) // needed to use .sort()
@@ -104,6 +125,7 @@ public class SettingsFragment extends Fragment {
         final View availabilityPopUpView = getLayoutInflater().inflate(R.layout.popup_availability, null);
         Button addAvailabilityButton = (Button) availabilityPopUpView.findViewById(R.id.addAvailabilityButton);
         Button cancelAvailabilityButton = (Button) availabilityPopUpView.findViewById(R.id.cancelAvailabilityButton);
+        Button clearAvailabilityButton = (Button) availabilityPopUpView.findViewById(R.id.clearAvailabilityButton);
         dialogBuilder.setView(availabilityPopUpView);
         dialogShow = dialogBuilder.create();
         dialogShow.show();
@@ -124,6 +146,14 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialogShow.dismiss();
+            }
+        });
+
+        // Set the clear-button to clear the availability
+        clearAvailabilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDeleteView(availabilityPopUpView);
             }
         });
     }

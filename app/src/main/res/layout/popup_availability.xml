@@ -63,5 +63,17 @@
         app:layout_constraintTop_toBottomOf="@+id/ScrollView"
         app:layout_constraintVertical_bias="0.136" />
 
+    <Button
+        android:id="@+id/clearAvailabilityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ScrollView"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="@+id/ScrollView"
+        app:layout_constraintTop_toBottomOf="@+id/ScrollView"
+        app:layout_constraintVertical_bias="0.136" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

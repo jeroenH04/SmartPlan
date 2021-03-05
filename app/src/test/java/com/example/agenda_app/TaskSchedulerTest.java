@@ -170,6 +170,7 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "2:30","a","b",
                 "09-02-2020", "18-01-2020");
         assertEquals(schedule.getTaskList().size(), 2);
+        assertEquals(schedule.getTaskListUnsplit().size(), 2);
     }
 
     /** Test remove task with 1 task **/
@@ -178,8 +179,10 @@ public class TaskSchedulerTest {
         schedule.addTask("task1", "2:30","a","b",
                 "08-02-2020", "18-01-2020");
         assertEquals(schedule.getTaskList().size(), 1);
+        assertEquals(schedule.getTaskListUnsplit().size(), 1);
         schedule.removeTask("task1");
         assertEquals(schedule.getTaskList().size(), 0);
+        assertEquals(schedule.getTaskListUnsplit().size(), 0);
     }
 
     /** Test remove task with 2 tasks **/
@@ -190,9 +193,11 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "2:30","a","b",
                 "09-02-2020", "18-01-2020");
         assertEquals(schedule.getTaskList().size(), 2);
+        assertEquals(schedule.getTaskListUnsplit().size(), 2);
         schedule.removeTask("task1");
         schedule.removeTask("task2");
         assertEquals(schedule.getTaskList().size(), 0);
+        assertEquals(schedule.getTaskListUnsplit().size(), 0);
     }
 
     /** Test remove task with invalid task name**/
@@ -204,12 +209,26 @@ public class TaskSchedulerTest {
 
     /** Test remove task with 1 task that is split into smaller tasks **/
     @Test()
-    public void testRemoveTask5() {
+    public void testRemoveTask4() {
         schedule.addTask("task1", "16:00","relaxed","b",
                 "08-02-2020", "18-01-2020");
         assertEquals(schedule.getTaskList().size(), 8);
+        assertEquals(schedule.getTaskListUnsplit().size(), 1);
         schedule.removeTask("task1");
         assertEquals(schedule.getTaskList().size(), 0);
+        assertEquals(schedule.getTaskListUnsplit().size(), 0);
+    }
+
+    /** Test clear task list **/
+    @Test()
+    public void testClearTaskList() {
+        schedule.addTask("task1", "16:00","relaxed","b",
+                "08-02-2020", "18-01-2020");
+        assertEquals(schedule.getTaskList().size(), 8);
+        assertEquals(schedule.getTaskListUnsplit().size(), 1);
+        schedule.clearTasklist();
+        assertEquals(schedule.getTaskList().size(), 0);
+        assertEquals(schedule.getTaskListUnsplit().size(), 0);
     }
 
     /** Test complete task with 1 task **/
@@ -253,29 +272,6 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getNewAvailability().size(),1);
         schedule.addAvailability("28-02-2021","8:00-9:00");
         assertEquals(schedule.getNewAvailability().size(),2);
-    }
-
-    /** Test add availability: pre is violated **/
-    @Test(expected = NullPointerException.class)
-    public void testAddAvailability2() {
-        schedule.addAvailability(null,null);
-        fail("Should have thrown"+NullPointerException.class);
-    }
-
-    /** Test add availability: pre is violated **/
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddAvailability3() {
-        schedule.addAvailability("","-");
-        fail("Should have thrown"+IllegalArgumentException.class);
-    }
-
-    /** Test remove availability **/
-    @Test()
-    public void testRemoveAvailability() {
-        schedule.addAvailability("26-02-2021","8:00-16:00");
-        assertEquals(schedule.getNewAvailability().size(),1);
-        schedule.removeAvailability("26-02-2021","8:00-16:00");
-        assertEquals(schedule.getNewAvailability().size(),0);
     }
 
     /** Test add availability **/
@@ -518,7 +514,6 @@ public class TaskSchedulerTest {
                 "16-02-2021", "14-01-2021");
         assertEquals(schedule.getTaskList().size(), 16);
     }
-
 
     /** Test of deadline sorter **/
     @Test()

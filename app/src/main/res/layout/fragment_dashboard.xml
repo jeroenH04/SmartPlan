@@ -10,18 +10,34 @@
     >
 
     <TextView
-        android:id="@+id/text_dashboard"
-        android:layout_width="match_parent"
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:text="Tasks to be scheduled:"
+        android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.198"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.118" />
+
+    <ScrollView
+        android:id="@+id/ScrollViewDashboard"
+        android:layout_width="292dp"
+        android:layout_height="458dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView9"
+        app:layout_constraintHorizontal_bias="0.085"
+        app:layout_constraintStart_toStartOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:layout_constraintVertical_bias="0.247">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/availabilityBoxDashboard"
+            android:layout_width="288dp"
+            android:layout_height="509dp" />
+    </ScrollView>
 
     <Button
         android:id="@+id/popUpButton"
@@ -31,8 +47,22 @@
         android:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintHorizontal_bias="0.946"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.975" />
+        app:layout_constraintTop_toBottomOf="@+id/ScrollViewDashboard"
+        app:layout_constraintVertical_bias="0.659" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="52dp"
+        android:layout_height="46dp"
+        android:background="@drawable/ic_icons8_trash"
+        android:backgroundTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ScrollViewDashboard"
+        app:layout_constraintVertical_bias="0.602" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

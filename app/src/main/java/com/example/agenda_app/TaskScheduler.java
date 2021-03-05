@@ -14,6 +14,9 @@ public class TaskScheduler {
     // Initialize ArrayList containing all tasks to be scheduled
     private final ArrayList<Task> taskList = new ArrayList<>();
 
+    // Initialize ArrayList containing all unsplit tasks to be scheduled, used in UI
+    private final ArrayList<Task> taskListUnsplit = new ArrayList<>();
+
     // Initialize ArrayList containing all availability of user
     private final ArrayList<Availability> availabilityList = new ArrayList<>();
 
@@ -62,6 +65,7 @@ public class TaskScheduler {
         int totalTime = getDurationMinutes(duration);
         Task task = new Task(name, duration, intensity, difficulty, deadline, today, totalTime);
         taskList.add(task);
+        taskListUnsplit.add(task);
         checkIntensity(task); // check the set intensity and split the task accordingly
     }
 
@@ -84,6 +88,12 @@ public class TaskScheduler {
         }
         for (Task e : toBeRemoved) {
             taskList.remove(e);
+        }
+        for (Task e : taskListUnsplit) { // remove task from taskListUnsplit aswell
+            if (e.getName().equals(taskName)) {
+                taskListUnsplit.remove(e);
+                return;
+            }
         }
     }
 
@@ -151,6 +161,16 @@ public class TaskScheduler {
      */
     public void clearAvailability() {
         availabilityList.clear();
+    }
+
+    /* Clear taskList of user
+     *
+     * @modifies @code{taskList}, @code{taskListUnsplit}
+     * @post @code{tasklist.size() == 0 && tasklistUnsplit.size() == 0 }
+     */
+    public void clearTasklist() {
+        taskList.clear();
+        taskListUnsplit.clear();
     }
 
     /* Set the intensity of the different modes
@@ -264,6 +284,7 @@ public class TaskScheduler {
             }
         }
         taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
+        taskListUnsplit.clear();
     }
 
     /*
@@ -363,5 +384,11 @@ public class TaskScheduler {
      * @returns ArrayList<Task> taskList
      */
     public ArrayList<Task> getTaskList() { return taskList; }
+
+    /* Get task taskListUnsplit
+     *
+     * @returns the unsplit ArrayList<Task> taskList
+     */
+    public ArrayList<Task> getTaskListUnsplit() { return taskListUnsplit; }
 
 }
