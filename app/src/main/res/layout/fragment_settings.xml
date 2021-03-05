@@ -9,22 +9,6 @@
     tools:context=".ui.settings.SettingsFragment">
 
     <TextView
-        android:id="@+id/text_settings"
-        android:layout_width="62dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.975"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
         android:id="@+id/Settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,36 +20,34 @@
         app:layout_constraintHorizontal_bias="0.187"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.095" />
+        app:layout_constraintVertical_bias="0.094" />
 
     <TextView
         android:id="@+id/resetPlanTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
         android:text="I would like to reset ALL the plannings"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Settings"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="@+id/signOut"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/signOut"
+        app:layout_constraintTop_toBottomOf="@+id/signOut"
+        app:layout_constraintVertical_bias="0.023" />
 
     <Button
         android:id="@+id/resetPlanBtn"
         android:layout_width="185dp"
         android:layout_height="34dp"
-        android:layout_marginTop="24dp"
-        android:background="#03AFF2"
+        android:background="@color/colorAccent"
         android:text="Reset Plannings"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.194"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.294" />
+        app:layout_constraintEnd_toEndOf="@+id/resetPlanTxt"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/resetPlanTxt"
+        app:layout_constraintTop_toBottomOf="@+id/resetPlanTxt"
+        app:layout_constraintVertical_bias="0.015" />
 
     <TextView
         android:id="@+id/aiPrefTxt"
@@ -75,24 +57,24 @@
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.771"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Settings"
-        app:layout_constraintVertical_bias="0.256" />
+        app:layout_constraintEnd_toEndOf="@+id/resetPlanBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/resetPlanBtn"
+        app:layout_constraintTop_toBottomOf="@+id/resetPlanBtn"
+        app:layout_constraintVertical_bias="0.019" />
 
     <Button
         android:id="@+id/aiPrefBtn"
         android:layout_width="293dp"
         android:layout_height="36dp"
-        android:background="#03AFF2"
+        android:background="@color/colorAccent"
         android:text="Reset AI planning preferences"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.372"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Settings"
-        app:layout_constraintVertical_bias="0.327" />
+        app:layout_constraintEnd_toEndOf="@+id/aiPrefTxt"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/aiPrefTxt"
+        app:layout_constraintTop_toBottomOf="@+id/aiPrefTxt"
+        app:layout_constraintVertical_bias="0.023" />
 
     <TextView
         android:id="@+id/ampTxt"
@@ -102,11 +84,23 @@
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.168"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.531" />
+        app:layout_constraintEnd_toEndOf="@+id/aiPrefBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/aiPrefBtn"
+        app:layout_constraintTop_toBottomOf="@+id/aiPrefBtn"
+        app:layout_constraintVertical_bias="0.02" />
+
+    <Button
+        android:id="@+id/setAvailability"
+        android:layout_width="219dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="28dp"
+        android:background="@color/colorAccent"
+        android:text="View/Change Availability"
+        app:layout_constraintEnd_toEndOf="@+id/intenseTxt"
+        app:layout_constraintHorizontal_bias="0.023"
+        app:layout_constraintStart_toStartOf="@+id/intenseTxt"
+        app:layout_constraintTop_toBottomOf="@+id/intenseTxt" />
 
     <TextView
         android:id="@+id/delAcntTxt"
@@ -117,11 +111,11 @@
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.46"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Settings"
-        app:layout_constraintVertical_bias="0.936" />
+        app:layout_constraintEnd_toEndOf="@+id/setAvailability"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/setAvailability"
+        app:layout_constraintTop_toBottomOf="@+id/setAvailability"
+        app:layout_constraintVertical_bias="0.412" />
 
     <Button
         android:id="@+id/delAcntBtn"
@@ -132,58 +126,55 @@
         android:background="#FB4E27"
         android:text="Delete Account"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.17"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/delAcntTxt"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/delAcntTxt"
         app:layout_constraintTop_toBottomOf="@+id/delAcntTxt"
-        app:layout_constraintVertical_bias="0.228" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/relaxTxt"
-        android:layout_width="66dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="71dp"
+        android:layout_height="20dp"
         android:text="RELAX:"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.118"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ampTxt"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/ampTxt"
         app:layout_constraintTop_toBottomOf="@+id/ampTxt"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.024" />
 
     <TextView
         android:id="@+id/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
         android:layout_marginBottom="244dp"
         android:text="NORMAL:"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.116"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ampTxt"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="@+id/relaxTxt"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/relaxTxt"
+        app:layout_constraintTop_toBottomOf="@+id/relaxTxt"
+        app:layout_constraintVertical_bias="0.102" />
 
     <TextView
         android:id="@+id/intenseTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="163dp"
         android:layout_marginBottom="200dp"
         android:text="INTENSE:"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.116"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aiPrefBtn"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="@+id/normalTxt"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/normalTxt"
+        app:layout_constraintTop_toBottomOf="@+id/normalTxt"
+        app:layout_constraintVertical_bias="0.101" />
 
     <TextView
         android:id="@+id/textView12"
@@ -193,10 +184,10 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.813"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.609" />
+        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintStart_toEndOf="@+id/switch1"
+        app:layout_constraintTop_toBottomOf="@+id/ampTxt"
+        app:layout_constraintVertical_bias="0.027" />
 
     <TextView
         android:id="@+id/textView13"
@@ -206,10 +197,10 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.813"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.664" />
+        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintStart_toEndOf="@+id/switch2"
+        app:layout_constraintTop_toBottomOf="@+id/textView12"
+        app:layout_constraintVertical_bias="0.02" />
 
     <TextView
         android:id="@+id/textView14"
@@ -219,10 +210,10 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.814"
+        app:layout_constraintHorizontal_bias="0.792"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.72" />
+        app:layout_constraintTop_toBottomOf="@+id/textView13"
+        app:layout_constraintVertical_bias="0.054" />
 
     <Switch
         android:id="@+id/switch1"
@@ -230,10 +221,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.386"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.607" />
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toEndOf="@+id/relaxTxt"
+        app:layout_constraintTop_toBottomOf="@+id/ampTxt"
+        app:layout_constraintVertical_bias="0.025" />
 
     <Switch
         android:id="@+id/switch2"
@@ -241,10 +232,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.386"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.664" />
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toEndOf="@+id/normalTxt"
+        app:layout_constraintTop_toBottomOf="@+id/switch1"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Switch
         android:id="@+id/switch3"
@@ -252,23 +243,23 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.386"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.721" />
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toEndOf="@+id/intenseTxt"
+        app:layout_constraintTop_toBottomOf="@+id/switch2"
+        app:layout_constraintVertical_bias="0.02" />
 
     <Button
         android:id="@+id/signOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign out"
         android:background="#FB4E27"
         android:onClick="logout"
+        android:text="Sign out"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.136"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.199" />
+        app:layout_constraintEnd_toEndOf="@+id/Settings"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/Settings"
+        app:layout_constraintTop_toBottomOf="@+id/Settings"
+        app:layout_constraintVertical_bias="0.013" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
