@@ -21,42 +21,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/availabilityList"
+    <ScrollView
+        android:id="@+id/ScrollView"
         android:layout_width="292dp"
-        android:layout_height="512dp"
-        android:text="none"
-        android:textSize="24sp"
+        android:layout_height="458dp"
+        android:layout_marginTop="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView8"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.26"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
-        app:layout_constraintVertical_bias="0.088" />
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/availabilityBox"
+            android:layout_width="288dp"
+            android:layout_height="509dp" />
+    </ScrollView>
 
     <Button
-        android:id="@+id/saveButton"
+        android:id="@+id/addAvailabilityButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit"
+        android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/availabilityList"
+        app:layout_constraintEnd_toEndOf="@+id/ScrollView"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/availabilityList"
-        app:layout_constraintTop_toBottomOf="@+id/availabilityList"
-        app:layout_constraintVertical_bias="0.32" />
+        app:layout_constraintStart_toStartOf="@+id/ScrollView"
+        app:layout_constraintTop_toBottomOf="@+id/ScrollView"
+        app:layout_constraintVertical_bias="0.136" />
 
     <Button
-        android:id="@+id/cancelButton"
+        android:id="@+id/cancelAvailabilityButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/availabilityList"
+        app:layout_constraintEnd_toEndOf="@+id/ScrollView"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/availabilityList"
-        app:layout_constraintTop_toBottomOf="@+id/availabilityList"
-        app:layout_constraintVertical_bias="0.32" />
+        app:layout_constraintStart_toStartOf="@+id/ScrollView"
+        app:layout_constraintTop_toBottomOf="@+id/ScrollView"
+        app:layout_constraintVertical_bias="0.136" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

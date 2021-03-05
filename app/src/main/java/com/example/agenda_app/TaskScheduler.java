@@ -2,6 +2,8 @@ package com.example.agenda_app;
 
 import android.os.Build;
 import androidx.annotation.RequiresApi;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -110,13 +112,36 @@ public class TaskScheduler {
     /* Add availability of user
      *
      * @param String date, date of availability
-     * @param String time, time of availability
-     * @modifies availabilityList
+     * @pre @code{date != null && time != null && date != empty && time.length() != 1}
+     * @throws NullPointerException if @code{date != null && time != null}
+     * @throws IllegalArgumentException if @code{date != empty && time.length() != 1}
+     * @modifies @code{availabilityList}
      * @post @code{availabilityList.contains(new Availability(date, time))}
      */
     public void addAvailability(String date, String time) { // i.e. "26-02-2021","8:00-16:00"
+        if (date == null || time == null) {
+            throw new NullPointerException("Date or time is null");
+        }
+        if (date.isEmpty() || time.length() == 1) {
+            throw new IllegalArgumentException("Date or time is empty");
+        }
         Availability avail = new Availability(date, time);
         availabilityList.add(avail);
+    }
+
+    /* Remove availability of user
+     *
+     * @param String date, date of availability
+     * @modifies availabilityList
+     * @post @code{!availabilityList.contains(new Availability(date, time))}
+     */
+    public void removeAvailability(String date, String time) { // i.e. "26-02-2021","8:00-16:00"
+        for (Availability avail : availabilityList) {
+            if (avail.getDate().equals(date) && avail.getDuration().equals(time)) {
+                availabilityList.remove(avail);
+                return;
+            }
+        }
     }
 
     /* Clear availability of user
@@ -206,7 +231,7 @@ public class TaskScheduler {
         if (availabilityList.size() == 0) {
             throw new IllegalArgumentException("no availability has been set");
         }
-        taskList.sort(new DeadlineSorter()); // sort the task list on deadline
+        taskList.sort(new DeadlineSorterTask()); // sort the task list on deadline
         // Loop over all tasks in the task list and compare it to all days in the availability
         for (Task e : taskList) {
             int neededTime = e.getTotalTime();
@@ -249,7 +274,7 @@ public class TaskScheduler {
      * @throws IllegalArgument if pre is violated
      * @returns int totalDuration
      */
-    int getDurationMinutes(String duration) {
+    public int getDurationMinutes(String duration) {
         int totalHours = parseInt(duration.substring(0,duration.indexOf(":")));
         int totalMinutes = parseInt(duration.substring(duration.indexOf(":")+1));
         if (totalMinutes >= 60) {
@@ -323,11 +348,13 @@ public class TaskScheduler {
         return schedule;
     }
 
-    /* Get updated availability
+    /* Get updated availability ordered on date
      *
      * @returns ArrayList<Availability> availabilityList
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public ArrayList<Availability> getNewAvailability() {
+        availabilityList.sort(new DeadlineSorterAvailability());
         return availabilityList;
     }
 

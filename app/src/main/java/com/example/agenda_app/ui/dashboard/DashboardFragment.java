@@ -48,12 +48,10 @@ import com.example.agenda_app.TaskScheduler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DashboardFragment extends Fragment {
-
     private AlertDialog dialog;
     private int prevBtnID;
     private int buttonCount;
-    private ArrayList<Integer> buttonArrayList = new ArrayList<>();
-
+    private final ArrayList<Integer> buttonArrayList = new ArrayList<>();
 
     TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
 
@@ -157,8 +155,6 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        NumberPicker picker1;
-
         dialog.show();
         newTaskSave.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
@@ -229,7 +225,6 @@ public class DashboardFragment extends Fragment {
 
                     // Close pop-up window
                     dialog.dismiss();
-
                 } catch (Exception e) {
                     if (e.getMessage().equals("name is not unique")) {
                         alertView("The task name should be unique.");

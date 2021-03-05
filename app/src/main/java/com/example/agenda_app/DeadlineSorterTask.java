@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 
-public class DeadlineSorter implements Comparator<Task>
+public class DeadlineSorterTask implements Comparator<Task>
 {
     @Override
     public int compare(Task o1, Task o2) {

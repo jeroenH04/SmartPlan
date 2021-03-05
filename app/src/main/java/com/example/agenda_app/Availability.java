@@ -38,6 +38,9 @@ public class Availability {
         if ((hourDifference == 0 && minutesDifference < 0) || (hourDifference < 0)) {
             throw new IllegalArgumentException("negative time available");
         }
+        if (totalHours1 >= 24 || totalHours2 >= 24) {
+            throw new IllegalArgumentException("invalid time");
+        }
         // If minutesDifference < 0, decrease the hourDifference
         if (minutesDifference < 0) {
             minutesDifference = minutesDifference + 60;

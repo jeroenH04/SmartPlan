@@ -255,6 +255,29 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getNewAvailability().size(),2);
     }
 
+    /** Test add availability: pre is violated **/
+    @Test(expected = NullPointerException.class)
+    public void testAddAvailability2() {
+        schedule.addAvailability(null,null);
+        fail("Should have thrown"+NullPointerException.class);
+    }
+
+    /** Test add availability: pre is violated **/
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddAvailability3() {
+        schedule.addAvailability("","-");
+        fail("Should have thrown"+IllegalArgumentException.class);
+    }
+
+    /** Test remove availability **/
+    @Test()
+    public void testRemoveAvailability() {
+        schedule.addAvailability("26-02-2021","8:00-16:00");
+        assertEquals(schedule.getNewAvailability().size(),1);
+        schedule.removeAvailability("26-02-2021","8:00-16:00");
+        assertEquals(schedule.getNewAvailability().size(),0);
+    }
+
     /** Test add availability **/
     @Test()
     public void testClearAvailability() {
@@ -514,7 +537,7 @@ public class TaskSchedulerTest {
         unsortedList.add(task1); unsortedList.add(task2); unsortedList.add(task3);
         unsortedList.add(task4);
         sortedList.add(task4); sortedList.add(task3); sortedList.add(task2); sortedList.add(task1);
-        unsortedList.sort(new DeadlineSorter());
+        unsortedList.sort(new DeadlineSorterTask());
         assertEquals(unsortedList, sortedList);
     }
 }
