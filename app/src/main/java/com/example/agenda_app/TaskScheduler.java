@@ -32,7 +32,7 @@ public class TaskScheduler {
     * @param String difficulty
     * @param String deadline
     * @param String today
-    * @pre @code{name != null && duration != null && intensity != null && difficulty != null &&
+    * @pre @code{name != null && name != empty && duration != null && intensity != null && difficulty != null &&
     *           deadline != null && today != null && deadline > today} && name is unique
     * @throws NullPointerException if precondition is violated
     * @throws IllegalArgumentException if @code{deadline <= today}
@@ -43,7 +43,7 @@ public class TaskScheduler {
     public void addTask(String name, String duration, String intensity, String difficulty,
                  String deadline, String today) {
         // check if no parameter is null
-        if (name == null || duration == null || intensity == null || difficulty == null ||
+        if (name == null || name.isEmpty() || duration == null || intensity == null || difficulty == null ||
                 deadline == null || today == null) {
             throw new NullPointerException("precondition is validated");
         }

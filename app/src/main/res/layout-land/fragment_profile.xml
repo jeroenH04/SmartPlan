@@ -4,13 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/dashboard_layout"
     android:background="@color/colorPrimary"
-    tools:context=".ui.dashboard.DashboardFragment"
-    >
+    tools:context=".ui.profile.ProfileFragment">
 
     <TextView
-        android:id="@+id/text_dashboard"
+        android:id="@+id/text_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,18 +19,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/popUpButton"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:background="@drawable/ic_baseline_add_circle_24"
-        android:backgroundTint="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.952"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.975" />
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
