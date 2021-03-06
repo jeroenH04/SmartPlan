@@ -2,6 +2,7 @@
     <string name="app_name">SmartPlan</string>
     <string name="title_profile">Profile</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_planning">Planning</string>
     <string name="title_settings">Settings</string>
     <string name="sign_up"><u>Sign up</u></string>
 </resources>

@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
+        android:id="@+id/navigation_planning"
+        android:name="com.example.agenda_app.ui.planning.PlanningFragment"
+        android:label="@string/title_planning"
+        tools:layout="@layout/fragment_planning" />
+
+    <fragment
         android:id="@+id/navigation_settings"
         android:name="com.example.agenda_app.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
