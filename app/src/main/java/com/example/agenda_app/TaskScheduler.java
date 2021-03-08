@@ -21,7 +21,10 @@ public class TaskScheduler {
     private final ArrayList<Availability> availabilityList = new ArrayList<>();
 
     // Initialize map containing schedule (date,ArrayList<Task>)
-    private final Map<String, ArrayList<Task>> schedule = new HashMap<>();
+    private final Map<String, Map<Task,String>> schedule = new HashMap<>();
+
+    // Initialize map containing tasks on a certain date
+    private Map<Task, String> tasksOnDate = new HashMap<>();
 
     // Default intensity in minutes of different modes
     private int relaxedIntensity = 120;
@@ -105,8 +108,8 @@ public class TaskScheduler {
      * @throws IllegalArgumentException if pre is violated
      */
     public void completeTask(String taskName) {
-        for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
-            for (Task e : entry.getValue()) {
+        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
+            for (Task e : entry.getValue().keySet()) {
                 if (e.getName().equals(taskName)) {
                     entry.getValue().remove(e); // remove task from the array
                     if (entry.getValue().isEmpty()) { // check if the array is now empty
@@ -255,19 +258,20 @@ public class TaskScheduler {
         // Loop over all tasks in the task list and compare it to all days in the availability
         for (Task e : taskList) {
             int neededTime = e.getTotalTime();
-            int minimum = 10000;
+            int minimum = 24*60; // maximum difference possible
             int index = -1;
             String bestDate = "";
-            ArrayList<Task> tasksOnDate = new ArrayList<>();
+            String startTime = "";
 
             for (Availability avail : availabilityList) {
                 int timeDifference = getDurationMinutes(
                         avail.getAvailableTimeInt(avail.getDuration())) - neededTime;
                 if (timeDifference >= 0 && timeDifference < minimum &&
                         compareDates(e.getDeadline(), avail.getDate())) { // get the min. difference
-                    bestDate = avail.getDate();
+                    bestDate = avail.getDate(); // get the date of the availability
                     index = availabilityList.indexOf(avail);
                     minimum = timeDifference;
+                    startTime = avail.getStartTime();
                 }
             }
             if (bestDate.equals("")) { // no date available
@@ -278,9 +282,9 @@ public class TaskScheduler {
                 if (schedule.containsKey(bestDate)) {
                     tasksOnDate = schedule.get(bestDate);
                 }
-                tasksOnDate.add(e); // add the task to the ArrayList
-                schedule.put(bestDate, tasksOnDate); // add the updated ArrayList to the schedule
                 availabilityList.get(index).updateDuration(neededTime); // update the availability
+                tasksOnDate.put(e, startTime + "-" + updateTime(startTime, neededTime) ); // add the task to the ArrayList
+                schedule.put(bestDate, tasksOnDate); // add the updated ArrayList to the schedule
             }
         }
         taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
@@ -302,6 +306,35 @@ public class TaskScheduler {
             throw new IllegalArgumentException("minutes >= 60");
         }
         return totalHours * 60 + totalMinutes;
+    }
+
+    /*
+     * Get the total time of a task in minutes
+     *
+     * @param String startTime ("hh:mm")
+     * @param int duration in minutes
+     * @returns String newTime
+     */
+    public String updateTime(String startTime, int duration) {
+        int updateMinutes = duration % 60;
+        int updateHours = (duration - updateMinutes) / 60;
+        int startHours = parseInt(startTime.substring(0,startTime.indexOf(":")));
+        int startMinutes = parseInt(startTime.substring(startTime.indexOf(":")+1));
+        String newTime;
+
+        int newMinutes = startMinutes + updateMinutes;
+        int newHours = startHours + updateHours;
+        if (newMinutes >= 60) {
+            newMinutes -= 60;
+            newHours ++;
+        }
+        if (newHours < 10) {
+            // declare newtime, add zero in case of single digit minutes
+            newTime = "0" + newHours + ":" + newMinutes + "0";
+        } else {
+            newTime = newHours + ":" + newMinutes + "0";
+        }
+        return newTime.substring(0,5);
     }
 
     /*
@@ -351,8 +384,8 @@ public class TaskScheduler {
                 return false;
             }
         }
-        for (Map.Entry<String, ArrayList<Task>> entry : schedule.entrySet()) {
-            for (Task e : entry.getValue()) {
+        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
+            for (Task e : entry.getValue().keySet()) {
                 if (e.getName().equals(taskName)) {
                     return false;
                 }
@@ -365,7 +398,7 @@ public class TaskScheduler {
      *
      * @returns Map<String, ArrayList<Task>> schedule
      */
-    public Map<String, ArrayList<Task>> getSchedule() {
+    public Map<String, Map<Task, String>> getSchedule() {
         return schedule;
     }
 

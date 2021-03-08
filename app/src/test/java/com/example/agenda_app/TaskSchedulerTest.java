@@ -303,10 +303,11 @@ public class TaskSchedulerTest {
 
 
     void showCreatedSchedule() {
-        Map<String, ArrayList<Task>> createdSchedule = schedule.getSchedule();
-        for (Map.Entry<String, ArrayList<Task>> entry : createdSchedule.entrySet()) {
-            for (Task e : entry.getValue()) {
-                System.out.println(entry.getKey() + " : "+ e.getName() + " : " + e.getDuration());
+        Map<String, Map<Task, String>> createdSchedule = schedule.getSchedule();
+        for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
+            for (Map.Entry<Task, String> entry2 : entry.getValue().entrySet()) {
+                System.out.println(entry.getKey() + " : " + entry2.getKey().getName() + " : " +
+                        entry2.getKey().getDuration() + " : " + entry2.getValue());
             }
         }
     }
@@ -323,6 +324,7 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("17-02-2021", "17:30-18:00"));
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
+        // check the new availability
         ArrayList<Availability> newAvail = schedule.getNewAvailability();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
@@ -487,7 +489,6 @@ public class TaskSchedulerTest {
                 "23-02-2021", "14-01-2021");
         assertEquals(schedule.getTaskList().size(), 4);
         schedule.createSchedule();
-        showCreatedSchedule();
     }
 
     /** Test of intensity checker: intensity = intense, duration < normal duration (8 hours)**/
@@ -534,5 +535,14 @@ public class TaskSchedulerTest {
         sortedList.add(task4); sortedList.add(task3); sortedList.add(task2); sortedList.add(task1);
         unsortedList.sort(new DeadlineSorterTask());
         assertEquals(unsortedList, sortedList);
+    }
+
+    /** Test of update time **/
+    @Test()
+    public void testUpdateTime() {
+        assertEquals(schedule.updateTime("10:30",20), "10:50");
+        assertEquals(schedule.updateTime("10:30",40), "11:10");
+        assertEquals(schedule.updateTime("10:30",60), "11:30");
+        assertEquals(schedule.updateTime("09:30",15), "09:45");
     }
 }
