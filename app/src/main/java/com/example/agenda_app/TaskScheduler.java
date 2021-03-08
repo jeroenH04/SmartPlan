@@ -14,17 +14,11 @@ public class TaskScheduler {
     // Initialize ArrayList containing all tasks to be scheduled
     private final ArrayList<Task> taskList = new ArrayList<>();
 
-    // Initialize ArrayList containing all unsplit tasks to be scheduled, used in UI
-    private final ArrayList<Task> taskListUnsplit = new ArrayList<>();
-
     // Initialize ArrayList containing all availability of user
     private final ArrayList<Availability> availabilityList = new ArrayList<>();
 
     // Initialize map containing schedule (date,ArrayList<Task>)
     private final Map<String, Map<Task,String>> schedule = new HashMap<>();
-
-    // Initialize map containing tasks on a certain date
-    private Map<Task, String> tasksOnDate = new HashMap<>();
 
     // Default intensity in minutes of different modes
     private int relaxedIntensity = 120;
@@ -66,10 +60,10 @@ public class TaskScheduler {
 
         // calculate the total time in minutes of the task
         int totalTime = getDurationMinutes(duration);
+
+        // create a new Task object and add it to the task lists
         Task task = new Task(name, duration, intensity, difficulty, deadline, today, totalTime);
         taskList.add(task);
-        taskListUnsplit.add(task);
-        checkIntensity(task); // check the set intensity and split the task accordingly
     }
 
     /* Remove task from task list
@@ -89,18 +83,13 @@ public class TaskScheduler {
         if (toBeRemoved.size() == 0) {
             throw new IllegalArgumentException("There exists no task in the tasklist with this name");
         }
+        // remove task from taskList
         for (Task e : toBeRemoved) {
             taskList.remove(e);
         }
-        for (Task e : taskListUnsplit) { // remove task from taskListUnsplit aswell
-            if (e.getName().equals(taskName)) {
-                taskListUnsplit.remove(e);
-                return;
-            }
-        }
     }
 
-    /* Remove task from schedule
+    /* Remove task from schedule and restore availability
      *
      * @param String taskName, task to be removed
      * @pre @code{\exists i; schedule.contains(i); i.name == taskName}
@@ -108,18 +97,36 @@ public class TaskScheduler {
      * @throws IllegalArgumentException if pre is violated
      */
     public void completeTask(String taskName) {
+        boolean found = false;
         for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue().keySet()) {
                 if (e.getName().equals(taskName)) {
+                    found = true;
+
                     entry.getValue().remove(e); // remove task from the array
+             //       System.out.println(entry.getValue());
+
+                    // Reset availability to original value
+//                    for (Availability avail : availabilityList) {
+//                        if (avail.getDate().equals(entry.getKey()) ) {
+//                            break;
+//                        }
+//                    }
+
+                 //   updateTime(String startTime, int duration)
+
+
                     if (entry.getValue().isEmpty()) { // check if the array is now empty
                         schedule.remove(entry.getKey()); // remove date in schedule
                     }
                     return;
+
                 }
             }
         }
-        throw new IllegalArgumentException("There exists no task in the schedule with this name");
+        if (!found) {
+            throw new IllegalArgumentException("There exists no task in the schedule with this name");
+        }
     }
 
     /* Add availability of user
@@ -168,12 +175,11 @@ public class TaskScheduler {
 
     /* Clear taskList of user
      *
-     * @modifies @code{taskList}, @code{taskListUnsplit}
-     * @post @code{tasklist.size() == 0 && tasklistUnsplit.size() == 0 }
+     * @modifies @code{taskList}
+     * @post @code{tasklist.size() == 0}
      */
     public void clearTasklist() {
         taskList.clear();
-        taskListUnsplit.clear();
     }
 
     /* Set the intensity of the different modes
@@ -194,7 +200,7 @@ public class TaskScheduler {
         this.intenseIntensity = intense * 60;
     }
 
-    /* Check intensity of task and split it into smaller tasks
+    /* Check intensity of task and split it into smaller subtasks with a unique name
      *
      * @param Task task
      * @pre @code{task.intensity == 'relaxed' || task.intensity == 'normal'
@@ -220,21 +226,22 @@ public class TaskScheduler {
             default:
                 return;
         }
-        // calculate the new number of tasks
+        // calculate the new number of new tasks
         numberOfTasks = (int) Math.ceil(getDurationMinutes(task.getDuration()) /
                 (double) intensityNumber);
+
         for (int i = 1; i <= numberOfTasks; ++i) {
-            if (i < numberOfTasks) {
+            if (i < numberOfTasks || (numberOfTasks * intensityNumber % intensityNumber) == 0) {
                 // the new duration of the first tasks is in correspondence to the intensity
                 newDuration = timeIntToString(intensityNumber);
-                newTask = new Task(task.getName(), newDuration, task.getIntensity(),
+                newTask = new Task(task.getName() + "." + i, newDuration, task.getIntensity(),
                         task.getDifficulty(), task.getDeadline(), task.getToday(), intensityNumber);
             }
             else {
                 // the new duration of the last task is the remaining time (time < intensity)
                 newDuration = timeIntToString(getDurationMinutes(task.getDuration()) %
                         intensityNumber);
-                newTask = new Task(task.getName(), newDuration, task.getIntensity(),
+                newTask = new Task(task.getName() + "." + i, newDuration, task.getIntensity(),
                         task.getDifficulty(), task.getDeadline(), task.getToday(),
                         getDurationMinutes(task.getDuration()) % intensityNumber);
             }
@@ -242,7 +249,6 @@ public class TaskScheduler {
         }
         taskList.remove(task); // remove the old task from the task list
     }
-
 
     /* Create schedule of tasks based on availability
     *
@@ -254,7 +260,15 @@ public class TaskScheduler {
         if (availabilityList.size() == 0) {
             throw new IllegalArgumentException("no availability has been set");
         }
+
+        // Copy ArrayList to temporary array to avoid ConcurentModificationException
+        ArrayList<Task> tasksToSplit = new ArrayList<>(taskList);
+        for (Task e : tasksToSplit) {
+            checkIntensity(e); // check the set intensity and split the task accordingly
+        }
+
         taskList.sort(new DeadlineSorterTask()); // sort the task list on deadline
+
         // Loop over all tasks in the task list and compare it to all days in the availability
         for (Task e : taskList) {
             int neededTime = e.getTotalTime();
@@ -263,15 +277,22 @@ public class TaskScheduler {
             String bestDate = "";
             String startTime = "";
 
+            // Initialize map containing tasks on a certain date
+            Map<Task, String> tasksOnDate = new HashMap<>();
+
             for (Availability avail : availabilityList) {
+                // calculate the time difference between the task duration and availability
                 int timeDifference = getDurationMinutes(
                         avail.getAvailableTimeInt(avail.getDuration())) - neededTime;
+
                 if (timeDifference >= 0 && timeDifference < minimum &&
-                        compareDates(e.getDeadline(), avail.getDate())) { // get the min. difference
-                    bestDate = avail.getDate(); // get the date of the availability
-                    index = availabilityList.indexOf(avail);
-                    minimum = timeDifference;
-                    startTime = avail.getStartTime();
+                        compareDates(e.getDeadline(), avail.getDate()) &&
+                        !subtaskPlannedOnDate(avail, e) ) {
+
+                        bestDate = avail.getDate(); // get the date of the availability
+                        index = availabilityList.indexOf(avail);
+                        minimum = timeDifference;
+                        startTime = avail.getStartTime();
                 }
             }
             if (bestDate.equals("")) { // no date available
@@ -288,7 +309,33 @@ public class TaskScheduler {
             }
         }
         taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
-        taskListUnsplit.clear();
+    }
+
+    /* Check if no subtasks of a task is planned on the same date
+    *
+    * @param Availability avail
+    * @param Task e
+    * @returns @code{true} if subtask of task e is planned on the same date
+     */
+    boolean subtaskPlannedOnDate(Availability avail, Task e) {
+        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
+            if (entry.getKey().equals(avail.getDate())) { // check if the dates are the same
+                for (Map.Entry<Task, String> d2 : entry.getValue().entrySet()) {
+                    String taskNameOld = d2.getKey().getName();
+                    String taskNameNew = e.getName();
+
+                    // Check if a subtask of this task is planned on this day
+                    // i.e. if the characters except the last match and the name ends with a dot
+                    if (taskNameOld.substring(0, taskNameOld.length() - 1)
+                            .equals(taskNameNew.substring(0, taskNameNew.length() - 1)) &&
+                            taskNameOld.substring(taskNameOld.length() - 2,
+                                    taskNameOld.length() - 1).equals(".")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /*
@@ -309,7 +356,7 @@ public class TaskScheduler {
     }
 
     /*
-     * Get the total time of a task in minutes
+     * Update a time variable
      *
      * @param String startTime ("hh:mm")
      * @param int duration in minutes
@@ -329,7 +376,7 @@ public class TaskScheduler {
             newHours ++;
         }
         if (newHours < 10) {
-            // declare newtime, add zero in case of single digit minutes
+            // declare newTime, add zero in case of single digit minutes
             newTime = "0" + newHours + ":" + newMinutes + "0";
         } else {
             newTime = newHours + ":" + newMinutes + "0";
@@ -394,6 +441,22 @@ public class TaskScheduler {
         return true;
     }
 
+    /* Reset created schedule and move all tasks back into the tasklist
+     */
+    public void resetSchedule() {
+        Map<String, Map<Task, String>> createdSchedule = getSchedule();
+        for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
+            for (Map.Entry<Task, String> entry2 : entry.getValue().entrySet()) {
+                taskList.add(entry2.getKey()); // add task back to the split task list
+
+//                System.out.println(entry.getKey() + " : " + entry2.getKey().getName() + " : " +
+//                        entry2.getKey().getDuration() + " : " + entry2.getValue());
+            }
+        }
+
+        schedule.clear(); // clear the schedule
+    }
+
     /* Get created schedule
      *
      * @returns Map<String, ArrayList<Task>> schedule
@@ -417,11 +480,5 @@ public class TaskScheduler {
      * @returns ArrayList<Task> taskList
      */
     public ArrayList<Task> getTaskList() { return taskList; }
-
-    /* Get task taskListUnsplit
-     *
-     * @returns the unsplit ArrayList<Task> taskList
-     */
-    public ArrayList<Task> getTaskListUnsplit() { return taskListUnsplit; }
 
 }

@@ -296,7 +296,7 @@ public class DashboardFragment extends Fragment {
             layout.removeView(b);
         }
 
-        for (Task task : scheduler.getTaskListUnsplit()) {
+        for (Task task : scheduler.getTaskList()) {
             // Create new button for the task
             final Button button = new Button(getActivity());
             final String name = task.getName();

@@ -76,7 +76,8 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ NullPointerException.class);
     }
 
-    /** Test add task with invalid precondition: name = null **/
+    /** Tests of the addTask method */
+    // Test with invalid precondition: name = null
     @Test(expected = NullPointerException.class)
     public void testAddTask() {
         schedule.addTask(null, "2:30","a","b",
@@ -84,7 +85,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ NullPointerException.class);
     }
 
-    /** Test add task with invalid precondition: duration = null **/
+    // Test with invalid precondition: duration = null
     @Test(expected = NullPointerException.class)
     public void testAddTask2() {
         schedule.addTask("task1", null,"a","b",
@@ -92,7 +93,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ NullPointerException.class);
     }
 
-    /** Test add task with invalid precondition: intensity = null **/
+    // Test with invalid precondition: intensity = null
     @Test(expected = NullPointerException.class)
     public void testAddTask3() {
         schedule.addTask("task1", "2:30",null,"b",
@@ -100,7 +101,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ NullPointerException.class);
     }
 
-    /** Test add task with invalid precondition: difficulty = null **/
+    // Test with invalid precondition: difficulty = null
     @Test(expected = NullPointerException.class)
     public void testAddTask4() {
         schedule.addTask("task1", "2:30","a",null,
@@ -108,7 +109,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ NullPointerException.class);
     }
 
-    /** Test add task with invalid precondition: deadline = null **/
+    // Test with invalid precondition: deadline = null
     @Test(expected = NullPointerException.class)
     public void testAddTask5() {
         schedule.addTask("task1", "2:30","a","b",
@@ -116,7 +117,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ NullPointerException.class);
     }
 
-    /** Test add task with invalid precondition: today = null **/
+    // Test with invalid precondition: today = null
     @Test(expected = NullPointerException.class)
     public void testAddTask6() {
         schedule.addTask("task1", "2:30","a","b",
@@ -124,7 +125,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ NullPointerException.class);
     }
 
-    /** Test add task with invalid precondition: today <= deadline **/
+    // Test with invalid precondition: today <= deadline
     @Test(expected = IllegalArgumentException.class)
     public void testAddTask7() {
         schedule.addTask("task1", "2:30","a","b",
@@ -132,7 +133,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test add task with invalid precondition: today <= deadline **/
+    // Test with invalid precondition: today <= deadline (year difference)
     @Test(expected = IllegalArgumentException.class)
     public void testAddTask8() {
         schedule.addTask("task1", "2:30","a","b",
@@ -140,7 +141,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test add task with invalid precondition: today <= deadline **/
+    // Test with invalid precondition: today <= deadline (month difference)
     @Test(expected = IllegalArgumentException.class)
     public void testAddTask9() {
         schedule.addTask("task1", "2:30","a","b",
@@ -148,13 +149,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test add task with no task **/
-    @Test()
-    public void testAddTask10() {
-        assertEquals(schedule.getSchedule().size(), 0);
-    }
-
-    /** Test add task with 1 task **/
+    // Test with 1 task
     @Test()
     public void testAddTask11() {
         schedule.addTask("task1", "2:30","a","b",
@@ -162,7 +157,7 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getTaskList().size(), 1);
     }
 
-    /** Test add task with 2 tasks **/
+    // Test add task with 2 tasks
     @Test()
     public void testAddTask12() {
         schedule.addTask("task1", "2:30","a","b",
@@ -170,22 +165,20 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "2:30","a","b",
                 "09-02-2020", "18-01-2020");
         assertEquals(schedule.getTaskList().size(), 2);
-        assertEquals(schedule.getTaskListUnsplit().size(), 2);
     }
 
-    /** Test remove task with 1 task **/
+    /** Tests of the removeTask method */
+    // Test with 1 task
     @Test()
     public void testRemoveTask() {
         schedule.addTask("task1", "2:30","a","b",
                 "08-02-2020", "18-01-2020");
         assertEquals(schedule.getTaskList().size(), 1);
-        assertEquals(schedule.getTaskListUnsplit().size(), 1);
         schedule.removeTask("task1");
         assertEquals(schedule.getTaskList().size(), 0);
-        assertEquals(schedule.getTaskListUnsplit().size(), 0);
     }
 
-    /** Test remove task with 2 tasks **/
+    // Test with 2 tasks
     @Test()
     public void testRemoveTask2() {
         schedule.addTask("task1", "2:30","a","b",
@@ -193,45 +186,30 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "2:30","a","b",
                 "09-02-2020", "18-01-2020");
         assertEquals(schedule.getTaskList().size(), 2);
-        assertEquals(schedule.getTaskListUnsplit().size(), 2);
         schedule.removeTask("task1");
         schedule.removeTask("task2");
         assertEquals(schedule.getTaskList().size(), 0);
-        assertEquals(schedule.getTaskListUnsplit().size(), 0);
     }
 
-    /** Test remove task with invalid task name**/
+    // Test with invalid task name
     @Test(expected = IllegalArgumentException.class)
     public void testRemoveTask3() {
         schedule.removeTask("task");
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test remove task with 1 task that is split into smaller tasks **/
-    @Test()
-    public void testRemoveTask4() {
-        schedule.addTask("task1", "16:00","relaxed","b",
-                "08-02-2020", "18-01-2020");
-        assertEquals(schedule.getTaskList().size(), 8);
-        assertEquals(schedule.getTaskListUnsplit().size(), 1);
-        schedule.removeTask("task1");
-        assertEquals(schedule.getTaskList().size(), 0);
-        assertEquals(schedule.getTaskListUnsplit().size(), 0);
-    }
-
-    /** Test clear task list **/
+    /** Test of the clearTaskList method */
     @Test()
     public void testClearTaskList() {
         schedule.addTask("task1", "16:00","relaxed","b",
                 "08-02-2020", "18-01-2020");
-        assertEquals(schedule.getTaskList().size(), 8);
-        assertEquals(schedule.getTaskListUnsplit().size(), 1);
+        assertEquals(schedule.getTaskList().size(), 1);
         schedule.clearTasklist();
         assertEquals(schedule.getTaskList().size(), 0);
-        assertEquals(schedule.getTaskListUnsplit().size(), 0);
     }
 
-    /** Test complete task with 1 task **/
+    /** Tests of the completeTask method */
+    // Test with 1 task **/
     @Test()
     public void testCompleteTask() {
         createBasicAvailability();
@@ -247,15 +225,18 @@ public class TaskSchedulerTest {
     @Test()
     public void testCompleteTask2() {
         createBasicAvailability();
-        schedule.addTask("task1", "1:00","a","b",
-                "16-02-2021", "18-01-2020");
+        schedule.addTask("task1", "4:00","relaxed","b",
+                "20-02-2021", "18-01-2020");
         schedule.addTask("task2", "1:00","a","b",
                 "16-02-2021", "18-01-2020");
         schedule.createSchedule();
-        assertEquals(schedule.getSchedule().size(), 1);
-        schedule.completeTask("task1");
-        assertEquals(schedule.getSchedule().size(), 1);
+        showCreatedSchedule();
+        assertEquals(schedule.getSchedule().size(), 3);
+        schedule.completeTask("task1.2");
+        assertEquals(schedule.getSchedule().size(), 2);
         schedule.completeTask("task2");
+        assertEquals(schedule.getSchedule().size(), 1);
+        schedule.completeTask("task1.1");
         assertEquals(schedule.getSchedule().size(), 0);
     }
     /** Test complete task with invalid task name**/
@@ -301,14 +282,10 @@ public class TaskSchedulerTest {
         schedule.addAvailability("20-02-2021", "8:00-16:00");
     }
 
-
     void showCreatedSchedule() {
         Map<String, Map<Task, String>> createdSchedule = schedule.getSchedule();
         for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
-            for (Map.Entry<Task, String> entry2 : entry.getValue().entrySet()) {
-                System.out.println(entry.getKey() + " : " + entry2.getKey().getName() + " : " +
-                        entry2.getKey().getDuration() + " : " + entry2.getValue());
-            }
+                System.out.println(entry.getKey() + " : " + entry.getValue());
         }
     }
 
@@ -449,15 +426,31 @@ public class TaskSchedulerTest {
             assertEquals(e.getDuration(), newAvail.get(index).getDuration());
         }
     }
-    
-    /** Test of intensity setter, invalid pre **/
+
+    /** Tests of the setIntensity method */
+    // Test with invalid pre, relaxed == 0
     @Test(expected = IllegalArgumentException.class)
     public void testSetIntensity() {
         schedule.setIntensity(0,4,8);
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test of intensity checker: intensity = relaxed, duration < relaxed duration (2 hours)**/
+    // Test with invalid pre, normal == 0
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetIntensity2() {
+        schedule.setIntensity(1,0,8);
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    // Test with invalid pre, intense == 0
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetIntensity3() {
+        schedule.setIntensity(1,4,0);
+        fail("should have thrown "+ IllegalArgumentException.class);
+    }
+
+    /** Tests of the intensityChecker method */
+    // Test with intensity = relaxed, duration < relaxed duration (2 hours)
     @Test()
     public void testIntensityChecker() {
         schedule.addTask("task1", "1:00","relaxed","b",
@@ -465,58 +458,62 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getTaskList().size(), 1);
     }
 
-    /** Test of intensity checker: intensity = relaxed, duration > relaxed duration (2 hours)**/
+    // Test with intensity = relaxed, duration > relaxed duration (2 hours)
     @Test()
     public void testIntensityChecker2() {
-        schedule.addTask("task1", "6:00","relaxed","b",
-                "16-02-2021", "14-01-2021");
+        Task task = new Task("task1", "6:00","relaxed","b",
+                "16-02-2021", "14-01-2021", 360);
+        schedule.checkIntensity(task);
         assertEquals(schedule.getTaskList().size(), 3);
     }
 
-    /** Test of intensity checker: intensity = normal, duration < normal duration (4 hours)**/
+    // Test with intensity = normal, duration < normal duration (4 hours)
     @Test()
     public void testIntensityChecker3() {
-        schedule.addTask("task1", "1:00","normal","b",
-                "16-02-2021", "14-01-2021");
+        Task task = new Task("task1", "1:00","normal","b",
+                "16-02-2021", "14-01-2021", 60);
+        schedule.checkIntensity(task);
         assertEquals(schedule.getTaskList().size(), 1);
     }
 
-    /** Test of intensity checker: intensity = normal, duration > normal duration (4 hours)**/
+    // Test with intensity = normal, duration > normal duration (4 hours)
     @Test()
     public void testIntensityChecker4() {
-        createAdvancedAvailability();
-        schedule.addTask("task1", "15:00","normal","b",
-                "23-02-2021", "14-01-2021");
+        Task task = new Task("task1", "15:00","normal","b",
+                "23-02-2021", "14-01-2021", 15*60);
+        schedule.checkIntensity(task);
         assertEquals(schedule.getTaskList().size(), 4);
-        schedule.createSchedule();
     }
 
-    /** Test of intensity checker: intensity = intense, duration < normal duration (8 hours)**/
+    // Test with intensity = intense, duration < normal duration (8 hours)
     @Test()
     public void testIntensityChecker5() {
-        schedule.addTask("task1", "1:00","intense","b",
-                "16-02-2021", "14-01-2021");
+        Task task = new Task("task1", "1:00","intense","b",
+                "16-02-2021", "14-01-2021", 60);
+        schedule.checkIntensity(task);
         assertEquals(schedule.getTaskList().size(), 1);
     }
 
-    /** Test of intensity checker: intensity = intense, duration > normal duration (8 hours)**/
+    // Test with intensity = intense, duration > normal duration (8 hours)
     @Test()
     public void testIntensityChecker6() {
-        schedule.addTask("task1", "16:00","intense","b",
-                "16-02-2021", "14-01-2021");
+        Task task = new Task("task1", "16:00","intense","b",
+                "16-02-2021", "14-01-2021", 16*60);
+        schedule.checkIntensity(task);
         assertEquals(schedule.getTaskList().size(), 2);
     }
     
-    /** Test of intensity checker: set intensity**/
+    // Test with a set intensity
     @Test()
     public void testIntensityChecker7() {
         schedule.setIntensity(1,2,3);
-        schedule.addTask("task1", "16:00","relaxed","b",
-                "16-02-2021", "14-01-2021");
+        Task task = new Task("task1", "16:00","relaxed","b",
+                "16-02-2021", "14-01-2021", 16*60);
+        schedule.checkIntensity(task);
         assertEquals(schedule.getTaskList().size(), 16);
     }
 
-    /** Test of deadline sorter **/
+    /** Tests of the deadlineSorter method of the DeadlineSorterTask.class */
     @Test()
     public void testDeadlineSorter() {
         createBasicAvailability();
@@ -537,12 +534,50 @@ public class TaskSchedulerTest {
         assertEquals(unsortedList, sortedList);
     }
 
-    /** Test of update time **/
+    /** Tests of the updateTime method */
     @Test()
     public void testUpdateTime() {
         assertEquals(schedule.updateTime("10:30",20), "10:50");
         assertEquals(schedule.updateTime("10:30",40), "11:10");
         assertEquals(schedule.updateTime("10:30",60), "11:30");
         assertEquals(schedule.updateTime("09:30",15), "09:45");
+    }
+
+    /** Tests of the resetSchedule method */
+    // Test with 1 un-split task
+    @Test()
+    public void testResetSchedule() {
+        createBasicAvailability();
+        schedule.addTask("task1", "1:30","a","b",
+                "16-02-2021", "14-01-2021");
+
+        //        assertEquals(schedule.getTaskList().size(), 1);
+//        schedule.createSchedule();
+//        assertEquals(schedule.getTaskList().size(), 0);
+//        assertEquals(schedule.getSchedule().size(), 1);
+//        schedule.resetSchedule(); // reset the schedule, tasks should be back in task list
+//        assertEquals(schedule.getTaskList().size(), 1);
+//        assertEquals(schedule.getSchedule().size(), 0);
+    }
+
+    // Test with 1 split task
+    @Test()
+    public void testResetSchedule2() {
+        createBasicAvailability();
+        schedule.addTask("task1", "8:00","normal","b",
+                "28-02-2021", "14-01-2021");
+
+        for ( Task e : schedule.getTaskList()) {
+          //  System.out.println(e.getName() + ":" + e.getDuration());
+        }
+//
+//
+//        assertEquals(schedule.getTaskList().size(), 2);
+//        schedule.createSchedule();
+//        assertEquals(schedule.getTaskList().size(), 0);
+//        assertEquals(schedule.getSchedule().size(), 1);
+//        schedule.resetSchedule(); // reset the schedule, tasks should be back in task list
+//        assertEquals(schedule.getTaskList().size(), 2);
+//        assertEquals(schedule.getSchedule().size(), 0);
     }
 }
