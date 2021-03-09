@@ -28,6 +28,7 @@
         android:background="#ffffff"
         android:gravity="start"
         android:hint="  name"
+        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 "
         android:singleLine="true"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/task"
