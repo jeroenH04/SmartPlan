@@ -18,6 +18,7 @@ public class Availability {
     public String getAvailableTime() { return availableTime; }
 
     public String getStartTime() { return duration.substring(0,duration.indexOf("-")); }
+    public String getEndTime() { return duration.substring(duration.indexOf("-") + 1); }
 
     /* Get total available time from string duration "hh:mm-hh:mm"
     *

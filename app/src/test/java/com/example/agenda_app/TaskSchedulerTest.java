@@ -15,7 +15,8 @@ import static org.junit.Assert.fail;
 public class TaskSchedulerTest {
     TaskScheduler schedule = new TaskScheduler();
 
-    /** Test get duration of tasks **/
+    /** Tests of the getDurationMinutes method */
+    // Tests with different input
     @Test()
     public void testGetDurationMinutes() {
         assertEquals(schedule.getDurationMinutes("100:30"), 6030);
@@ -23,15 +24,15 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getDurationMinutes("0:01"), 1);
     }
     
-    /** Test get duration of tasks: pre is violated **/
+    // Test where pre is violated
     @Test(expected = IllegalArgumentException.class)
     public void testGetDurationMinutes2() {
         schedule.getDurationMinutes("00:60");
         fail("should have thrown" + IllegalArgumentException.class);
     }
 
-
-    /** Test get string value of integer time **/
+    /** Tests of the timeIntToString method */
+    // Tests with different input
     @Test()
     public void testTimeIntToString() {
         assertEquals(schedule.timeIntToString(180), "3:00");
@@ -39,7 +40,8 @@ public class TaskSchedulerTest {
         assertEquals(schedule.timeIntToString(192), "3:12");
     }
 
-    /** Test compare dates **/
+    /** Tests of the compareDates method */
+    // Tests with different input
     @Test()
     public void testCompareDates() {
         assertFalse(schedule.compareDates("15-02-2021", "16-02-2021"));
@@ -49,7 +51,8 @@ public class TaskSchedulerTest {
         assertTrue(schedule.compareDates("15-02-2021", "16-02-2020"));
     }
 
-    /** Test unique names in the task list **/
+    /** Tests of the uniqueNames method */
+    // Tests of the addTask method
     @Test()
     public void testUniqueNames() {
         schedule.addTask("task1", "2:30","a","b",
@@ -58,20 +61,9 @@ public class TaskSchedulerTest {
         assertTrue(schedule.checkUniqueName("task"));
     }
 
-    /** Test unique names in the schedule list **/
-    @Test()
-    public void testUniqueNames2() {
-        createBasicAvailability();
-        schedule.addTask("task1", "2:30","a","b",
-                "20-02-2021", "01-01-2020");
-        schedule.createSchedule();
-        assertFalse(schedule.checkUniqueName("task1"));
-        assertTrue(schedule.checkUniqueName("task"));
-    }
-
-    /** Test unique names in the schedule list **/
+    // Test with invalid precondition: taskName is null
     @Test(expected = NullPointerException.class)
-    public void testUniqueNames3() {
+    public void testUniqueNames2() {
         schedule.checkUniqueName(null);
         fail("should have thrown "+ NullPointerException.class);
     }
@@ -219,9 +211,24 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getSchedule().size(), 1);
         schedule.completeTask("task1");
         assertEquals(schedule.getSchedule().size(), 0);
+
+        // Check that the availability has been reset
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("15-02-2021", "10:00-12:00"));
+        testAvail.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail.add(new Availability("17-02-2021", "14:00-18:00"));
+        testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
+        schedule.createSchedule();
+        // check the new availability
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
     }
 
-    /** Test complete task with 2 tasks **/
+    // Test with 2 tasks
     @Test()
     public void testCompleteTask2() {
         createBasicAvailability();
@@ -230,7 +237,6 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "1:00","a","b",
                 "16-02-2021", "18-01-2020");
         schedule.createSchedule();
-        showCreatedSchedule();
         assertEquals(schedule.getSchedule().size(), 3);
         schedule.completeTask("task1.2");
         assertEquals(schedule.getSchedule().size(), 2);
@@ -238,15 +244,31 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getSchedule().size(), 1);
         schedule.completeTask("task1.1");
         assertEquals(schedule.getSchedule().size(), 0);
+
+        // Check that the availability has been reset
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("15-02-2021", "10:00-12:00"));
+        testAvail.add(new Availability("16-02-2021", "9:00-10:00"));
+        testAvail.add(new Availability("17-02-2021", "14:00-18:00"));
+        testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
+        schedule.createSchedule();
+        // check the new availability
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
     }
-    /** Test complete task with invalid task name**/
+
+    // Test with invalid task name
     @Test(expected = IllegalArgumentException.class)
     public void testCompleteTask3() {
         schedule.completeTask("task");
         fail("should have thrown "+ IllegalArgumentException.class);
     }
-    
-    /** Test add availability **/
+
+    /** Tests of the addAvailability method */
     @Test()
     public void testAddAvailability() {
         schedule.addAvailability("26-02-2021","8:00-16:00");
@@ -255,13 +277,50 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getNewAvailability().size(),2);
     }
 
-    /** Test add availability **/
+    /** Tests of the clearAvailability method */
     @Test()
     public void testClearAvailability() {
         schedule.addAvailability("26-02-2021","8:00-16:00");
         assertEquals(schedule.getNewAvailability().size(),1);
         schedule.clearAvailability();
         assertEquals(schedule.getNewAvailability().size(),0);
+    }
+
+    /** Tests of the combineAvailability method */
+    // Test with 3 concurrent tasks
+    @Test()
+    public void testCombineAvailability() {
+        schedule.addAvailability("26-02-2021","8:00-9:00");
+        schedule.addAvailability("26-02-2021","9:00-12:15");
+        schedule.addAvailability("26-02-2021","12:15-18:00");
+        assertEquals(schedule.getNewAvailability().size(),1);
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("26-02-2021", "8:00-18:00"));
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
+    }
+
+    // Test with no concurrent tasks, different dates
+    @Test()
+    public void testCombineAvailability2() {
+        schedule.addAvailability("26-02-2021","8:00-9:00");
+        schedule.addAvailability("27-02-2021","9:00-12:15");
+        schedule.addAvailability("28-02-2021","12:15-18:00");
+        assertEquals(schedule.getNewAvailability().size(),3);
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("26-02-2021", "8:00-9:00"));
+        testAvail.add(new Availability("27-02-2021","9:00-12:15"));
+        testAvail.add(new Availability("28-02-2021","12:15-18:00"));
+        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
     }
 
     /* Create basic availability for the scheduling algorithm */
@@ -289,7 +348,8 @@ public class TaskSchedulerTest {
         }
     }
 
-    /** Test of creating optimal schedule with 1 task **/
+    /** Tests of the createSchedule method */
+    // Test with 1 task
     @Test()
     public void testCreateSchedule() {
         createBasicAvailability();
@@ -310,8 +370,7 @@ public class TaskSchedulerTest {
         }
     }
 
-
-    /** Test of creating optimal schedule with 2 tasks **/
+    // Test with 2 tasks
     @Test()
     public void testCreateSchedule2() {
         createBasicAvailability();
@@ -333,7 +392,7 @@ public class TaskSchedulerTest {
         }
     }
     
-    /** Test of creating optimal schedule with 3 tasks **/
+    // Test with 3 tasks
     @Test()
     public void testCreateSchedule3() {
         createBasicAvailability();
@@ -357,8 +416,7 @@ public class TaskSchedulerTest {
         }
     }
 
-
-    /** Test of creating optimal schedule with no set availability **/
+    // Test with no set availability **/
     @Test(expected = IllegalArgumentException.class)
     public void testCreateSchedule4() {
         schedule.addTask("task1", "1:30","a","b",
@@ -367,7 +425,7 @@ public class TaskSchedulerTest {
         fail("should have thrown "+ IllegalArgumentException.class);
     }
 
-    /** Test of creating optimal schedule with 3 tasks **/
+    // Test  with 3 tasks
     @Test()
     public void testCreateSchedule5() {
         createBasicAvailability();
@@ -405,7 +463,7 @@ public class TaskSchedulerTest {
         }
     }
     
-    /** Test of creating optimal schedule with 2 tasks on same day **/
+    // Test with 2 tasks on same day
     @Test()
     public void testCreateSchedule6() {
         createBasicAvailability();
@@ -425,6 +483,17 @@ public class TaskSchedulerTest {
             assertEquals(e.getDate(),newAvail.get(index).getDate());
             assertEquals(e.getDuration(), newAvail.get(index).getDuration());
         }
+    }
+
+    // Test with unplanned task
+    @Test()
+    public void testCreateSchedule7() {
+        createBasicAvailability();
+        schedule.addTask("task1", "100:30","a","b",
+                "16-02-2021", "14-01-2021");
+        schedule.createSchedule();
+        assertEquals(schedule.getSchedule().size(), 0);
+        assertEquals(schedule.getTaskList().size(), 1);
     }
 
     /** Tests of the setIntensity method */
@@ -544,32 +613,35 @@ public class TaskSchedulerTest {
     }
 
     /** Tests of the resetSchedule method */
-    // Test with 1 un-split task
+    // Test with 2 un-split tasks
     @Test()
     public void testResetSchedule() {
         createBasicAvailability();
         schedule.addTask("task1", "1:30","a","b",
                 "16-02-2021", "14-01-2021");
-
-        //        assertEquals(schedule.getTaskList().size(), 1);
-//        schedule.createSchedule();
-//        assertEquals(schedule.getTaskList().size(), 0);
-//        assertEquals(schedule.getSchedule().size(), 1);
-//        schedule.resetSchedule(); // reset the schedule, tasks should be back in task list
-//        assertEquals(schedule.getTaskList().size(), 1);
-//        assertEquals(schedule.getSchedule().size(), 0);
+        schedule.addTask("task2", "5:30","a","b",
+                "19-02-2021", "14-01-2021");
+        schedule.createSchedule();
+        assertEquals(schedule.getTaskList().size(), 0);
+        assertEquals(schedule.getSchedule().size(), 2);
+        schedule.resetSchedule();
+        assertEquals(schedule.getTaskList().size(), 2);
+        assertEquals(schedule.getSchedule().size(), 0);
     }
 
     // Test with 1 split task
     @Test()
     public void testResetSchedule2() {
-        createBasicAvailability();
-        schedule.addTask("task1", "8:00","normal","b",
+        createAdvancedAvailability();
+        schedule.addTask("task1", "8:30","normal","b",
                 "28-02-2021", "14-01-2021");
+        schedule.createSchedule();
+        assertEquals(schedule.getTaskList().size(), 0);
+        assertEquals(schedule.getSchedule().size(), 3);
+        schedule.resetSchedule();
+        assertEquals(schedule.getTaskList().size(), 3);
+        assertEquals(schedule.getSchedule().size(), 0);
 
-        for ( Task e : schedule.getTaskList()) {
-          //  System.out.println(e.getName() + ":" + e.getDuration());
-        }
 //
 //
 //        assertEquals(schedule.getTaskList().size(), 2);

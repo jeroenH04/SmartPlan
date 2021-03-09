@@ -97,36 +97,25 @@ public class TaskScheduler {
      * @throws IllegalArgumentException if pre is violated
      */
     public void completeTask(String taskName) {
-        boolean found = false;
         for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
             for (Task e : entry.getValue().keySet()) {
                 if (e.getName().equals(taskName)) {
-                    found = true;
+                    // get the time of the task
+                    String time = entry.getValue().values().toString();
+                    time = time.substring(1, time.length() - 1);
 
+                    addAvailability(entry.getKey(), time); // add back the availability
                     entry.getValue().remove(e); // remove task from the array
-             //       System.out.println(entry.getValue());
-
-                    // Reset availability to original value
-//                    for (Availability avail : availabilityList) {
-//                        if (avail.getDate().equals(entry.getKey()) ) {
-//                            break;
-//                        }
-//                    }
-
-                 //   updateTime(String startTime, int duration)
-
 
                     if (entry.getValue().isEmpty()) { // check if the array is now empty
                         schedule.remove(entry.getKey()); // remove date in schedule
                     }
                     return;
-
                 }
             }
         }
-        if (!found) {
-            throw new IllegalArgumentException("There exists no task in the schedule with this name");
-        }
+        throw new IllegalArgumentException("There exists no task in the schedule with this name");
+
     }
 
     /* Add availability of user
@@ -147,6 +136,32 @@ public class TaskScheduler {
         }
         Availability avail = new Availability(date, time);
         availabilityList.add(avail);
+        combineAvailability(availabilityList);
+    }
+
+    /* Combine availability that occur on the same date and after each other
+    *
+    * @param ArrayList<Availability> availabilityList
+    * @modifies availabilityList
+     */
+    public void combineAvailability(ArrayList<Availability> availabilityList) {
+        for (Availability avail : availabilityList) {
+            for (Availability avail2 : availabilityList) {
+                // Check if the date of both availabilities are the same and the end time of the
+                // first time equals the start time of the second availability
+                if (availabilityList.indexOf(avail) != availabilityList.indexOf(avail2) &&
+                    avail.getDate().equals(avail2.getDate()) &&
+                    avail.getEndTime().equals(avail2.getStartTime())) {
+                    // remove both availabilities
+                    removeAvailability(avail.getDate(), avail.getDuration());
+                    removeAvailability(avail2.getDate(), avail2.getDuration());
+                    // merge the availabilities together
+                    addAvailability(avail.getDate(), avail.getStartTime() + "-" + avail2.getEndTime());
+                    combineAvailability(availabilityList); // continue recursively
+                    return;
+                }
+            }
+        }
     }
 
     /* Remove availability of user
@@ -261,6 +276,9 @@ public class TaskScheduler {
             throw new IllegalArgumentException("no availability has been set");
         }
 
+        // Create ArrayList for tasks that are unplanned, i.e. no available date in availability
+        ArrayList<Task> unPlannedTasks = new ArrayList<>();
+
         // Copy ArrayList to temporary array to avoid ConcurentModificationException
         ArrayList<Task> tasksToSplit = new ArrayList<>(taskList);
         for (Task e : tasksToSplit) {
@@ -296,7 +314,7 @@ public class TaskScheduler {
                 }
             }
             if (bestDate.equals("")) { // no date available
-                System.out.println("no date available for task: " + e.getName() + ":" + e.getDuration());
+                unPlannedTasks.add(e);
             } else {
                 // Check if there is already a task planned for this date, if so, add the task
                 // to the existing ArrayList
@@ -308,7 +326,8 @@ public class TaskScheduler {
                 schedule.put(bestDate, tasksOnDate); // add the updated ArrayList to the schedule
             }
         }
-        taskList.clear(); // all tasks are planned (if possible), remove all tasks from the list
+        clearTasklist();
+        taskList.addAll(unPlannedTasks); // place back the unplanned tasks
     }
 
     /* Check if no subtasks of a task is planned on the same date
@@ -448,12 +467,8 @@ public class TaskScheduler {
         for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
             for (Map.Entry<Task, String> entry2 : entry.getValue().entrySet()) {
                 taskList.add(entry2.getKey()); // add task back to the split task list
-
-//                System.out.println(entry.getKey() + " : " + entry2.getKey().getName() + " : " +
-//                        entry2.getKey().getDuration() + " : " + entry2.getValue());
             }
         }
-
         schedule.clear(); // clear the schedule
     }
 
