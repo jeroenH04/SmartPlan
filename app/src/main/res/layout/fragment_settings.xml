@@ -17,24 +17,23 @@
         android:textSize="48sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.187"
+        app:layout_constraintHorizontal_bias="0.076"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.094" />
+        app:layout_constraintVertical_bias="0.052" />
 
     <TextView
         android:id="@+id/resetPlanTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="I would like to reset ALL the plannings"
         android:textColor="#000000"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/signOut"
+        app:layout_constraintEnd_toEndOf="@+id/Settings"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/signOut"
-        app:layout_constraintTop_toBottomOf="@+id/signOut"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintStart_toStartOf="@+id/Settings"
+        app:layout_constraintTop_toBottomOf="@+id/Settings" />
 
     <Button
         android:id="@+id/resetPlanBtn"
@@ -61,7 +60,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/resetPlanBtn"
         app:layout_constraintTop_toBottomOf="@+id/resetPlanBtn"
-        app:layout_constraintVertical_bias="0.019" />
+        app:layout_constraintVertical_bias="0.118" />
 
     <Button
         android:id="@+id/aiPrefBtn"
@@ -197,10 +196,10 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintHorizontal_bias="0.469"
         app:layout_constraintStart_toEndOf="@+id/switch2"
         app:layout_constraintTop_toBottomOf="@+id/textView12"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintVertical_bias="0.026" />
 
     <TextView
         android:id="@+id/textView14"
@@ -210,10 +209,10 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintHorizontal_bias="0.757"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView13"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintVertical_bias="0.049" />
 
     <Switch
         android:id="@+id/switch1"
@@ -248,18 +247,18 @@
         app:layout_constraintTop_toBottomOf="@+id/switch2"
         app:layout_constraintVertical_bias="0.02" />
 
-    <Button
-        android:id="@+id/signOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#FB4E27"
-        android:onClick="logout"
-        android:text="Sign out"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/Settings"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/Settings"
-        app:layout_constraintTop_toBottomOf="@+id/Settings"
-        app:layout_constraintVertical_bias="0.013" />
+<!--    <Button-->
+<!--        android:id="@+id/signOut"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#FB4E27"-->
+<!--        android:onClick="logout"-->
+<!--        android:text="Sign out"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/Settings"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/Settings"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/Settings"-->
+<!--        app:layout_constraintVertical_bias="0.013" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

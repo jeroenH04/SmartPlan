@@ -308,7 +308,7 @@ public class DashboardFragment extends Fragment {
             @SuppressLint("UseCompatLoadingForDrawables") Drawable img = button.getContext().getDrawable(R.drawable.ic_baseline_info_24);
             button.setCompoundDrawablesWithIntrinsicBounds(null, null, img, null); // set icon on the right of button
             button.setId(name.hashCode()); // get unique ID from name
-            button.setBackgroundResource(R.color.colorPrimaryDark);
+            button.setBackgroundResource(R.drawable.customborder);
             buttonArrayList.add(button);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override

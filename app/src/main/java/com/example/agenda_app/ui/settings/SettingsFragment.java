@@ -41,6 +41,7 @@ public class SettingsFragment extends Fragment {
 
     TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
@@ -72,6 +73,11 @@ public class SettingsFragment extends Fragment {
         infoDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
+                if (scheduler.getSchedule().size() != 0) {
+                    if (alertDeleteSchedule(availabilityPopUpView)) {
+                        scheduler.resetSchedule(); // reset the schedule
+                    }
+                }
                 scheduler.removeAvailability(date, time); // remove the task from the task list
                 drawAvailability(availabilityPopUpView); // redraw the availability buttons
                 buttonArrayList.remove(button); // remove the button from the ArrayList
@@ -108,12 +114,40 @@ public class SettingsFragment extends Fragment {
         alertDialog.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
+                if (scheduler.getSchedule().size() != 0) {
+                    if (alertDeleteSchedule(availabilityPopUpView)) {
+                        scheduler.resetSchedule(); // reset the schedule
+                    }
+                }
                 scheduler.clearAvailability(); // clear the tasklist
                 drawAvailability(availabilityPopUpView); // clear all the buttons from the screen
                 buttonArrayList.clear(); // clear the button ArrayList
             }
         });
         alertDialog.show();
+    }
+
+    // Method to create alert for deletion of schedule pop-up
+    private boolean alertDeleteSchedule(final View availabilityPopUpView) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
+        final boolean[] deleteSchedule = new boolean[1];
+        alertDialog.setTitle( "Alert" )
+                .setIcon(R.drawable.ic_baseline_error_outline_24)
+                .setMessage("Do you want to reset your created schedule?")
+                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        deleteSchedule[0] = false;
+                    }
+
+                });
+        alertDialog.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void onClick(DialogInterface dialoginterface, int i) {
+                deleteSchedule[0] = true;
+            }
+        });
+        alertDialog.show();
+        return deleteSchedule[0];
     }
 
     /* Create new dialog to show the availability of/to the user
@@ -277,7 +311,7 @@ public class SettingsFragment extends Fragment {
                 @SuppressLint("UseCompatLoadingForDrawables") Drawable img = button.getContext().getDrawable(R.drawable.ic_baseline_info_24);
                 button.setCompoundDrawablesWithIntrinsicBounds(null, null, img, null); // set icon on the right of button
                 button.setId(btnName.hashCode()); // get unique ID from name
-                button.setBackgroundResource(R.color.colorPrimaryDark);
+                button.setBackgroundResource(R.drawable.customborder);
                 buttonArrayList.add(button); // add the button to the ArrayList
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
