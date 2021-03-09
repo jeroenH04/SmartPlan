@@ -41,7 +41,6 @@ public class SettingsFragment extends Fragment {
 
     TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);

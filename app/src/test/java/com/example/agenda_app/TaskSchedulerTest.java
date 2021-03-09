@@ -159,6 +159,31 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getTaskList().size(), 2);
     }
 
+    /** Tests of the combineTask method */
+    // Test with 3 subtasks of 1 task
+    @Test()
+    public void testCombineTask() {
+        schedule.addTask("homework1.1", "2:00","normal","b",
+                "08-02-2020", "18-01-2020");
+        schedule.addTask("homework1.2", "2:00","normal","b",
+                "09-02-2020", "18-01-2020");
+        schedule.addTask("homework1.3", "0:30","normal","b",
+                "09-02-2020", "18-01-2020");
+        assertEquals(schedule.getTaskList().size(), 1);
+    }
+
+    // Test with 2 subtasks and 1 main task of 1 task
+    @Test()
+    public void testCombineTask2() {
+        schedule.addTask("homework1", "2:00","normal","b",
+                "08-02-2020", "18-01-2020");
+        schedule.addTask("homework1.2", "2:00","normal","b",
+                "09-02-2020", "18-01-2020");
+        schedule.addTask("homework1.3", "0:30","normal","b",
+                "09-02-2020", "18-01-2020");
+        assertEquals(schedule.getTaskList().size(), 1);
+    }
+
     /** Tests of the removeTask method */
     // Test with 1 task
     @Test()
@@ -287,7 +312,7 @@ public class TaskSchedulerTest {
     }
 
     /** Tests of the combineAvailability method */
-    // Test with 3 concurrent tasks
+    // Test with 3 concurrent availabilities
     @Test()
     public void testCombineAvailability() {
         schedule.addAvailability("26-02-2021","8:00-9:00");
@@ -304,7 +329,7 @@ public class TaskSchedulerTest {
         }
     }
 
-    // Test with no concurrent tasks, different dates
+    // Test with no concurrent availabilities, different dates
     @Test()
     public void testCombineAvailability2() {
         schedule.addAvailability("26-02-2021","8:00-9:00");
@@ -637,19 +662,26 @@ public class TaskSchedulerTest {
                 "28-02-2021", "14-01-2021");
         schedule.createSchedule();
         assertEquals(schedule.getTaskList().size(), 0);
-        assertEquals(schedule.getSchedule().size(), 3);
         schedule.resetSchedule();
-        assertEquals(schedule.getTaskList().size(), 3);
+        assertEquals(schedule.getTaskList().size(), 1);
         assertEquals(schedule.getSchedule().size(), 0);
+        System.out.println(schedule.getTaskList());
+    }
 
-//
-//
-//        assertEquals(schedule.getTaskList().size(), 2);
-//        schedule.createSchedule();
-//        assertEquals(schedule.getTaskList().size(), 0);
-//        assertEquals(schedule.getSchedule().size(), 1);
-//        schedule.resetSchedule(); // reset the schedule, tasks should be back in task list
-//        assertEquals(schedule.getTaskList().size(), 2);
-//        assertEquals(schedule.getSchedule().size(), 0);
+    // Test with 2 split tasks
+    @Test()
+    public void testResetSchedule3() {
+        createAdvancedAvailability();
+        schedule.addTask("task1", "8:30","normal","b",
+                "28-02-2021", "14-01-2021");
+        schedule.addTask("task12", "5:00","relaxed","b",
+                "28-02-2021", "14-01-2021");
+        schedule.createSchedule();
+        showCreatedSchedule();
+        assertEquals(schedule.getTaskList().size(), 0);
+        schedule.resetSchedule();
+        assertEquals(schedule.getTaskList().size(), 2);
+        assertEquals(schedule.getSchedule().size(), 0);
+        System.out.println(schedule.getTaskList());
     }
 }

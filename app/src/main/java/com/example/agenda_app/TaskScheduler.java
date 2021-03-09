@@ -64,6 +64,52 @@ public class TaskScheduler {
         // create a new Task object and add it to the task lists
         Task task = new Task(name, duration, intensity, difficulty, deadline, today, totalTime);
         taskList.add(task);
+        combineTask(taskList);
+    }
+
+    /* Combine subtasks of a task into one task again
+     *
+     * @param ArrayList<Task> taskList
+     * @modifies taskList
+     */
+    public void combineTask(ArrayList<Task> taskList) {
+        for (Task task : taskList) {
+            for (Task task2 : taskList) {
+                String taskName = task.getName();
+                String taskName2 = task2.getName();
+                String newTime = updateTime(task.getDuration(), task2.getTotalTime());
+                if (taskList.indexOf(task) != taskList.indexOf(task2)) {
+                    // Two subtasks
+                    if ( task.getName().contains(".") && task2.getName().contains(".") &&
+                            taskName.substring(0, taskName.length() - 1).equals(
+                            taskName2.substring(0, taskName2.length() - 1)) ) {
+                        // remove old tasks
+                        removeTask(taskName);
+                        removeTask(taskName2);
+
+                        // add new (merged) task
+                        addTask(taskName.substring(0, taskName.length() - 2), newTime,
+                                task.getIntensity(), task.getDifficulty(), task.getDeadline(),
+                                task.getToday());
+                        combineTask(taskList); // continue recursively
+                        return;
+                    // One main task, one subtask
+                    } else if ( task2.getName().contains(".") &&
+                            taskName.equals(taskName2.substring(0, taskName2.length() - 2)) ) {
+                        // remove old tasks
+                        removeTask(taskName);
+                        removeTask(taskName2);
+
+                        // add new (merged) task
+                        addTask(taskName, newTime,
+                                task.getIntensity(), task.getDifficulty(), task.getDeadline(),
+                                task.getToday());
+                        combineTask(taskList); // continue recursively
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     /* Remove task from task list
@@ -463,13 +509,18 @@ public class TaskScheduler {
     /* Reset created schedule and move all tasks back into the tasklist
      */
     public void resetSchedule() {
+        ArrayList<Task> addToTaskList = new ArrayList<>();
         Map<String, Map<Task, String>> createdSchedule = getSchedule();
         for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
             for (Map.Entry<Task, String> entry2 : entry.getValue().entrySet()) {
-                taskList.add(entry2.getKey()); // add task back to the split task list
+                addToTaskList.add(entry2.getKey()); // add the task to the ArrayList
             }
         }
         schedule.clear(); // clear the schedule
+        for (Task task : addToTaskList) {
+            addTask(task.getName(), task.getDuration(), task.getIntensity(),
+                    task.getDifficulty(), task.getDeadline(), task.getToday()); // add task back to the split task list
+        }
     }
 
     /* Get created schedule
