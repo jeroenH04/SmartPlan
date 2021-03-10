@@ -57,10 +57,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/resetPlanBtn"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.011"
         app:layout_constraintStart_toStartOf="@+id/resetPlanBtn"
         app:layout_constraintTop_toBottomOf="@+id/resetPlanBtn"
-        app:layout_constraintVertical_bias="0.118" />
+        app:layout_constraintVertical_bias="0.044" />
 
     <Button
         android:id="@+id/aiPrefBtn"
@@ -87,25 +87,26 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/aiPrefBtn"
         app:layout_constraintTop_toBottomOf="@+id/aiPrefBtn"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintVertical_bias="0.039" />
 
     <Button
         android:id="@+id/setAvailability"
         android:layout_width="219dp"
         android:layout_height="36dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginEnd="128dp"
         android:background="@color/colorAccent"
         android:text="View/Change Availability"
-        app:layout_constraintEnd_toEndOf="@+id/intenseTxt"
-        app:layout_constraintHorizontal_bias="0.023"
-        app:layout_constraintStart_toStartOf="@+id/intenseTxt"
-        app:layout_constraintTop_toBottomOf="@+id/intenseTxt" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.11" />
 
     <TextView
         android:id="@+id/delAcntTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="120dp"
         android:text="I would like to delete my account forever"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -114,14 +115,13 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/setAvailability"
         app:layout_constraintTop_toBottomOf="@+id/setAvailability"
-        app:layout_constraintVertical_bias="0.412" />
+        app:layout_constraintVertical_bias="0.12" />
 
     <Button
         android:id="@+id/delAcntBtn"
         android:layout_width="171dp"
         android:layout_height="37dp"
         android:layout_marginTop="11dp"
-        android:layout_marginBottom="72dp"
         android:background="#FB4E27"
         android:text="Delete Account"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -131,134 +131,125 @@
         app:layout_constraintTop_toBottomOf="@+id/delAcntTxt"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/relaxTxt"
-        android:layout_width="71dp"
-        android:layout_height="20dp"
-        android:text="RELAX:"
-        android:textColor="#000000"
-        android:textSize="18sp"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/ampTxt"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ampTxt"
         app:layout_constraintTop_toBottomOf="@+id/ampTxt"
-        app:layout_constraintVertical_bias="0.024" />
+        app:layout_constraintVertical_bias="0.021">
 
-    <TextView
-        android:id="@+id/normalTxt"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RELAX:" />
+
+        <EditText
+            android:id="@+id/editTextNumber6"
+            android:layout_width="3dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="146dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="h for each task" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="349dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="244dp"
-        android:text="NORMAL:"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/relaxTxt"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/relaxTxt"
-        app:layout_constraintTop_toBottomOf="@+id/relaxTxt"
-        app:layout_constraintVertical_bias="0.102" />
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-    <TextView
-        android:id="@+id/intenseTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="200dp"
-        android:text="INTENSE:"
-        android:textColor="#000000"
-        android:textSize="18sp"
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="NORMAL:" />
+
+        <EditText
+            android:id="@+id/editTextNumber7"
+            android:layout_width="3dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="142dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="h for each task" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="347dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/normalTxt"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/normalTxt"
-        app:layout_constraintTop_toBottomOf="@+id/normalTxt"
-        app:layout_constraintVertical_bias="0.101" />
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.026">
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="h for each task"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.467"
-        app:layout_constraintStart_toEndOf="@+id/switch1"
-        app:layout_constraintTop_toBottomOf="@+id/ampTxt"
-        app:layout_constraintVertical_bias="0.027" />
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="INTENSE:" />
 
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="h for each task"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.469"
-        app:layout_constraintStart_toEndOf="@+id/switch2"
-        app:layout_constraintTop_toBottomOf="@+id/textView12"
-        app:layout_constraintVertical_bias="0.026" />
+        <EditText
+            android:id="@+id/editTextNumber8"
+            android:layout_width="3dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
 
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="h for each task"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.757"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13"
-        app:layout_constraintVertical_bias="0.049" />
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="142dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="h for each task" />
+    </LinearLayout>
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.132"
-        app:layout_constraintStart_toEndOf="@+id/relaxTxt"
-        app:layout_constraintTop_toBottomOf="@+id/ampTxt"
-        app:layout_constraintVertical_bias="0.025" />
-
-    <Switch
-        android:id="@+id/switch2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.11"
-        app:layout_constraintStart_toEndOf="@+id/normalTxt"
-        app:layout_constraintTop_toBottomOf="@+id/switch1"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Switch
-        android:id="@+id/switch3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.11"
-        app:layout_constraintStart_toEndOf="@+id/intenseTxt"
-        app:layout_constraintTop_toBottomOf="@+id/switch2"
-        app:layout_constraintVertical_bias="0.02" />
-
-<!--    <Button-->
-<!--        android:id="@+id/signOut"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="#FB4E27"-->
-<!--        android:onClick="logout"-->
-<!--        android:text="Sign out"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/Settings"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/Settings"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/Settings"-->
-<!--        app:layout_constraintVertical_bias="0.013" />-->
+    <!--    <Button-->
+    <!--        android:id="@+id/signOut"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="#FB4E27"-->
+    <!--        android:onClick="logout"-->
+    <!--        android:text="Sign out"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/Settings"-->
+    <!--        app:layout_constraintHorizontal_bias="0.0"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/Settings"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/Settings"-->
+    <!--        app:layout_constraintVertical_bias="0.013" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
