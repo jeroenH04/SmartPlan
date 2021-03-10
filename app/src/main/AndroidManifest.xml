@@ -23,7 +23,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"  android:screenOrientation="sensor">  </activity>
-        <activity android:name=".ResetPwPopUp" android:screenOrientation="sensor"> </activity>
     </application>
 
 </manifest>
