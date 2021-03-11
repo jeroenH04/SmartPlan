@@ -46,13 +46,11 @@ public class SettingsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        EditText editRelaxNumber = root.findViewById(R.id.editRelaxNumber);
-        EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
-        EditText editIntenseNumber = root.findViewById(R.id.editIntenseNumber);
+        final EditText editRelaxNumber = root.findViewById(R.id.editRelaxNumber);
+        final EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
+        final EditText editIntenseNumber = root.findViewById(R.id.editIntenseNumber);
 
-        final int relaxNumber = Integer.parseInt(String.valueOf(editRelaxNumber));
-        final int normalNumber = Integer.parseInt(String.valueOf(editNormalNumber));
-        final int intenseNumber = Integer.parseInt(String.valueOf(editIntenseNumber));
+
 
         Button setAvailability = (Button) root.findViewById(R.id.setAvailability);
         setAvailability.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +66,9 @@ public class SettingsFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
+                final int relaxNumber = Integer.parseInt(editRelaxNumber.getText().toString());
+                final int normalNumber = Integer.parseInt(editNormalNumber.getText().toString());
+                final int intenseNumber = Integer.parseInt(editIntenseNumber.getText().toString());
                 changeIntensity(relaxNumber, normalNumber, intenseNumber);
             }
         });
