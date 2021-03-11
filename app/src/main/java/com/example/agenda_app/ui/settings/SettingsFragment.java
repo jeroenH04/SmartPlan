@@ -69,18 +69,11 @@ public class SettingsFragment extends Fragment {
                 final int relaxNumber = Integer.parseInt(editRelaxNumber.getText().toString());
                 final int normalNumber = Integer.parseInt(editNormalNumber.getText().toString());
                 final int intenseNumber = Integer.parseInt(editIntenseNumber.getText().toString());
-                changeIntensity(relaxNumber, normalNumber, intenseNumber);
+                scheduler.setIntensity(relaxNumber, normalNumber, intenseNumber);
             }
         });
 
         return root;
-    }
-
-    /*
-    Method to save and change the intensity numbers
-     */
-    private void changeIntensity(int relaxNumber, int normalNumber, int intenseNumber) {
-        scheduler.setIntensity(relaxNumber, normalNumber, intenseNumber);
     }
 
     // Method to create info pop-up for availability
