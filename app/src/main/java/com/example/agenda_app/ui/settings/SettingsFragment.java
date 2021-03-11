@@ -50,8 +50,6 @@ public class SettingsFragment extends Fragment {
         final EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
         final EditText editIntenseNumber = root.findViewById(R.id.editIntenseNumber);
 
-
-
         Button setAvailability = (Button) root.findViewById(R.id.setAvailability);
         setAvailability.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -66,10 +64,18 @@ public class SettingsFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
-                final int relaxNumber = Integer.parseInt(editRelaxNumber.getText().toString());
-                final int normalNumber = Integer.parseInt(editNormalNumber.getText().toString());
-                final int intenseNumber = Integer.parseInt(editIntenseNumber.getText().toString());
-                scheduler.setIntensity(relaxNumber, normalNumber, intenseNumber);
+                try {
+                    final int relaxNumber = Integer.parseInt(editRelaxNumber.getText().toString());
+                    final int normalNumber = Integer.parseInt(editNormalNumber.getText().toString());
+                    final int intenseNumber = Integer.parseInt(editIntenseNumber.getText().toString());
+                    scheduler.setIntensity(relaxNumber, normalNumber, intenseNumber);
+                } catch (Exception e) {
+                    if (e.getMessage().equals("intensity <= 0")) {
+                        alertView("Intensity Preferences needs to be at least 1h or higher");
+                    } else {
+                        alertView("Please fill in all details.");
+                    }
+                }
             }
         });
 
