@@ -42,10 +42,17 @@ public class SettingsFragment extends Fragment {
     TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
 
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        EditText editRelaxNumber = root.findViewById(R.id.editRelaxNumber);
+        EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
+        EditText editIntenseNumber = root.findViewById(R.id.editIntenseNumber);
+
+        final int relaxNumber = Integer.parseInt(String.valueOf(editRelaxNumber));
+        final int normalNumber = Integer.parseInt(String.valueOf(editNormalNumber));
+        final int intenseNumber = Integer.parseInt(String.valueOf(editIntenseNumber));
 
         Button setAvailability = (Button) root.findViewById(R.id.setAvailability);
         setAvailability.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +62,24 @@ public class SettingsFragment extends Fragment {
                 createNewAvailabilityDialog();
             }
         });
+
+        Button btn_save = (Button) root.findViewById(R.id.btn_save);
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                changeIntensity(relaxNumber, normalNumber, intenseNumber);
+            }
+        });
+
         return root;
+    }
+
+    /*
+    Method to save and change the intensity numbers
+     */
+    private void changeIntensity(int relaxNumber, int normalNumber, int intenseNumber) {
+        scheduler.setIntensity(relaxNumber, normalNumber, intenseNumber);
     }
 
     // Method to create info pop-up for availability

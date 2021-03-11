@@ -86,11 +86,11 @@
         app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/linearLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/setIntensity"
+        app:layout_constraintTop_toBottomOf="@+id/btn_save"
         app:layout_constraintVertical_bias="0.108" />
 
     <Button
-        android:id="@+id/setIntensity"
+        android:id="@+id/btn_save"
         android:layout_width="76dp"
         android:layout_height="29dp"
         android:layout_marginTop="8dp"
@@ -204,8 +204,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="347dp"
-        android:layout_height="37dp"
+        android:layout_width="349dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
