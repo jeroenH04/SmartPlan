@@ -36,7 +36,7 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         Button btn = (Button)findViewById(R.id.regBtn);
-        Button test = (Button)findViewById(R.id.test);
+        
         TextView signIn = (TextView)findViewById(R.id.signIn);
         final FirebaseAuth fAuth;
         final ProgressBar pBar;
@@ -120,12 +120,7 @@ public class Register extends AppCompatActivity {
             }
         });
 
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+       
 
 
     }
