@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
 
     //Realtime Database
-    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-firestore'
 
 
 }
