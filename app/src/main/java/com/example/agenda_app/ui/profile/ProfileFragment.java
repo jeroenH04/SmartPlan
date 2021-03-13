@@ -3,11 +3,13 @@ package com.example.agenda_app.ui.profile;
 import android.app.AlertDialog;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,12 +19,35 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.agenda_app.MainActivity;
 import com.example.agenda_app.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 public class ProfileFragment extends Fragment {
 
     private AlertDialog dialog;
     private AlertDialog dialogShow;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +61,29 @@ public class ProfileFragment extends Fragment {
                 createNewResetPassDialog();
             }
         });
+
+        final TextView emailField = (TextView) root.findViewById(R.id.setEmail);
+        final TextView usernameField = (TextView) root.findViewById(R.id.setUserName);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        emailField.setText( user.getEmail() ); // get the email of the current user
+
+        db.collection("users")
+                // Find the data of the user where the ID is equal to the current user
+                .whereEqualTo(FieldPath.documentId(),user.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                usernameField.setText((CharSequence) document.get("Username"));
+                            }
+                        }
+                    }
+                });
+
         return root;
     }
 

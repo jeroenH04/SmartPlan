@@ -139,7 +139,7 @@
         android:layout_width="196dp"
         android:layout_height="43dp"
         android:text="Email"
-        android:textSize="20sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView6"
         app:layout_constraintEnd_toEndOf="@+id/textView6"
         app:layout_constraintHorizontal_bias="0.576"
