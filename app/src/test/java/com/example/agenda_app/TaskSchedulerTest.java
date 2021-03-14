@@ -567,7 +567,7 @@ public class TaskSchedulerTest {
         Task task = new Task("task1", "1:00","normal","b",
                 "16-02-2021", "14-01-2021", 60);
         schedule.checkIntensity(task);
-        assertEquals(schedule.getTaskList().size(), 1);
+        assertEquals(schedule.getTaskList().size(), 0);
     }
 
     // Test with intensity = normal, duration > normal duration (4 hours)
@@ -585,7 +585,7 @@ public class TaskSchedulerTest {
         Task task = new Task("task1", "1:00","intense","b",
                 "16-02-2021", "14-01-2021", 60);
         schedule.checkIntensity(task);
-        assertEquals(schedule.getTaskList().size(), 1);
+        assertEquals(schedule.getTaskList().size(), 0);
     }
 
     // Test with intensity = intense, duration > normal duration (8 hours)

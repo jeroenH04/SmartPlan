@@ -287,6 +287,11 @@ public class TaskScheduler {
             default:
                 return;
         }
+
+        if (getDurationMinutes(task.getDuration()) <= intensityNumber ) {
+            return;
+        }
+
         // calculate the new number of new tasks
         numberOfTasks = (int) Math.ceil(getDurationMinutes(task.getDuration()) /
                 (double) intensityNumber);
