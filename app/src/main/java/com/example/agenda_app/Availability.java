@@ -7,6 +7,8 @@ public class Availability {
     private String duration;
     private String availableTime;
 
+    public Availability() {}
+
     public Availability(String date, String duration) {
         this.date = date;
         this.duration = duration;

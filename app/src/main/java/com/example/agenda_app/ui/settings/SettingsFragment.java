@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,13 @@ import androidx.fragment.app.Fragment;
 import com.example.agenda_app.Availability;
 import com.example.agenda_app.R;
 import com.example.agenda_app.TaskScheduler;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -32,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 public class SettingsFragment extends Fragment {
     private AlertDialog dialog;
@@ -39,12 +48,24 @@ public class SettingsFragment extends Fragment {
     private int buttonCount;
     private final ArrayList<Button> buttonArrayList = new ArrayList<>();
 
-    TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    TaskScheduler scheduler;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        // Get the scheduler object from the database
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                scheduler = documentSnapshot.toObject(TaskScheduler.class);
+            }
+        });
 
         final EditText editRelaxNumber = root.findViewById(R.id.editRelaxNumber);
         final EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
@@ -69,6 +90,7 @@ public class SettingsFragment extends Fragment {
                     final int normalNumber = Integer.parseInt(editNormalNumber.getText().toString());
                     final int intenseNumber = Integer.parseInt(editIntenseNumber.getText().toString());
                     scheduler.setIntensity(relaxNumber, normalNumber, intenseNumber);
+                    updateDatabase();
                 } catch (Exception e) {
                     if (e.getMessage().equals("intensity <= 0")) {
                         alertView("Intensity Preferences needs to be at least 1h or higher");
@@ -104,6 +126,7 @@ public class SettingsFragment extends Fragment {
                     }
                 }
                 scheduler.removeAvailability(date, time); // remove the task from the task list
+                updateDatabase();
                 drawAvailability(availabilityPopUpView); // redraw the availability buttons
                 buttonArrayList.remove(button); // remove the button from the ArrayList
             }
@@ -145,6 +168,7 @@ public class SettingsFragment extends Fragment {
                     }
                 }
                 scheduler.clearAvailability(); // clear the tasklist
+                updateDatabase();
                 drawAvailability(availabilityPopUpView); // clear all the buttons from the screen
                 buttonArrayList.clear(); // clear the button ArrayList
             }
@@ -274,6 +298,7 @@ public class SettingsFragment extends Fragment {
 
                     // Add availability to the list
                     scheduler.addAvailability(date, time1 + "-" + time2);
+                    updateDatabase();
 
                     drawAvailability(availabilityPopUpView); // Draw the availability
                     dialog.dismiss(); // Close pop-up window
@@ -356,5 +381,9 @@ public class SettingsFragment extends Fragment {
             }
         }
         buttonCount = 0; // reset button counter
+    }
+
+    public void updateDatabase() {
+        db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
     }
 }

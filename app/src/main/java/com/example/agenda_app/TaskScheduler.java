@@ -24,19 +24,23 @@ public class TaskScheduler {
     private String studyMode;
 
     // Default intensity in minutes of different modes
-    private int relaxedIntensity = 120;
-    private int normalIntensity = 240;
-    private int intenseIntensity = 480;
+    private int relaxedIntensity;
+    private int normalIntensity;
+    private int intenseIntensity;
 
     public TaskScheduler() {}
 
     public TaskScheduler(ArrayList<Task> taskList, ArrayList<Availability> availabilityList,
-                         Map<String, Map<Task,String>> schedule, String name, String studyMode) {
+                         Map<String, Map<Task,String>> schedule, String name, String studyMode,
+                         int relaxedIntensity, int normalIntensity, int intenseIntensity) {
         this.taskList = taskList;
         this.schedule = schedule;
         this.availabilityList = availabilityList;
         this.name = name; // used in the application
         this.studyMode = studyMode; // used in the application
+        this.relaxedIntensity = relaxedIntensity;
+        this.normalIntensity = normalIntensity;
+        this.intenseIntensity = intenseIntensity;
     }
 
     /*
@@ -577,6 +581,24 @@ public class TaskScheduler {
      * @returns String studyMode
      */
     public String getStudyMode() { return studyMode; }
+
+    /* Get intense intensity duration
+     *
+     * @returns int intenseIntensity
+     */
+    public int getIntenseIntensity() { return intenseIntensity; }
+
+    /* Get normal intensity duration
+     *
+     * @returns int normalIntensity
+     */
+    public int getNormalIntensity() { return normalIntensity; }
+
+    /* Get relaxed intensity duration
+     *
+     * @returns int relacedIntensity
+     */
+    public int getRelaxedIntensity() { return relaxedIntensity; }
 
 
 }
