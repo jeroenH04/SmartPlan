@@ -55,13 +55,15 @@ public class PlanningFragment extends Fragment {
         schedule.put("13-03-2021", date1);
         schedule.put("15-04-2022", date2);*/
         try {
-            taskScheduler.addAvailability("15-03-2021", "10:00 - 18:00");
-            taskScheduler.addAvailability("15-04-2021", "01:00 - 20:00");
-            taskScheduler.addAvailability("16-03-2021", "12:00 - 16:00");
-            taskScheduler.addTask("clean room", "03:30", "Normal", "Hard", "17-05-2021", "14-03-2021");
-            taskScheduler.addTask("get coffee", "02:00", "Intense", "Easy", "18-05-2021", "14-03-2021");
+            taskScheduler.addAvailability("15-03-2021", "10:00-18:00");
+            taskScheduler.addAvailability("15-04-2021", "11:00-20:00");
+            taskScheduler.addAvailability("16-04-2021", "12:00-20:00");
+            taskScheduler.addAvailability("17-04-2021", "13:00-20:00");
+            taskScheduler.addAvailability("16-05-2021", "12:00-17:00");
+            taskScheduler.addTask("clean_room", "03:30", "normal", "Hard", "17-05-2021", "14-03-2021");
+            taskScheduler.addTask("get_coffee", "02:00", "intense", "Easy", "18-05-2021", "14-03-2021");
+            taskScheduler.addTask("sleep", "16:00", "intense", "Easy", "18-05-2021", "14-03-2021");
             taskScheduler.createSchedule();
-            schedule = taskScheduler.getSchedule();
         } catch (Exception e) {
             alertView(e.getMessage());
         }
@@ -84,6 +86,7 @@ public class PlanningFragment extends Fragment {
 
     private void showPlanning(LinearLayout agenda_dash) {
         //get a set of all dates
+        schedule = taskScheduler.getSchedule();
         Set<String> dates = schedule.keySet();
 
         //for all dates j where a task is planned
