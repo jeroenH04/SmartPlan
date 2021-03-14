@@ -318,7 +318,7 @@ public class SettingsFragment extends Fragment {
         }
 
         // For each availability in the ArrayList, draw a button
-        for (Availability avail : scheduler.getNewAvailability()) {
+        for (Availability avail : scheduler.getAvailabilityList()) {
             final Button button = new Button(getActivity());
             final String btnName = avail.getDate() + ", " + avail.getDuration();
             final String date = avail.getDate();

@@ -9,6 +9,7 @@ public class Task{
     private String today;
     private int totalTime;
 
+    public Task() {}
 
     public Task(String name, String duration, String intensity, String difficulty,
                 String deadline, String today, int totalTime) {

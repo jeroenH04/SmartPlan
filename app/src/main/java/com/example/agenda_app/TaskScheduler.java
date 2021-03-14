@@ -12,13 +12,16 @@ import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
     // Initialize ArrayList containing all tasks to be scheduled
-    private ArrayList<Task> taskList = new ArrayList<>();
+    private ArrayList<Task> taskList;
 
     // Initialize ArrayList containing all availability of user
-    private ArrayList<Availability> availabilityList = new ArrayList<>();
+    private ArrayList<Availability> availabilityList;
 
     // Initialize map containing schedule (date,ArrayList<Task>)
-    private Map<String, Map<Task,String>> schedule = new HashMap<>();
+    private Map<String, Map<Task,String>> schedule;
+
+    private String name;
+    private String studyMode;
 
     // Default intensity in minutes of different modes
     private int relaxedIntensity = 120;
@@ -28,10 +31,12 @@ public class TaskScheduler {
     public TaskScheduler() {}
 
     public TaskScheduler(ArrayList<Task> taskList, ArrayList<Availability> availabilityList,
-                         Map<String, Map<Task,String>> schedule) {
+                         Map<String, Map<Task,String>> schedule, String name, String studyMode) {
         this.taskList = taskList;
         this.schedule = schedule;
         this.availabilityList = availabilityList;
+        this.name = name; // used in the application
+        this.studyMode = studyMode; // used in the application
     }
 
     /*
@@ -550,7 +555,7 @@ public class TaskScheduler {
      * @returns ArrayList<Availability> availabilityList
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public ArrayList<Availability> getNewAvailability() {
+    public ArrayList<Availability> getAvailabilityList() {
         availabilityList.sort(new DeadlineSorterAvailability());
         return availabilityList;
     }
@@ -560,5 +565,18 @@ public class TaskScheduler {
      * @returns ArrayList<Task> taskList
      */
     public ArrayList<Task> getTaskList() { return taskList; }
+
+    /* Get name
+     *
+     * @returns String name
+     */
+    public String getName() { return name; }
+
+    /* Get studyMode
+     *
+     * @returns String studyMode
+     */
+    public String getStudyMode() { return studyMode; }
+
 
 }

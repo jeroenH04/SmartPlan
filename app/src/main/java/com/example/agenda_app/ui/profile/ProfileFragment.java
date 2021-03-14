@@ -78,7 +78,7 @@ public class ProfileFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (DocumentSnapshot document : task.getResult()) {
-                                usernameField.setText((CharSequence) document.get("Username"));
+                                usernameField.setText((CharSequence) document.get("name"));
                             }
                         }
                     }
