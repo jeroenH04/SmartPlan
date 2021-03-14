@@ -12,18 +12,27 @@ import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
     // Initialize ArrayList containing all tasks to be scheduled
-    private final ArrayList<Task> taskList = new ArrayList<>();
+    private ArrayList<Task> taskList = new ArrayList<>();
 
     // Initialize ArrayList containing all availability of user
-    private final ArrayList<Availability> availabilityList = new ArrayList<>();
+    private ArrayList<Availability> availabilityList = new ArrayList<>();
 
     // Initialize map containing schedule (date,ArrayList<Task>)
-    private final Map<String, Map<Task,String>> schedule = new HashMap<>();
+    private Map<String, Map<Task,String>> schedule = new HashMap<>();
 
     // Default intensity in minutes of different modes
     private int relaxedIntensity = 120;
     private int normalIntensity = 240;
     private int intenseIntensity = 480;
+
+    public TaskScheduler() {}
+
+    public TaskScheduler(ArrayList<Task> taskList, ArrayList<Availability> availabilityList,
+                         Map<String, Map<Task,String>> schedule) {
+        this.taskList = taskList;
+        this.schedule = schedule;
+        this.availabilityList = availabilityList;
+    }
 
     /*
     * Add task to the schedule
@@ -297,7 +306,7 @@ public class TaskScheduler {
                 (double) intensityNumber);
 
         for (int i = 1; i <= numberOfTasks; ++i) {
-            if (i < numberOfTasks || (numberOfTasks * intensityNumber % intensityNumber) == 0) {
+            if (i < numberOfTasks || getDurationMinutes(task.getDuration()) % intensityNumber == 0 ) {
                 // the new duration of the first tasks is in correspondence to the intensity
                 newDuration = timeIntToString(intensityNumber);
                 newTask = new Task(task.getName() + "." + i, newDuration, task.getIntensity(),

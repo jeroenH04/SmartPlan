@@ -262,6 +262,7 @@ public class TaskSchedulerTest {
         schedule.addTask("task2", "1:00","a","b",
                 "16-02-2021", "18-01-2020");
         schedule.createSchedule();
+        showCreatedSchedule();
         assertEquals(schedule.getSchedule().size(), 3);
         schedule.completeTask("task1.2");
         assertEquals(schedule.getSchedule().size(), 2);
