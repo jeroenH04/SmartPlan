@@ -44,25 +44,15 @@ public class PlanningFragment extends Fragment {
 
         //todo remove after reading from database
         //creating test data map
-      /*  final Map<Task, String> date1 = new HashMap<>();
-        date1.put(new Task("test", "", "", "Hard", "", "", 8),"10:30-12:00");
-        date1.put(new Task("test2", "", "", "Medium", "", "", 8),"13:00-16:00");
-        final Map<Task, String> date2 = new HashMap<>();
-        date2.put(new Task("1test1", "", "", "Medium", "", "", 8),"08:30-10:00");
-        date2.put(new Task("2test2", "", "", "Medium", "", "", 8),"10:00-12:00");
-        date2.put(new Task("3test3", "", "", "Hard", "", "", 8),"12:30-14:00");
-        date2.put(new Task("4test4", "", "", "Easy", "", "", 8),"15:00-17:00");
-        schedule.put("13-03-2021", date1);
-        schedule.put("15-04-2022", date2);*/
         try {
             taskScheduler.addAvailability("15-03-2021", "10:00-18:00");
             taskScheduler.addAvailability("15-04-2021", "11:00-20:00");
             taskScheduler.addAvailability("16-04-2021", "12:00-20:00");
             taskScheduler.addAvailability("17-04-2021", "13:00-20:00");
             taskScheduler.addAvailability("16-05-2021", "12:00-17:00");
-            taskScheduler.addTask("clean_room", "03:30", "normal", "Hard", "17-05-2021", "14-03-2021");
-            taskScheduler.addTask("get_coffee", "02:00", "intense", "Easy", "18-05-2021", "14-03-2021");
-            taskScheduler.addTask("sleep", "16:00", "intense", "Easy", "18-05-2021", "14-03-2021");
+            taskScheduler.addTask("clean_room", "03:30", "normal", "hard", "17-05-2021", "14-03-2021");
+            taskScheduler.addTask("get_coffee", "02:00", "intense", "easy", "18-05-2021", "14-03-2021");
+            taskScheduler.addTask("sleep", "16:00", "intense", "easy", "18-05-2021", "14-03-2021");
             taskScheduler.createSchedule();
         } catch (Exception e) {
             alertView(e.getMessage());
@@ -144,9 +134,9 @@ public class PlanningFragment extends Fragment {
                 difficulty.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 0));
 
                 //set color based on difficulty
-                if (taskDifficulty.equals("Easy")) {
+                if (taskDifficulty.equals("easy")) {
                     difficulty.setBackgroundResource(R.color.colorEasy);
-                } else if (taskDifficulty.equals("Medium")) {
+                } else if (taskDifficulty.equals("medium")) {
                     difficulty.setBackgroundResource(R.color.colorMedium);
                 } else {
                     difficulty.setBackgroundResource(R.color.colorHard);
@@ -200,7 +190,7 @@ public class PlanningFragment extends Fragment {
         Button taskCancel = (Button) taskPopUpView.findViewById(R.id.cancelButton);
         TextView taskDeleteText = (TextView) taskPopUpView.findViewById(R.id.deleteTextView);
         //get task name from task object
-        String taskName = (String) task.getName();
+        final String taskName = (String) task.getName();
 
         //set textView to contain name of the clicked task
         taskDeleteText.setText("Delete " + taskName + " from the planning");
@@ -217,10 +207,9 @@ public class PlanningFragment extends Fragment {
                 //remove the clicked view from the UI
                 view.setVisibility(View.GONE);
                 //remove the task in the schedule
-                schedule.get(date).remove(task);
+                taskScheduler.completeTask(taskName);
                 //if las task on a date is removed also remove the date in the schedule and the date textview from the UI
-                if (schedule.get(date).isEmpty()) {
-                    schedule.remove(date);
+                if (!schedule.containsKey(date)) {
                     dateText.setVisibility(View.GONE);
                 }
                 dialog.dismiss();
