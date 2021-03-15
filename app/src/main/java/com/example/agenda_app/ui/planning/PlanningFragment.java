@@ -59,6 +59,7 @@ public class PlanningFragment extends Fragment {
             public void onClick(View v) {
                 scheduler.createSchedule();
                 updateDatabase();
+                agenda_dash.removeAllViews();
                 showPlanning(agenda_dash);
             }
         });
@@ -76,21 +77,12 @@ public class PlanningFragment extends Fragment {
         return root;
     }
 
-    private void alertView( String message ) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
-        alertDialog.setTitle( "Error!" )
-                .setIcon(R.drawable.ic_baseline_error_outline_24)
-                .setMessage(message)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialoginterface, int i) {
-                    }
-                }).show();
-    }
-
     private void showPlanning(LinearLayout agenda_dash) {
         //get a set of all dates
         schedule = scheduler.getSchedule();
      //   Set<String> dates = schedule.keySet();
+        //create a list keeping track of which dates are already displayed
+        ArrayList<String> datesDone = new ArrayList<String>();
 
         //for all dates j where a task is planned
         for (final Item i : schedule) {
@@ -98,7 +90,13 @@ public class PlanningFragment extends Fragment {
       //      Map<Task, String> taskList = schedule.get(j);
             //get a set of all tasks
        //     Set<Task> tasks = taskList.keySet();
-
+            //check if date is already displayed if it is skip
+            if (datesDone.contains(i.getDate())) {
+                break;
+            }
+            //add date to datesDone if date is not yet displayed
+            datesDone.add(i.getDate());
+            
             //create TextView for the date of the task
             final TextView date = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
