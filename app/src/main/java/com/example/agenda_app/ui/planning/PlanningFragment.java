@@ -19,12 +19,21 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
+import com.example.agenda_app.Item;
 import com.example.agenda_app.R;
 import com.example.agenda_app.Task;
 import com.example.agenda_app.TaskScheduler;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,33 +41,37 @@ import java.util.Set;
 public class PlanningFragment extends Fragment {
 
     private AlertDialog dialog;
-    private Map<String, Map<Task,String>> schedule;
-    private TaskScheduler taskScheduler = new TaskScheduler();
+    private ArrayList<Item> schedule;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    TaskScheduler scheduler;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_planning, container, false);
+        final View root = inflater.inflate(R.layout.fragment_planning, container, false);
 
-        LinearLayout agenda_dash = (LinearLayout) root.findViewById(R.id.agenda_dashboard);
+        final LinearLayout agenda_dash = (LinearLayout) root.findViewById(R.id.agenda_dashboard);
+        Button createPlanningBtn = (Button) root.findViewById(R.id.createPlanning);
+        createPlanningBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scheduler.createSchedule();
+                updateDatabase();
+                showPlanning(agenda_dash);
+            }
+        });
 
-        //todo remove after reading from database
-        //creating test data map
-        try {
-            taskScheduler.addAvailability("15-03-2021", "10:00-18:00");
-            taskScheduler.addAvailability("15-04-2021", "11:00-20:00");
-            taskScheduler.addAvailability("16-04-2021", "12:00-20:00");
-            taskScheduler.addAvailability("17-04-2021", "13:00-20:00");
-            taskScheduler.addAvailability("16-05-2021", "12:00-17:00");
-            taskScheduler.addTask("clean_room", "03:30", "normal", "hard", "17-05-2021", "14-03-2021");
-            taskScheduler.addTask("get_coffee", "02:00", "intense", "easy", "18-05-2021", "14-03-2021");
-            taskScheduler.addTask("sleep", "16:00", "intense", "easy", "18-05-2021", "14-03-2021");
-            taskScheduler.createSchedule();
-        } catch (Exception e) {
-            alertView(e.getMessage());
-        }
-
-        showPlanning(agenda_dash);
+        // Get the scheduler object from the database
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                scheduler = documentSnapshot.toObject(TaskScheduler.class);
+                showPlanning(agenda_dash);
+            }
+        });
 
         return root;
     }
@@ -76,15 +89,15 @@ public class PlanningFragment extends Fragment {
 
     private void showPlanning(LinearLayout agenda_dash) {
         //get a set of all dates
-        schedule = taskScheduler.getSchedule();
-        Set<String> dates = schedule.keySet();
+        schedule = scheduler.getSchedule();
+     //   Set<String> dates = schedule.keySet();
 
         //for all dates j where a task is planned
-        for (final String j : dates) {
+        for (final Item i : schedule) {
             //get a map containing all tasks with there time
-            Map<Task, String> taskList = schedule.get(j);
+      //      Map<Task, String> taskList = schedule.get(j);
             //get a set of all tasks
-            Set<Task> tasks = taskList.keySet();
+       //     Set<Task> tasks = taskList.keySet();
 
             //create TextView for the date of the task
             final TextView date = new TextView(getContext());
@@ -92,86 +105,88 @@ public class PlanningFragment extends Fragment {
             params.setMargins(0,50,0,0);
             date.setLayoutParams(params);
 
-            date.setText(j);
+            date.setText(i.getDate());
             date.setTextSize(20);
             agenda_dash.addView(date);
 
             //for all tasks i planned on date j
-            for (final Task i : tasks) {
-                //get name from task object
-                final String taskName = i.getName();
-                //get date from the task map
-                String taskTime = taskList.get(i);
-                //get difficulty from task object
-                String taskDifficulty = i.getDifficulty();
+            for (final Item j : schedule) {
+                if (j.getDate().equals(i.getDate())) {
+                    //get name from task object
+                    final String taskName = j.getTask().getName();
+                    //get date from the task map
+                    String taskTime = j.getTime();
+                    //get difficulty from task object
+                    String taskDifficulty = i.getTask().getDifficulty();
 
-                // Constraint Layout
-                final ConstraintLayout cLayOut = new ConstraintLayout(getContext());
-                cLayOut.setBackgroundResource(R.drawable.customborder);
-                ConstraintLayout.LayoutParams conParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-                conParams.setMargins(0,20,0,0);
-                cLayOut.setLayoutParams(conParams);
-                agenda_dash.addView(cLayOut);
+                    // Constraint Layout
+                    final ConstraintLayout cLayOut = new ConstraintLayout(getContext());
+                    cLayOut.setBackgroundResource(R.drawable.customborder);
+                    ConstraintLayout.LayoutParams conParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                    conParams.setMargins(0, 20, 0, 0);
+                    cLayOut.setLayoutParams(conParams);
+                    agenda_dash.addView(cLayOut);
 
-                // Name Textview
-                final TextView task = new TextView(getContext());
-                task.setLayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-                task.setTextSize(22);
-                task.setText(taskName);
-                task.setId("taskName".hashCode());
-                cLayOut.addView(task);
+                    // Name Textview
+                    final TextView task = new TextView(getContext());
+                    task.setLayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    task.setTextSize(22);
+                    task.setText(taskName);
+                    task.setId("taskName".hashCode());
+                    cLayOut.addView(task);
 
-                // Time textView
-                final TextView time = new TextView(getContext());
-                time.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                time.setText(taskTime);
-                time.setTextSize(18);
-                time.setId(taskTime.hashCode());
-                cLayOut.addView(time);
+                    // Time textView
+                    final TextView time = new TextView(getContext());
+                    time.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    time.setText(taskTime);
+                    time.setTextSize(18);
+                    time.setId(taskTime.hashCode());
+                    cLayOut.addView(time);
 
-                // Difficulty textView
-                final TextView difficulty = new TextView(getContext());
-                difficulty.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 0));
+                    // Difficulty textView
+                    final TextView difficulty = new TextView(getContext());
+                    difficulty.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 0));
 
-                //set color based on difficulty
-                if (taskDifficulty.equals("easy")) {
-                    difficulty.setBackgroundResource(R.color.colorEasy);
-                } else if (taskDifficulty.equals("medium")) {
-                    difficulty.setBackgroundResource(R.color.colorMedium);
-                } else {
-                    difficulty.setBackgroundResource(R.color.colorHard);
-                }
-                difficulty.setText("  ");
-                //difficulty.setTextSize(18);
-                difficulty.setId(taskTime.hashCode() + taskName.hashCode());
-                cLayOut.addView(difficulty);
-
-                //set onclick listener to all tasks to modify them
-                cLayOut.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        //parameters View v on which was clicked
-                        //j is the date on which this task was planned
-                        //i the the task object that was planned
-                        //date is the TextView containing the date
-                        modifyTask(v, j , i, date);
+                    //set color based on difficulty
+                    if (taskDifficulty.equals("easy")) {
+                        difficulty.setBackgroundResource(R.color.colorEasy);
+                    } else if (taskDifficulty.equals("medium")) {
+                        difficulty.setBackgroundResource(R.color.colorMedium);
+                    } else {
+                        difficulty.setBackgroundResource(R.color.colorHard);
                     }
-                });
+                    difficulty.setText("  ");
+                    //difficulty.setTextSize(18);
+                    difficulty.setId(taskTime.hashCode() + taskName.hashCode());
+                    cLayOut.addView(difficulty);
 
-                // Constrains of textViews
-                ConstraintSet constraintSet = new ConstraintSet();
-                constraintSet.clone(cLayOut);
-                // Constrain time to be to the left of difficulty
-                constraintSet.connect(time.getId(), ConstraintSet.RIGHT, difficulty.getId(), ConstraintSet.LEFT, 100);
-                // Constrain difficulty to be on the right side of the screen
-                constraintSet.connect(difficulty.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
-                // Constrain name to be to the left of time
-                constraintSet.connect(task.getId(), ConstraintSet.RIGHT, time.getId(), ConstraintSet.LEFT, 10);
-                //Constrain name to be on the left side of the screen
-                constraintSet.connect(task.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
-                //Constrain difficulty to be as high as parent
-                constraintSet.connect(difficulty.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
-                constraintSet.connect(difficulty.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
-                constraintSet.applyTo(cLayOut);
+                    //set onclick listener to all tasks to modify them
+                    cLayOut.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            //parameters View v on which was clicked
+                            //j is the date on which this task was planned
+                            //i the the task object that was planned
+                            //date is the TextView containing the date
+                            modifyTask(v, i.getDate(), j.getTask(), date);
+                        }
+                    });
+
+                    // Constrains of textViews
+                    ConstraintSet constraintSet = new ConstraintSet();
+                    constraintSet.clone(cLayOut);
+                    // Constrain time to be to the left of difficulty
+                    constraintSet.connect(time.getId(), ConstraintSet.RIGHT, difficulty.getId(), ConstraintSet.LEFT, 100);
+                    // Constrain difficulty to be on the right side of the screen
+                    constraintSet.connect(difficulty.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
+                    // Constrain name to be to the left of time
+                    constraintSet.connect(task.getId(), ConstraintSet.RIGHT, time.getId(), ConstraintSet.LEFT, 10);
+                    //Constrain name to be on the left side of the screen
+                    constraintSet.connect(task.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0);
+                    //Constrain difficulty to be as high as parent
+                    constraintSet.connect(difficulty.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
+                    constraintSet.connect(difficulty.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
+                    constraintSet.applyTo(cLayOut);
+                }
             }
         }
     }
@@ -207,13 +222,18 @@ public class PlanningFragment extends Fragment {
                 //remove the clicked view from the UI
                 view.setVisibility(View.GONE);
                 //remove the task in the schedule
-                taskScheduler.completeTask(taskName);
+                scheduler.completeTask(taskName);
+                updateDatabase();
                 //if las task on a date is removed also remove the date in the schedule and the date textview from the UI
-                if (!schedule.containsKey(date)) {
+                if (!schedule.contains(date)) {
                     dateText.setVisibility(View.GONE);
                 }
                 dialog.dismiss();
             }
         });
+    }
+
+    public void updateDatabase() {
+        db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
     }
 }

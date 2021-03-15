@@ -9,28 +9,40 @@
     tools:context=".ui.planning.PlanningFragment"
     >
 
+    <Button
+        android:id="@+id/createPlanning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
+        app:layout_constraintHorizontal_bias="0.105"
+        app:layout_constraintStart_toStartOf="@+id/scrollView2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.863" />
+
     <Switch
         android:id="@+id/studyModeSwitch"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
-        android:textColor="#000000"
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:text="Study mode"
+        android:textColor="#000000"
         android:textOff="OFF"
         android:textOn="ON"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-        app:layout_constraintHorizontal_bias="0.86"
+        app:layout_constraintHorizontal_bias="0.944"
         app:layout_constraintStart_toStartOf="@+id/scrollView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.896"
+        app:layout_constraintVertical_bias="0.846"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="401dp"
-        android:layout_height="568dp"
+        android:layout_width="392dp"
+        android:layout_height="660dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
