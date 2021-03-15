@@ -53,7 +53,6 @@ public class SettingsFragment extends Fragment {
 
     TaskScheduler scheduler;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
@@ -71,8 +70,19 @@ public class SettingsFragment extends Fragment {
         final EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
         final EditText editIntenseNumber = root.findViewById(R.id.editIntenseNumber);
 
-        Button setAvailability = (Button) root.findViewById(R.id.setAvailability);
-        setAvailability.setOnClickListener(new View.OnClickListener() {
+        Button resetPlanningButton = (Button) root.findViewById(R.id.resetPlanBtn);
+        resetPlanningButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                alertDeleteSchedule();
+                updateDatabase();
+            }
+        });
+
+
+        Button setAvailabilityButton = (Button) root.findViewById(R.id.setAvailability);
+        setAvailabilityButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
@@ -120,11 +130,12 @@ public class SettingsFragment extends Fragment {
         infoDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
-                if (scheduler.getSchedule().size() != 0) {
-                    if (alertDeleteSchedule(availabilityPopUpView)) {
+             //   if (scheduler.getSchedule().size() != 0) {
+                    alertDeleteSchedule();
                         scheduler.resetSchedule(); // reset the schedule
-                    }
-                }
+                        Log.d("kusejs", "onClick: xxxx");
+
+             //   }
                 scheduler.removeAvailability(date, time); // remove the task from the task list
                 updateDatabase();
                 drawAvailability(availabilityPopUpView); // redraw the availability buttons
@@ -163,9 +174,7 @@ public class SettingsFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
                 if (scheduler.getSchedule().size() != 0) {
-                    if (alertDeleteSchedule(availabilityPopUpView)) {
-                        scheduler.resetSchedule(); // reset the schedule
-                    }
+                    alertDeleteSchedule();
                 }
                 scheduler.clearAvailability(); // clear the tasklist
                 updateDatabase();
@@ -177,7 +186,7 @@ public class SettingsFragment extends Fragment {
     }
 
     // Method to create alert for deletion of schedule pop-up
-    private boolean alertDeleteSchedule(final View availabilityPopUpView) {
+    private void alertDeleteSchedule() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
         final boolean[] deleteSchedule = new boolean[1];
         alertDialog.setTitle( "Alert" )
@@ -185,18 +194,17 @@ public class SettingsFragment extends Fragment {
                 .setMessage("Do you want to reset your created schedule?")
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
-                        deleteSchedule[0] = false;
                     }
 
                 });
         alertDialog.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
-                deleteSchedule[0] = true;
+                scheduler.resetSchedule(); // reset the schedule
+                updateDatabase();
             }
         });
         alertDialog.show();
-        return deleteSchedule[0];
     }
 
     /* Create new dialog to show the availability of/to the user

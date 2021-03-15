@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -35,17 +38,31 @@ import androidx.fragment.app.Fragment;
 import com.example.agenda_app.R;
 import com.example.agenda_app.Task;
 import com.example.agenda_app.TaskScheduler;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 public class DashboardFragment extends Fragment {
     private AlertDialog dialog;
     private int buttonCount;
     private final ArrayList<Button> buttonArrayList = new ArrayList<>();
 
-    TaskScheduler scheduler = new TaskScheduler(); // @TODO: This should be placed somewhere else..
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+    TaskScheduler scheduler;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        final View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         Button popBtn = (Button) root.findViewById(R.id.popUpButton);
         Button deleteBtn = (Button) root.findViewById(R.id.deleteButton);
         popBtn.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +77,17 @@ public class DashboardFragment extends Fragment {
                 alertDeleteView();
             }
         });
+
+        // Get the scheduler object from the database
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                scheduler = documentSnapshot.toObject(TaskScheduler.class);
+                drawTasks(root);
+            }
+        });
+
         return root;
     }
 
@@ -82,7 +110,8 @@ public class DashboardFragment extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     public void onClick(DialogInterface dialoginterface, int i) {
                         scheduler.removeTask(name); // remove the task from the task list
-                        drawTasks();
+                        updateDatabase();
+                        drawTasks(getView());
                         buttonArrayList.remove(button);
                     }
                 });
@@ -115,7 +144,8 @@ public class DashboardFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
                 scheduler.clearTasklist(); // clear the tasklist
-                drawTasks(); // clear all the buttons from the screen
+                updateDatabase();
+                drawTasks(getView());// clear all the buttons from the screen
                 buttonArrayList.clear(); // clear the button ArrayList
             }
         });
@@ -195,8 +225,9 @@ public class DashboardFragment extends Fragment {
 
                     // Add the task to the taskList
                     scheduler.addTask(name, duration, intensity.toLowerCase(), difficulty.toLowerCase(), deadline, currentDate);
+                    updateDatabase();
 
-                    drawTasks(); // draw the tasks
+                    drawTasks(getView()); // draw the tasks
                     dialog.dismiss(); // Close pop-up window
                 } catch (Exception e) {
                     if (e.getMessage().equals("name is not unique")) {
@@ -285,9 +316,11 @@ public class DashboardFragment extends Fragment {
      * @param View availabilityPopUpView, view of dialog where availability is shown
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void drawTasks() {
+    public void drawTasks(View root) {
         // Find the dashboard layout
-        final ConstraintLayout layout = (ConstraintLayout) getView().findViewById(R.id.availabilityBoxDashboard);
+
+        final ConstraintLayout layout = (ConstraintLayout) root.findViewById(R.id.availabilityBoxDashboard);
+
         final ConstraintSet set = new ConstraintSet();
         set.clone(layout);
 
@@ -327,5 +360,9 @@ public class DashboardFragment extends Fragment {
             ++buttonCount; // increase the button counter
         }
         buttonCount = 0; // reset button counter
+    }
+
+    public void updateDatabase() {
+        db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
     }
 }

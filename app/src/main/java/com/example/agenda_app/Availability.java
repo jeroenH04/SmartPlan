@@ -6,6 +6,8 @@ public class Availability {
     private String date;
     private String duration;
     private String availableTime;
+    private String startTime;
+    private String endTime;
 
     public Availability() {}
 
@@ -13,6 +15,8 @@ public class Availability {
         this.date = date;
         this.duration = duration;
         this.availableTime = getAvailableTimeInt(duration);
+        this.startTime = getStartTime();
+        this.endTime = getEndTime();
     }
 
     public String getDate() { return date; }

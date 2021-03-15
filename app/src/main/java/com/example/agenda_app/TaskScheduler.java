@@ -18,7 +18,9 @@ public class TaskScheduler {
     private ArrayList<Availability> availabilityList;
 
     // Initialize map containing schedule (date,ArrayList<Task>)
-    private Map<String, Map<Task,String>> schedule;
+ //   private Map<String, Map<Task,String>> schedule;
+
+    private ArrayList<Item> schedule;
 
     private String name;
     private String studyMode;
@@ -31,7 +33,7 @@ public class TaskScheduler {
     public TaskScheduler() {}
 
     public TaskScheduler(ArrayList<Task> taskList, ArrayList<Availability> availabilityList,
-                         Map<String, Map<Task,String>> schedule, String name, String studyMode,
+                         ArrayList<Item> schedule, String name, String studyMode,
                          int relaxedIntensity, int normalIntensity, int intenseIntensity) {
         this.taskList = taskList;
         this.schedule = schedule;
@@ -153,6 +155,29 @@ public class TaskScheduler {
         }
     }
 
+    /* Remove item from schedule
+     *
+     * @param String taskName, task to be removed
+     * @pre @code{\exists i; taskList.contains(i); i.name == taskName}
+     * @modifies taskList
+     * @throws IllegalArgumentException if pre is violated
+     */
+    public void removeItem(String date, String taskName, String time) {
+        ArrayList<Item> toBeRemoved = new ArrayList<>(); // list of items that need to be removed
+        for (Item i : schedule) {   // Loop over the task list to find the correct task
+            if (i.getDate().equals(date) && i.getTime().equals(time) && i.getTask().getName().equals(taskName)) {
+                toBeRemoved.add(i);
+            }
+        }
+        if (toBeRemoved.size() == 0) {
+            throw new IllegalArgumentException("There exists no task in the tasklist with this name");
+        }
+        // remove task from taskList
+        for (Item i : toBeRemoved) {
+            schedule.remove(i);
+        }
+    }
+
     /* Remove task from schedule and restore availability
      *
      * @param String taskName, task to be removed
@@ -161,23 +186,36 @@ public class TaskScheduler {
      * @throws IllegalArgumentException if pre is violated
      */
     public void completeTask(String taskName) {
-        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
-            for (Task e : entry.getValue().keySet()) {
-                if (e.getName().equals(taskName)) {
-                    // get the time of the task
-                    String time = entry.getValue().values().toString();
-                    time = time.substring(1, time.length() - 1);
+        for (Item i : schedule) {
+            if (i.getTask().getName().equals(taskName)) {
+                String time = i.getTime();
+             //   time = time.substring(1, time.length() - 1);
+                addAvailability(i.getDate(), time); // add back the availability
 
-                    addAvailability(entry.getKey(), time); // add back the availability
-                    entry.getValue().remove(e); // remove task from the array
+                removeItem(i.getDate(), i.getTask().getName(), i.getTime());
 
-                    if (entry.getValue().isEmpty()) { // check if the array is now empty
-                        schedule.remove(entry.getKey()); // remove date in schedule
-                    }
-                    return;
-                }
+                return;
             }
         }
+//
+//
+//        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
+//            for (Task e : entry.getValue().keySet()) {
+//                if (e.getName().equals(taskName)) {
+//                    // get the time of the task
+//                    String time = entry.getValue().values().toString();
+//                    time = time.substring(1, time.length() - 1);
+//                    System.out.println(entry.getKey()+","+ time);
+//                    addAvailability(entry.getKey(), time); // add back the availability
+//                    entry.getValue().remove(e); // remove task from the array
+//
+//                    if (entry.getValue().isEmpty()) { // check if the array is now empty
+//                        schedule.remove(entry.getKey()); // remove date in schedule
+//                    }
+//                    return;
+//                }
+//            }
+//        }
         throw new IllegalArgumentException("There exists no task in the schedule with this name");
 
     }
@@ -198,8 +236,10 @@ public class TaskScheduler {
         if (date.isEmpty() || time.length() == 1) {
             throw new IllegalArgumentException("Date or time is empty");
         }
-        Availability avail = new Availability(date, time);
-        availabilityList.add(avail);
+        Availability availability = new Availability(date, time);
+        availabilityList.add(availability);
+
+
         combineAvailability(availabilityList);
     }
 
@@ -209,18 +249,37 @@ public class TaskScheduler {
     * @modifies availabilityList
      */
     public void combineAvailability(ArrayList<Availability> availabilityList) {
+        System.out.println(availabilityList);
         for (Availability avail : availabilityList) {
             for (Availability avail2 : availabilityList) {
                 // Check if the date of both availabilities are the same and the end time of the
                 // first time equals the start time of the second availability
+//                System.out.println("-------------");
+//                System.out.println(avail.getDate() + "," + avail2.getDate());
+//                System.out.println(avail.getEndTime() + "," + avail2.getStartTime());
+                if (availabilityList.indexOf(avail) != availabilityList.indexOf(avail2)) {
+                    System.out.println(avail + "," + avail2 + avail.getEndTime() + "," + avail2.getStartTime());
+                }
                 if (availabilityList.indexOf(avail) != availabilityList.indexOf(avail2) &&
                     avail.getDate().equals(avail2.getDate()) &&
                     avail.getEndTime().equals(avail2.getStartTime())) {
                     // remove both availabilities
+                    System.out.println("-------------");
                     removeAvailability(avail.getDate(), avail.getDuration());
                     removeAvailability(avail2.getDate(), avail2.getDuration());
                     // merge the availabilities together
                     addAvailability(avail.getDate(), avail.getStartTime() + "-" + avail2.getEndTime());
+                    combineAvailability(availabilityList); // continue recursively
+                    return;
+                } else if (availabilityList.indexOf(avail) != availabilityList.indexOf(avail2) &&
+                        avail.getDate().equals(avail2.getDate()) &&
+                        avail.getStartTime().equals(avail2.getEndTime())) {
+                    // remove both availabilities
+                    System.out.println("-------------");
+                    removeAvailability(avail.getDate(), avail.getDuration());
+                    removeAvailability(avail2.getDate(), avail2.getDuration());
+                    // merge the availabilities together
+                    addAvailability(avail.getDate(), avail2.getStartTime() + "-" + avail.getEndTime());
                     combineAvailability(availabilityList); // continue recursively
                     return;
                 }
@@ -386,13 +445,14 @@ public class TaskScheduler {
                 unPlannedTasks.add(e);
             } else {
                 // Check if there is already a task planned for this date, if so, add the task
-                // to the existing ArrayList
-                if (schedule.containsKey(bestDate)) {
-                    tasksOnDate = schedule.get(bestDate);
-                }
+//                // to the existing ArrayList
+//                if (schedule.containsKey(bestDate)) {
+//                    tasksOnDate = schedule.get(bestDate);
+//                }
                 availabilityList.get(index).updateDuration(neededTime); // update the availability
-                tasksOnDate.put(e, startTime + "-" + updateTime(startTime, neededTime) ); // add the task to the ArrayList
-                schedule.put(bestDate, tasksOnDate); // add the updated ArrayList to the schedule
+            //    tasksOnDate.put(e, startTime + "-" + updateTime(startTime, neededTime) ); // add the task to the ArrayList
+                schedule.add(new Item(bestDate, e, startTime + "-" + updateTime(startTime, neededTime) ));
+             //   schedule.add(bestDate, tasksOnDate); // add the updated ArrayList to the schedule
             }
         }
         clearTasklist();
@@ -406,23 +466,39 @@ public class TaskScheduler {
     * @returns @code{true} if subtask of task e is planned on the same date
      */
     boolean subtaskPlannedOnDate(Availability avail, Task e) {
-        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
-            if (entry.getKey().equals(avail.getDate())) { // check if the dates are the same
-                for (Map.Entry<Task, String> d2 : entry.getValue().entrySet()) {
-                    String taskNameOld = d2.getKey().getName();
-                    String taskNameNew = e.getName();
+        for (Item i : schedule) {
+            if (i.getDate().equals(avail.getDate())) {
+                String taskNameOld = i.getTask().getName();
+                String taskNameNew = e.getName();
 
-                    // Check if a subtask of this task is planned on this day
-                    // i.e. if the characters except the last match and the name ends with a dot
-                    if (taskNameOld.substring(0, taskNameOld.length() - 1)
-                            .equals(taskNameNew.substring(0, taskNameNew.length() - 1)) &&
-                            taskNameOld.substring(taskNameOld.length() - 2,
-                                    taskNameOld.length() - 1).equals(".")) {
-                        return true;
-                    }
+                // Check if a subtask of this task is planned on this day
+                // i.e. if the characters except the last match and the name ends with a dot
+                if (taskNameOld.substring(0, taskNameOld.length() - 1)
+                        .equals(taskNameNew.substring(0, taskNameNew.length() - 1)) &&
+                        taskNameOld.substring(taskNameOld.length() - 2,
+                                taskNameOld.length() - 1).equals(".")) {
+                    return true;
                 }
             }
         }
+
+//        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
+//            if (entry.getKey().equals(avail.getDate())) { // check if the dates are the same
+//                for (Map.Entry<Task, String> d2 : entry.getValue().entrySet()) {
+//                    String taskNameOld = d2.getKey().getName();
+//                    String taskNameNew = e.getName();
+//
+//                    // Check if a subtask of this task is planned on this day
+//                    // i.e. if the characters except the last match and the name ends with a dot
+//                    if (taskNameOld.substring(0, taskNameOld.length() - 1)
+//                            .equals(taskNameNew.substring(0, taskNameNew.length() - 1)) &&
+//                            taskNameOld.substring(taskNameOld.length() - 2,
+//                                    taskNameOld.length() - 1).equals(".")) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
         return false;
     }
 
@@ -519,13 +595,18 @@ public class TaskScheduler {
                 return false;
             }
         }
-        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
-            for (Task e : entry.getValue().keySet()) {
-                if (e.getName().equals(taskName)) {
-                    return false;
-                }
+        for (Item i : schedule) {
+            if (i.getTask().getName().equals(taskName)) {
+                return false;
             }
         }
+//        for (Map.Entry<String, Map<Task, String>> entry : schedule.entrySet()) {
+//            for (Task e : entry.getValue().keySet()) {
+//                if (e.getName().equals(taskName)) {
+//                    return false;
+//                }
+//            }
+//        }
         return true;
     }
 
@@ -533,12 +614,16 @@ public class TaskScheduler {
      */
     public void resetSchedule() {
         ArrayList<Task> addToTaskList = new ArrayList<>();
-        Map<String, Map<Task, String>> createdSchedule = getSchedule();
-        for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
-            for (Map.Entry<Task, String> entry2 : entry.getValue().entrySet()) {
-                addToTaskList.add(entry2.getKey()); // add the task to the ArrayList
-            }
+        ArrayList<Item> createdSchedule = getSchedule();
+   //    Map<String, Map<Task, String>> createdSchedule = getSchedule();
+        for (Item i : createdSchedule) {
+            addToTaskList.add(i.getTask());
         }
+//        for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
+//            for (Map.Entry<Task, String> entry2 : entry.getValue().entrySet()) {
+//                addToTaskList.add(entry2.getKey()); // add the task to the ArrayList
+//            }
+//        }
         schedule.clear(); // clear the schedule
         for (Task task : addToTaskList) {
             addTask(task.getName(), task.getDuration(), task.getIntensity(),
@@ -550,7 +635,7 @@ public class TaskScheduler {
      *
      * @returns Map<String, ArrayList<Task>> schedule
      */
-    public Map<String, Map<Task, String>> getSchedule() {
+    public ArrayList<Item> getSchedule() {
         return schedule;
     }
 

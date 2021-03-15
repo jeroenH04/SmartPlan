@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,15 +134,20 @@ public class Register extends AppCompatActivity {
         //Firestore entry
         final String TAG = "Register";
 
+        final TaskScheduler scheduler = new TaskScheduler(new ArrayList<com.example.agenda_app.Task>(), new ArrayList<Availability>(),
+                new ArrayList<Item>(), name,
+                "Off", 120, 240, 480);
+
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
         user.put("Username", name);
+        user.put("Schedule", scheduler);
         user.put("Studymode", "Off");
         user.put("Tasks", "No");
 
 
         // Add a new document with a generated ID
-        db.collection("users").document(uSer.getUid()).set(user)
+        db.collection("users").document(uSer.getUid()).set(scheduler)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

@@ -13,7 +13,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class TaskSchedulerTest {
-    TaskScheduler schedule = new TaskScheduler();
+    TaskScheduler schedule = new TaskScheduler(new ArrayList<com.example.agenda_app.Task>(), new ArrayList<Availability>(),
+            new ArrayList<Item>(), "Tester",
+            "Off", 120, 240, 480);
 
     /** Tests of the getDurationMinutes method */
     // Tests with different input
@@ -234,7 +236,9 @@ public class TaskSchedulerTest {
                 "08-03-2021", "18-01-2020");
         schedule.createSchedule();
         assertEquals(schedule.getSchedule().size(), 1);
+        showCreatedSchedule();
         schedule.completeTask("task1");
+        showCreatedSchedule();
         assertEquals(schedule.getSchedule().size(), 0);
 
         // Check that the availability has been reset
@@ -244,8 +248,9 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("17-02-2021", "14:00-18:00"));
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
+        System.out.println(schedule.getAvailabilityList());
         // check the new availability
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
@@ -279,7 +284,7 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
         // check the new availability
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
@@ -298,18 +303,18 @@ public class TaskSchedulerTest {
     @Test()
     public void testAddAvailability() {
         schedule.addAvailability("26-02-2021","8:00-16:00");
-        assertEquals(schedule.getNewAvailability().size(),1);
+        assertEquals(schedule.getAvailabilityList().size(),1);
         schedule.addAvailability("28-02-2021","8:00-9:00");
-        assertEquals(schedule.getNewAvailability().size(),2);
+        assertEquals(schedule.getAvailabilityList().size(),2);
     }
 
     /** Tests of the clearAvailability method */
     @Test()
     public void testClearAvailability() {
         schedule.addAvailability("26-02-2021","8:00-16:00");
-        assertEquals(schedule.getNewAvailability().size(),1);
+        assertEquals(schedule.getAvailabilityList().size(),1);
         schedule.clearAvailability();
-        assertEquals(schedule.getNewAvailability().size(),0);
+        assertEquals(schedule.getAvailabilityList().size(),0);
     }
 
     /** Tests of the combineAvailability method */
@@ -319,10 +324,10 @@ public class TaskSchedulerTest {
         schedule.addAvailability("26-02-2021","8:00-9:00");
         schedule.addAvailability("26-02-2021","9:00-12:15");
         schedule.addAvailability("26-02-2021","12:15-18:00");
-        assertEquals(schedule.getNewAvailability().size(),1);
+        assertEquals(schedule.getAvailabilityList().size(),1);
         ArrayList<Availability> testAvail = new ArrayList<>();
         testAvail.add(new Availability("26-02-2021", "8:00-18:00"));
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
@@ -336,12 +341,29 @@ public class TaskSchedulerTest {
         schedule.addAvailability("26-02-2021","8:00-9:00");
         schedule.addAvailability("27-02-2021","9:00-12:15");
         schedule.addAvailability("28-02-2021","12:15-18:00");
-        assertEquals(schedule.getNewAvailability().size(),3);
+        assertEquals(schedule.getAvailabilityList().size(),3);
         ArrayList<Availability> testAvail = new ArrayList<>();
         testAvail.add(new Availability("26-02-2021", "8:00-9:00"));
         testAvail.add(new Availability("27-02-2021","9:00-12:15"));
         testAvail.add(new Availability("28-02-2021","12:15-18:00"));
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
+        for (Availability e : testAvail) {
+            int index = testAvail.indexOf(e);
+            assertEquals(e.getDate(),newAvail.get(index).getDate());
+            assertEquals(e.getDuration(), newAvail.get(index).getDuration());
+        }
+    }
+
+    /** Tests of the combineAvailability method */
+    // Test with 3 concurrent availabilities
+    @Test()
+    public void testCombineAvailability3() {
+        schedule.addAvailability("26-02-2021","16:30-18:00");
+        schedule.addAvailability("26-02-2021","14:00-16:30");
+        assertEquals(schedule.getAvailabilityList().size(),1);
+        ArrayList<Availability> testAvail = new ArrayList<>();
+        testAvail.add(new Availability("26-02-2021", "14:00-18:00"));
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
@@ -368,9 +390,9 @@ public class TaskSchedulerTest {
     }
 
     void showCreatedSchedule() {
-        Map<String, Map<Task, String>> createdSchedule = schedule.getSchedule();
-        for (Map.Entry<String, Map<Task, String>> entry : createdSchedule.entrySet()) {
-                System.out.println(entry.getKey() + " : " + entry.getValue());
+        ArrayList<Item> createdSchedule = schedule.getSchedule();
+        for (Item i : createdSchedule) {
+            System.out.println(i.getDate() + ", " + i.getTask().getName() + ", " + i.getTime());
         }
     }
 
@@ -388,7 +410,7 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
         // check the new availability
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
@@ -410,7 +432,7 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("17-02-2021", "17:00-18:00"));
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
@@ -434,7 +456,7 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("17-02-2021", "17:59-18:00"));
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
@@ -465,7 +487,7 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("17-02-2021", "17:00-18:00"));
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(), newAvail.get(index).getDate());
@@ -481,7 +503,7 @@ public class TaskSchedulerTest {
         testAvail2.add(new Availability("17-02-2021", "17:00-18:00"));
         testAvail2.add(new Availability("18-02-2021", "11:50-16:50"));
         schedule.createSchedule();
-        ArrayList<Availability> newAvail2 = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail2 = schedule.getAvailabilityList();
         for (Availability e : testAvail2) {
             int index = testAvail2.indexOf(e);
             assertEquals(e.getDate(),newAvail2.get(index).getDate());
@@ -503,7 +525,7 @@ public class TaskSchedulerTest {
         testAvail.add(new Availability("17-02-2021", "14:00-18:00"));
         testAvail.add(new Availability("18-02-2021", "8:50-16:50"));
         schedule.createSchedule();
-        ArrayList<Availability> newAvail = schedule.getNewAvailability();
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
         for (Availability e : testAvail) {
             int index = testAvail.indexOf(e);
             assertEquals(e.getDate(),newAvail.get(index).getDate());
