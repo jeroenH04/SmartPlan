@@ -9,10 +9,10 @@
     android:outlineProvider="none">
 
     <TextView
-        android:id="@+id/studymode"
+        android:id="@+id/studymode_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I will study for"
+        android:text="STUDY SESSION STARTING"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,6 +20,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.092" />
+
+    <TextView
+        android:id="@+id/studymode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I will study for"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/studymode_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/studymode_title"
+        app:layout_constraintTop_toBottomOf="@+id/studymode_title"
+        app:layout_constraintVertical_bias="0.06" />
 
     <TextView
         android:id="@+id/studymode_split"

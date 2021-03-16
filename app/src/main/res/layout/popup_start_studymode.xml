@@ -9,17 +9,30 @@
     android:outlineProvider="none">
 
     <TextView
+        android:id="@+id/studymode_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STUDY SESSION STARTING"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.09" />
+
+    <TextView
         android:id="@+id/studymode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="I will study for"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.206"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.185" />
+        app:layout_constraintEnd_toEndOf="@+id/studymode_title"
+        app:layout_constraintHorizontal_bias="0.013"
+        app:layout_constraintStart_toStartOf="@+id/studymode_title"
+        app:layout_constraintTop_toBottomOf="@+id/studymode_title"
+        app:layout_constraintVertical_bias="0.089" />
 
     <TextView
         android:id="@+id/studymode_split"
@@ -97,10 +110,10 @@
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/studymode_break_duration"
-        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="@+id/studymode_break_duration"
         app:layout_constraintTop_toBottomOf="@+id/studymode_break_duration"
-        app:layout_constraintVertical_bias="0.482" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -110,10 +123,10 @@
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/studymode_break_duration"
-        app:layout_constraintHorizontal_bias="0.91"
+        app:layout_constraintHorizontal_bias="0.896"
         app:layout_constraintStart_toStartOf="@+id/studymode_break_duration"
         app:layout_constraintTop_toBottomOf="@+id/studymode_break_duration"
-        app:layout_constraintVertical_bias="0.36" />
+        app:layout_constraintVertical_bias="0.655" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
