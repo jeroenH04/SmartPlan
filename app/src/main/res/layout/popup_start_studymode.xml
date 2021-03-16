@@ -65,7 +65,6 @@
         android:layout_marginTop="12dp"
         android:background="#ffffff"
         android:ems="10"
-        android:focusable="false"
         android:hint="  hh:mm"
         app:layout_constraintEnd_toEndOf="@+id/studymode"
         app:layout_constraintHorizontal_bias="0.0"
