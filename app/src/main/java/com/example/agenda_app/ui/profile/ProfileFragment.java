@@ -1,6 +1,7 @@
 package com.example.agenda_app.ui.profile;
 
 import android.app.AlertDialog;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +41,7 @@ public class ProfileFragment extends Fragment {
 
     private AlertDialog dialog;
     private AlertDialog dialogShow;
+    final String TAG = "ProfileFragment";
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -105,6 +107,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         //Set the save button to save the new password
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +126,17 @@ public class ProfileFragment extends Fragment {
                 } else if (newPass.equals(oldPass)) { //If the new password added is the same with the old password
                     editNewPass.requestFocus();
                     editNewPass.setError("New password cannot be the same with the old password!");
+                } else {
+                    user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Password updated successfully!");
+                            } else {
+                                Log.d(TAG, "Error password not updated!");
+                            }
+                        }
+                    });
                 }
             }
         });
