@@ -222,8 +222,15 @@ public class PlanningFragment extends Fragment {
                 //remove the task in the schedule
                 scheduler.completeTask(taskName);
                 updateDatabase();
-                //if las task on a date is removed also remove the date in the schedule and the date textview from the UI
-                if (!schedule.contains(date)) {
+                //if last task on a date is removed also remove the date textview from the UI
+                boolean dateStillIn = false;
+                for (Item i : schedule) {
+                    if (i.getDate().equals(date)) {
+                        dateStillIn = true;
+                        break;
+                    }
+                }
+                if (!dateStillIn) {
                     dateText.setVisibility(View.GONE);
                 }
                 dialog.dismiss();
