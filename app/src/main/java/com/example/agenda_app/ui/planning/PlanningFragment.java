@@ -92,7 +92,7 @@ public class PlanningFragment extends Fragment {
        //     Set<Task> tasks = taskList.keySet();
             //check if date is already displayed if it is skip
             if (datesDone.contains(i.getDate())) {
-                break;
+                continue;
             }
             //add date to datesDone if date is not yet displayed
             datesDone.add(i.getDate());
