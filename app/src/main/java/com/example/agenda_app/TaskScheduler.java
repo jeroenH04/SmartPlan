@@ -457,6 +457,7 @@ public class TaskScheduler {
         }
         clearTasklist();
         taskList.addAll(unPlannedTasks); // place back the unplanned tasks
+        schedule.sort(new DateSorterItem()); // sort the task list on deadline
     }
 
     /* Check if no subtasks of a task is planned on the same date
