@@ -614,6 +614,12 @@ public class TaskScheduler {
      */
     public String getStudyMode() { return studyMode; }
 
+    /* Set studyMode
+     *
+     * @param String studyMode
+     */
+    public void setStudyMode(String studyMode) { this.studyMode = studyMode; }
+
     /* Get intense intensity duration
      *
      * @returns int intenseIntensity
