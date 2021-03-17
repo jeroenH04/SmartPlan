@@ -80,7 +80,6 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-
         Button setAvailabilityButton = (Button) root.findViewById(R.id.setAvailability);
         setAvailabilityButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -184,16 +183,37 @@ public class SettingsFragment extends Fragment {
     // Method to create alert for deletion of schedule pop-up
     private void alertDeleteSchedule() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
-        final boolean[] deleteSchedule = new boolean[1];
         alertDialog.setTitle( "Alert" )
                 .setIcon(R.drawable.ic_baseline_error_outline_24)
-                .setMessage("Do you want to reset your created schedule?")
+                .setMessage("Do you want to clear your created schedule?")
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
                     }
 
                 });
         alertDialog.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void onClick(DialogInterface dialoginterface, int i) {
+                alertRestoreTasks();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void alertRestoreTasks() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
+        alertDialog.setTitle( "Alert" )
+                .setIcon(R.drawable.ic_baseline_error_outline_24)
+                .setMessage("Do you want to restore your planned tasks to your task list?")
+                .setPositiveButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        scheduler.resetSchedule(); // reset the schedule
+                        scheduler.clearTasklist();
+                        updateDatabase();
+                    }
+
+                });
+        alertDialog.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
                 scheduler.resetSchedule(); // reset the schedule

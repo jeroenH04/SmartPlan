@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -20,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
+import com.example.agenda_app.ForgotPass;
 import com.example.agenda_app.Item;
 import com.example.agenda_app.R;
 import com.example.agenda_app.Task;
@@ -55,12 +57,22 @@ public class PlanningFragment extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_planning, container, false);
 
         final LinearLayout agenda_dash = (LinearLayout) root.findViewById(R.id.agenda_dashboard);
-        Button createPlanningBtn = (Button) root.findViewById(R.id.createPlanning);
+        final Button createPlanningBtn = (Button) root.findViewById(R.id.createPlanning);
         createPlanningBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (scheduler.getAvailabilityList().size() == 0) {
+                    Toast.makeText(getActivity(),"You have to set an availability first.",Toast.LENGTH_LONG).show();
+                    return;
+                } else if (scheduler.getTaskList().size() == 0) {
+                    Toast.makeText(getActivity(),"You have to add some tasks first.",Toast.LENGTH_LONG).show();
+                    return;
+                }
                 scheduler.createSchedule();
                 updateDatabase();
+                if (scheduler.getTaskList().size() != 0) {
+                    Toast.makeText(getActivity(),"Not all tasks fit in your availability. \nIncrease your availability in the settings.",Toast.LENGTH_LONG).show();
+                }
                 agenda_dash.removeAllViews();
                 showPlanning(agenda_dash);
             }
@@ -73,6 +85,11 @@ public class PlanningFragment extends Fragment {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 scheduler = documentSnapshot.toObject(TaskScheduler.class);
                 showPlanning(agenda_dash);
+                if (scheduler.getSchedule().size() == 0) {
+                    createPlanningBtn.setText("Create schedule");
+                } else {
+                    createPlanningBtn.setText("Update schedule");
+                }
             }
         });
         myHandler = new Handler();
