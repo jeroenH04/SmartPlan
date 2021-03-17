@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -136,7 +137,7 @@ public class Register extends AppCompatActivity {
 
         final TaskScheduler scheduler = new TaskScheduler(new ArrayList<com.example.agenda_app.Task>(), new ArrayList<Availability>(),
                 new ArrayList<Item>(), name,
-                "Off", 120, 240, 480);
+                "Off", 120, 240, 480, 0, Calendar.getInstance().getTime().toString());
 
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();

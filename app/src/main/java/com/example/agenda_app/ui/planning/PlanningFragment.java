@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.SetOptions;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +46,7 @@ public class PlanningFragment extends Fragment {
     private ArrayList<Item> schedule;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+    Handler myHandler;
     TaskScheduler scheduler;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -73,7 +75,7 @@ public class PlanningFragment extends Fragment {
                 showPlanning(agenda_dash);
             }
         });
-
+        myHandler = new Handler();
         return root;
     }
 
@@ -238,7 +240,70 @@ public class PlanningFragment extends Fragment {
         });
     }
 
+    private void alertView( String message ) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this.getActivity());
+        alertDialog.setTitle( "Error!" )
+                .setIcon(R.drawable.ic_baseline_error_outline_24)
+                .setMessage(message)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                    }
+                }).show();
+    }
+
     public void updateDatabase() {
-        db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
+
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                TaskScheduler oldScheduler = documentSnapshot.toObject(TaskScheduler.class);
+                if (scheduler.getDateOfLastUpdate().equals(oldScheduler.getDateOfLastUpdate())) {
+                    if (oldScheduler.getSchedulerHashcode() == 0 || oldScheduler.getSchedulerHashcode() == scheduler.hashCode()) {
+                        oldScheduler.setSchedulerHashcode(scheduler.hashCode());
+                        db.collection("users").document(user.getUid()).set(oldScheduler, SetOptions.merge());
+                    } else {
+                        alertView("you are already trying to edit the data on another account, please try again later");
+                        //alertView("old: " + oldScheduler.getSchedulerHashcode() + " new: " + scheduler.hashCode());
+                        return;
+                    }
+                } else {
+                    alertView("Please update your planning to get the most recent version.");
+                    return;
+                }
+            }
+        });
+
+        //todo wait 100ms and update database with changed scheduler
+        myHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DocumentReference docRef = db.collection("users").document(user.getUid());
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        TaskScheduler oldScheduler = documentSnapshot.toObject(TaskScheduler.class);
+                        if (scheduler.getDateOfLastUpdate().equals(oldScheduler.getDateOfLastUpdate())) {
+                            if (oldScheduler.getSchedulerHashcode() == 0) {
+                                alertView("reupdating database");
+                                updateDatabase();
+                                return;
+                            }
+                            if (oldScheduler.getSchedulerHashcode() == scheduler.hashCode()) {
+                                scheduler.setDateOfLastUpdate(Calendar.getInstance().getTime().toString());
+                                db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
+                            } else {
+                                alertView("you are already trying to edit the data on another account, please try again later.");
+                                return;
+                            }
+                        } else {
+                            alertView("Please update your planning to get the most recent version.");
+                            return;
+                        }
+                    }
+                });
+            }
+        }, 200);
+       // db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
     }
 }

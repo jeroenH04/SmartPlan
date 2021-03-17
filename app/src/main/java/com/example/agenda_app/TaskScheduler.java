@@ -24,6 +24,8 @@ public class TaskScheduler {
 
     private String name;
     private String studyMode;
+    private int schedulerHashcode; //0 if no database edit planned else hashcode of the changed TaskScheduler
+    private String dateOfLastUpdate;
 
     // Default intensity in minutes of different modes
     private int relaxedIntensity;
@@ -34,7 +36,7 @@ public class TaskScheduler {
 
     public TaskScheduler(ArrayList<Task> taskList, ArrayList<Availability> availabilityList,
                          ArrayList<Item> schedule, String name, String studyMode,
-                         int relaxedIntensity, int normalIntensity, int intenseIntensity) {
+                         int relaxedIntensity, int normalIntensity, int intenseIntensity, int schedulerHashcode, String dateOfLastUpdate) {
         this.taskList = taskList;
         this.schedule = schedule;
         this.availabilityList = availabilityList;
@@ -43,6 +45,8 @@ public class TaskScheduler {
         this.relaxedIntensity = relaxedIntensity;
         this.normalIntensity = normalIntensity;
         this.intenseIntensity = intenseIntensity;
+        this.schedulerHashcode = schedulerHashcode;
+        this.dateOfLastUpdate = dateOfLastUpdate;
     }
 
     /*
@@ -624,9 +628,31 @@ public class TaskScheduler {
 
     /* Get relaxed intensity duration
      *
-     * @returns int relacedIntensity
+     * @returns int relaxedIntensity
      */
     public int getRelaxedIntensity() { return relaxedIntensity; }
+
+    /* Get hashcode of the scheduler currently wanting to edit database or 0 if there is none
+     *
+     * @returns int schedulerHashcode
+     */
+    public int getSchedulerHashcode() { return schedulerHashcode; }
+
+    /* Set schedulerHashcode
+     *
+     */
+    public void setSchedulerHashcode(int schedulerHashcode) {this.schedulerHashcode = schedulerHashcode;}
+
+    /* Get the date and time of last update
+     *
+     * @returns String dateOfLastUpdate
+     */
+    public String getDateOfLastUpdate() { return dateOfLastUpdate; }
+
+    /* Set dateOfLastUpdate
+     *
+     */
+    public void setDateOfLastUpdate(String dateOfLastUpdate) {this.dateOfLastUpdate = dateOfLastUpdate;}
 
 
 }
