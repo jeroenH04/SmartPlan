@@ -54,13 +54,17 @@ public class PlanningFragment extends Fragment {
     TaskScheduler scheduler;
     String studyModeState;
 
+    Button createPlanningBtn;
+    LinearLayout agenda_dash;
+    Switch studyModeSwitch;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_planning, container, false);
 
-        final LinearLayout agenda_dash = (LinearLayout) root.findViewById(R.id.agenda_dashboard);
-        final Switch studyModeSwitch = (Switch) root.findViewById(R.id.studyModeSwitch);
+        agenda_dash = (LinearLayout) root.findViewById(R.id.agenda_dashboard);
+        studyModeSwitch = (Switch) root.findViewById(R.id.studyModeSwitch);
         studyModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -72,7 +76,7 @@ public class PlanningFragment extends Fragment {
 
             }
         });
-        final Button createPlanningBtn = (Button) root.findViewById(R.id.createPlanning);
+        createPlanningBtn = (Button) root.findViewById(R.id.createPlanning);
         createPlanningBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +93,7 @@ public class PlanningFragment extends Fragment {
                     Toast.makeText(getActivity(),"Not all tasks fit in your availability. \nIncrease your availability in the settings.",Toast.LENGTH_LONG).show();
                 }
                 agenda_dash.removeAllViews();
-                showPlanning(agenda_dash);
+                showPlanning();
             }
         });
 
@@ -100,7 +104,7 @@ public class PlanningFragment extends Fragment {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 scheduler = documentSnapshot.toObject(TaskScheduler.class);
                 studyModeState = scheduler.getStudyMode();
-                showPlanning(agenda_dash);
+                showPlanning();
                 if (scheduler.getSchedule().size() == 0) {
                     createPlanningBtn.setText("Create schedule");
                 } else {
@@ -116,7 +120,28 @@ public class PlanningFragment extends Fragment {
         return root;
     }
 
-    private void showPlanning(LinearLayout agenda_dash) {
+    private void reloadFragment() {
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                scheduler = documentSnapshot.toObject(TaskScheduler.class);
+                studyModeState = scheduler.getStudyMode();
+                showPlanning();
+                if (scheduler.getSchedule().size() == 0) {
+                    createPlanningBtn.setText("Create schedule");
+                } else {
+                    createPlanningBtn.setText("Update schedule");
+                }
+
+                if (studyModeState.equals("On")) {
+                    studyModeSwitch.setChecked(true);
+                }
+            }
+        });
+    }
+
+    private void showPlanning() {
         //get a set of all dates
         schedule = scheduler.getSchedule();
      //   Set<String> dates = schedule.keySet();
@@ -306,12 +331,14 @@ public class PlanningFragment extends Fragment {
                         // upload oldScheduler with updated hashCode to the database
                         db.collection("users").document(user.getUid()).set(oldScheduler, SetOptions.merge());
                     } else { // oldScheduler hashcode != 0 or is different from scheduler.hashCode() thus an other device is changing database already
-                        alertView("you are already trying to edit the data on another account, please try again later");
+                        alertView("you are already trying to edit the data on another account. Please try again later");
                         //alertView("old: " + oldScheduler.getSchedulerHashcode() + " new: " + scheduler.hashCode());
+                        reloadFragment(); // reload database to update to correct version
                         return;
                     }
                 } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
-                    alertView("Please update your planning to get the most recent version.");
+                    alertView("This device was still on an old version of the Planning, The planning has been reloaded. Please try again.");
+                    reloadFragment(); // reload database to update to correct version
                     return;
                 }
             }
@@ -342,11 +369,13 @@ public class PlanningFragment extends Fragment {
                                 scheduler.setDateOfLastUpdate(Calendar.getInstance().getTime().toString());
                                 db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
                             } else { // another device is trying to update database since oldScheduler.getHashCode() != scheduler.hashCode()
-                                alertView("you are already trying to edit the data on another account, please try again later.");
+                                alertView("you are already trying to edit the data on another account. Please try again later.");
+                                reloadFragment(); // reload database to update to correct version
                                 return;
                             }
                         } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
-                            alertView("Please update your planning to get the most recent version.");
+                            alertView("This device was still on an old version of the Planning, The planning has been reloaded. Please try again.");
+                            reloadFragment(); // reload database to update to correct version
                             return;
                         }
                     }

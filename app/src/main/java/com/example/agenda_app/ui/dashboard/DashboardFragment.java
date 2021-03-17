@@ -93,6 +93,18 @@ public class DashboardFragment extends Fragment {
         return root;
     }
 
+    private void reloadFragment() {
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                scheduler = documentSnapshot.toObject(TaskScheduler.class);
+                drawTasks(getView());
+            }
+        });
+    }
+
     // Method to create info pop-up for task
     private void infoView(final String name, String duration, String deadline, String intensity,
                           String difficulty, final Button button) {
@@ -382,12 +394,14 @@ public class DashboardFragment extends Fragment {
                         // upload oldScheduler with updated hashCode to the database
                         db.collection("users").document(user.getUid()).set(oldScheduler, SetOptions.merge());
                     } else { // oldScheduler hashcode != 0 or is different from scheduler.hashCode() thus an other device is changing database already
-                        alertView("you are already trying to edit the data on another account, please try again later");
+                        alertView("you are already trying to edit the data on another account. Please try again later");
                         //alertView("old: " + oldScheduler.getSchedulerHashcode() + " new: " + scheduler.hashCode());
+                        reloadFragment(); // reload database to update to correct version
                         return;
                     }
                 } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
-                    alertView("Please update your planning to get the most recent version.");
+                    alertView("This device was still on an old version of the Planning, The planning has been reloaded. Please try again.");
+                    reloadFragment(); // reload database to update to correct version
                     return;
                 }
             }
@@ -418,11 +432,13 @@ public class DashboardFragment extends Fragment {
                                 scheduler.setDateOfLastUpdate(Calendar.getInstance().getTime().toString());
                                 db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
                             } else { // another device is trying to update database since oldScheduler.getHashCode() != scheduler.hashCode()
-                                alertView("you are already trying to edit the data on another account, please try again later.");
+                                alertView("you are already trying to edit the data on another account. Please try again later.");
+                                reloadFragment(); // reload database to update to correct version
                                 return;
                             }
                         } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
-                            alertView("Please update your planning to get the most recent version.");
+                            alertView("This device was still on an old version of the Planning, The planning has been reloaded. Please try again.");
+                            reloadFragment(); // reload database to update to correct version
                             return;
                         }
                     }

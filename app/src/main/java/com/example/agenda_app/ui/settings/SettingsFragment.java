@@ -115,14 +115,28 @@ public class SettingsFragment extends Fragment {
         return root;
     }
 
+    private void reloadFragment(final boolean drawAvailability, final View availabilityPopUpView) {
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                scheduler = documentSnapshot.toObject(TaskScheduler.class);
+                if (drawAvailability) {
+                    drawAvailability(availabilityPopUpView);
+                }
+            }
+        });
+    }
+
     // Method to create info pop-up for availability
     private void infoView(final String date, final String time, final ConstraintLayout layout,
                           final Button button, final ConstraintSet set, final View availabilityPopUpView ) {
         AlertDialog.Builder infoDialog = new AlertDialog.Builder(this.getActivity());
-        infoDialog.setTitle( "Do you want to delete this availability?" )
+        infoDialog.setTitle("Do you want to delete this availability?")
                 .setIcon(R.drawable.ic_baseline_info_24)
                 .setMessage("Date: " + date + '\n' +
-                            "Time: " + time
+                        "Time: " + time
                 )
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
@@ -131,10 +145,10 @@ public class SettingsFragment extends Fragment {
         infoDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
-                alertDeleteSchedule();
+               // alertDeleteSchedule();
                 scheduler.resetSchedule(); // reset the schedule
                 scheduler.removeAvailability(date, time); // remove the task from the task list
-                updateDatabase();
+                updateDatabase(true, availabilityPopUpView);
                 drawAvailability(availabilityPopUpView); // redraw the availability buttons
                 buttonArrayList.remove(button); // remove the button from the ArrayList
             }
@@ -174,7 +188,7 @@ public class SettingsFragment extends Fragment {
                     alertDeleteSchedule();
                 }
                 scheduler.clearAvailability(); // clear the tasklist
-                updateDatabase();
+                updateDatabase(true, availabilityPopUpView);
                 drawAvailability(availabilityPopUpView); // clear all the buttons from the screen
                 buttonArrayList.clear(); // clear the button ArrayList
             }
@@ -324,8 +338,7 @@ public class SettingsFragment extends Fragment {
 
                     // Add availability to the list
                     scheduler.addAvailability(date, time1 + "-" + time2);
-                    updateDatabase();
-
+                    updateDatabase(true , availabilityPopUpView);
                     drawAvailability(availabilityPopUpView); // Draw the availability
                     dialog.dismiss(); // Close pop-up window
                 } catch(Exception e) {
@@ -410,6 +423,13 @@ public class SettingsFragment extends Fragment {
     }
 
     public void updateDatabase() {
+        updateDatabase(false, null);
+    }
+
+    //call updateDatabase(true, availabilityPopUpView) if after updating database drawAvailability is called
+    //else call updateDatabase or call updateDatabase(false, null)
+    //necessary because drawAvailability will finish before updateDatabase and thus draw incorrect information
+    public void updateDatabase(final boolean drawAvailability, final View availabilityPopUpView) {
         //get database reference to load and write to database
         DocumentReference docRef = db.collection("users").document(user.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -427,12 +447,14 @@ public class SettingsFragment extends Fragment {
                         // upload oldScheduler with updated hashCode to the database
                         db.collection("users").document(user.getUid()).set(oldScheduler, SetOptions.merge());
                     } else { // oldScheduler hashcode != 0 or is different from scheduler.hashCode() thus an other device is changing database already
-                        alertView("you are already trying to edit the data on another account, please try again later");
+                        alertView("you are already trying to edit the data on another account. Please try again later");
                         //alertView("old: " + oldScheduler.getSchedulerHashcode() + " new: " + scheduler.hashCode());
+                        reloadFragment(drawAvailability, availabilityPopUpView); // reload database to update to correct version
                         return;
                     }
                 } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
-                    alertView("Please update your planning to get the most recent version.");
+                    alertView("This device was still on an old version of the Planning, The planning has been reloaded. Please try again.");
+                    reloadFragment(drawAvailability, availabilityPopUpView); // reload database to update to correct version
                     return;
                 }
             }
@@ -463,11 +485,13 @@ public class SettingsFragment extends Fragment {
                                 scheduler.setDateOfLastUpdate(Calendar.getInstance().getTime().toString());
                                 db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
                             } else { // another device is trying to update database since oldScheduler.getHashCode() != scheduler.hashCode()
-                                alertView("you are already trying to edit the data on another account, please try again later.");
+                                alertView("you are already trying to edit the data on another account. Please try again later.");
+                                reloadFragment(drawAvailability, availabilityPopUpView); // reload database to update to correct version
                                 return;
                             }
                         } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
-                            alertView("Please update your planning to get the most recent version.");
+                            alertView("This device was still on an old version of the Planning, The planning has been reloaded. Please try again.");
+                            reloadFragment(drawAvailability, availabilityPopUpView); // reload database to update to correct version
                             return;
                         }
                     }
