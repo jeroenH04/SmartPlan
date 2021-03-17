@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -59,18 +60,21 @@ public class SettingsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
+        final EditText editRelaxNumber = root.findViewById(R.id.editRelaxNumber);
+        final EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
+        final EditText editIntenseNumber = root.findViewById(R.id.editIntenseNumber);
+
         // Get the scheduler object from the database
         DocumentReference docRef = db.collection("users").document(user.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 scheduler = documentSnapshot.toObject(TaskScheduler.class);
+                editRelaxNumber.setText(String.valueOf(scheduler.getRelaxedIntensity() / 60));
+                editNormalNumber.setText(String.valueOf(scheduler.getNormalIntensity() / 60));
+                editIntenseNumber.setText(String.valueOf(scheduler.getIntenseIntensity() / 60));
             }
         });
-
-        final EditText editRelaxNumber = root.findViewById(R.id.editRelaxNumber);
-        final EditText editNormalNumber = root.findViewById(R.id.editNormalNumber);
-        final EditText editIntenseNumber = root.findViewById(R.id.editIntenseNumber);
 
         Button resetPlanningButton = (Button) root.findViewById(R.id.resetPlanBtn);
         resetPlanningButton.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +106,7 @@ public class SettingsFragment extends Fragment {
                     final int intenseNumber = Integer.parseInt(editIntenseNumber.getText().toString());
                     scheduler.setIntensity(relaxNumber, normalNumber, intenseNumber);
                     updateDatabase();
+                    Toast.makeText(getActivity(),"Intensity preferences saved.",Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     if (e.getMessage().equals("intensity <= 0")) {
                         alertView("Intensity Preferences needs to be at least 1h or higher");
