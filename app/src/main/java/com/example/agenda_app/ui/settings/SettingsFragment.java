@@ -130,12 +130,8 @@ public class SettingsFragment extends Fragment {
         infoDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             public void onClick(DialogInterface dialoginterface, int i) {
-             //   if (scheduler.getSchedule().size() != 0) {
-                    alertDeleteSchedule();
-                        scheduler.resetSchedule(); // reset the schedule
-                        Log.d("kusejs", "onClick: xxxx");
-
-             //   }
+                alertDeleteSchedule();
+                scheduler.resetSchedule(); // reset the schedule
                 scheduler.removeAvailability(date, time); // remove the task from the task list
                 updateDatabase();
                 drawAvailability(availabilityPopUpView); // redraw the availability buttons

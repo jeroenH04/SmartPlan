@@ -87,6 +87,8 @@ public class Availability {
 
         String totalMinutesString1 = String.valueOf(minutesNeeded);
         String totalMinutesString2 = String.valueOf(totalMinutes2);
+        String hoursNeededString = String.valueOf(hoursNeeded);
+        String totalHoursString = String.valueOf(totalHours2);
         // Make sure the numbers are of the correct format, i.e. hh:mm-hh:mm
         if (totalMinutes2 == 0) { // if first minutes are 0, add another 0. i.e. 0 -> 00
             totalMinutesString2 = totalMinutes2 + "0";
@@ -94,8 +96,14 @@ public class Availability {
         if (minutesNeeded == 0) { // if second minutes are 0, add another 0. i.e. 0 -> 00
             totalMinutesString1 = minutesNeeded + "0";
         }
-        this.duration = hoursNeeded + ":" + totalMinutesString1 + "-" +
-                totalHours2 + ":" + totalMinutesString2; // update duration
+        if (hoursNeeded < 10) {
+            hoursNeededString = "0" + hoursNeeded;
+        }
+        if (totalHours2 < 10) {
+            totalHoursString = "0" + totalHours2;
+        }
+        this.duration = hoursNeededString + ":" + totalMinutesString1 + "-" +
+                totalHoursString + ":" + totalMinutesString2; // update duration
     }
 
 
