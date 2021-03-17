@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class SettingsFragment extends Fragment {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    Handler myHandler;
 
     TaskScheduler scheduler;
 
@@ -109,7 +111,7 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
-
+        myHandler = new Handler();
         return root;
     }
 
@@ -408,6 +410,70 @@ public class SettingsFragment extends Fragment {
     }
 
     public void updateDatabase() {
-        db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
+        //get database reference to load and write to database
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                //set the old schedule to oldScheduler
+                TaskScheduler oldScheduler = documentSnapshot.toObject(TaskScheduler.class);
+                // if the date of last update from the oldScheduler is the same as the date of last
+                // update on the current scheduler you have the most updated database
+                if (scheduler.getDateOfLastUpdate().equals(oldScheduler.getDateOfLastUpdate())) {
+                    //if no device is changing the database or if the change is the same
+                    if (oldScheduler.getSchedulerHashcode() == 0 || oldScheduler.getSchedulerHashcode() == scheduler.hashCode()) {
+                        // set hashCode of the current change to the oldScheduler
+                        oldScheduler.setSchedulerHashcode(scheduler.hashCode());
+                        // upload oldScheduler with updated hashCode to the database
+                        db.collection("users").document(user.getUid()).set(oldScheduler, SetOptions.merge());
+                    } else { // oldScheduler hashcode != 0 or is different from scheduler.hashCode() thus an other device is changing database already
+                        alertView("you are already trying to edit the data on another account, please try again later");
+                        //alertView("old: " + oldScheduler.getSchedulerHashcode() + " new: " + scheduler.hashCode());
+                        return;
+                    }
+                } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
+                    alertView("Please update your planning to get the most recent version.");
+                    return;
+                }
+            }
+        });
+
+        // function to be delayed for 200 ms
+        myHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //get database reference to load and write to database
+                DocumentReference docRef = db.collection("users").document(user.getUid());
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        //set the old schedule to oldScheduler
+                        TaskScheduler oldScheduler = documentSnapshot.toObject(TaskScheduler.class);
+                        // if the date of last update from the oldScheduler is the same as the date of last
+                        // update on the current scheduler you have the most updated database
+                        if (scheduler.getDateOfLastUpdate().equals(oldScheduler.getDateOfLastUpdate())) {
+                            // if database was to busy and thus not yet updated oldScheduler.hashCode run updateDatabase again
+                            if (oldScheduler.getSchedulerHashcode() == 0) {
+                                //alertView("reupdating database");
+                                updateDatabase();
+                                return;
+                            }
+                            // if this device updated the hashCode of the oldScheduler then they can update the database
+                            if (oldScheduler.getSchedulerHashcode() == scheduler.hashCode()) {
+                                scheduler.setDateOfLastUpdate(Calendar.getInstance().getTime().toString());
+                                db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
+                            } else { // another device is trying to update database since oldScheduler.getHashCode() != scheduler.hashCode()
+                                alertView("you are already trying to edit the data on another account, please try again later.");
+                                return;
+                            }
+                        } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
+                            alertView("Please update your planning to get the most recent version.");
+                            return;
+                        }
+                    }
+                });
+            }
+        }, 200); // myHandler is run after 200 ms
+        // db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
     }
 }
