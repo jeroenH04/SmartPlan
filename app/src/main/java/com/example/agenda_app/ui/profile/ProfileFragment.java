@@ -109,6 +109,7 @@ public class ProfileFragment extends Fragment {
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+
         //Set the save button to save the new password
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,11 +133,15 @@ public class ProfileFragment extends Fragment {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "Password updated successfully!");
+                                Toast.makeText(getActivity(),"Password replaced",Toast.LENGTH_SHORT).show();
                             } else {
                                 Log.d(TAG, "Error password not updated!");
+                                Toast.makeText(getActivity(),"Password not replaced",Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
+
+                    dialogShow.dismiss();
                 }
             }
         });
