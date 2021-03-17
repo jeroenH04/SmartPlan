@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,7 @@ public class PlanningFragment extends Fragment {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     Handler myHandler;
     TaskScheduler scheduler;
+    String studyModeState;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -57,6 +60,18 @@ public class PlanningFragment extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_planning, container, false);
 
         final LinearLayout agenda_dash = (LinearLayout) root.findViewById(R.id.agenda_dashboard);
+        final Switch studyModeSwitch = (Switch) root.findViewById(R.id.studyModeSwitch);
+        studyModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    scheduler.setStudyMode("On");
+                } else {
+                    scheduler.setStudyMode("Off");
+                }
+                updateDatabase();
+
+            }
+        });
         final Button createPlanningBtn = (Button) root.findViewById(R.id.createPlanning);
         createPlanningBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,11 +99,16 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 scheduler = documentSnapshot.toObject(TaskScheduler.class);
+                studyModeState = scheduler.getStudyMode();
                 showPlanning(agenda_dash);
                 if (scheduler.getSchedule().size() == 0) {
                     createPlanningBtn.setText("Create schedule");
                 } else {
                     createPlanningBtn.setText("Update schedule");
+                }
+
+                if (studyModeState.equals("On")) {
+                    studyModeSwitch.setChecked(true);
                 }
             }
         });
