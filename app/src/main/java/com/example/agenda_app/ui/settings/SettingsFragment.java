@@ -130,6 +130,13 @@ public class SettingsFragment extends Fragment {
                 if (drawAvailability) {
                     drawAvailability(availabilityPopUpView);
                 }
+                final EditText editRelaxNumber = getView().findViewById(R.id.editRelaxNumber);
+                final EditText editNormalNumber = getView().findViewById(R.id.editNormalNumber);
+                final EditText editIntenseNumber = getView().findViewById(R.id.editIntenseNumber);
+
+                editRelaxNumber.setText(String.valueOf(scheduler.getRelaxedIntensity() / 60));
+                editNormalNumber.setText(String.valueOf(scheduler.getNormalIntensity() / 60));
+                editIntenseNumber.setText(String.valueOf(scheduler.getIntenseIntensity() / 60));
             }
         });
     }
@@ -452,9 +459,8 @@ public class SettingsFragment extends Fragment {
                         // upload oldScheduler with updated hashCode to the database
                         db.collection("users").document(user.getUid()).set(oldScheduler, SetOptions.merge());
                     } else { // oldScheduler hashcode != 0 or is different from scheduler.hashCode() thus an other device is changing database already
-                        alertView("you are already trying to edit the data on another account. Please try again later");
+                        alertView("You are already trying to edit the data on another account. Please try again later");
                         //alertView("old: " + oldScheduler.getSchedulerHashcode() + " new: " + scheduler.hashCode());
-                        reloadFragment(drawAvailability, availabilityPopUpView); // reload database to update to correct version
                         return;
                     }
                 } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
@@ -490,8 +496,7 @@ public class SettingsFragment extends Fragment {
                                 scheduler.setDateOfLastUpdate(Calendar.getInstance().getTime().toString());
                                 db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
                             } else { // another device is trying to update database since oldScheduler.getHashCode() != scheduler.hashCode()
-                                alertView("you are already trying to edit the data on another account. Please try again later.");
-                                reloadFragment(drawAvailability, availabilityPopUpView); // reload database to update to correct version
+                                alertView("You are already trying to edit the data on another account. Please try again later.");
                                 return;
                             }
                         } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler

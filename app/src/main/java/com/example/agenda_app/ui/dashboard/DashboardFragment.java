@@ -394,9 +394,8 @@ public class DashboardFragment extends Fragment {
                         // upload oldScheduler with updated hashCode to the database
                         db.collection("users").document(user.getUid()).set(oldScheduler, SetOptions.merge());
                     } else { // oldScheduler hashcode != 0 or is different from scheduler.hashCode() thus an other device is changing database already
-                        alertView("you are already trying to edit the data on another account. Please try again later");
+                        alertView("You are already trying to edit the data on another account. Please try again later");
                         //alertView("old: " + oldScheduler.getSchedulerHashcode() + " new: " + scheduler.hashCode());
-                        reloadFragment(); // reload database to update to correct version
                         return;
                     }
                 } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
@@ -432,8 +431,7 @@ public class DashboardFragment extends Fragment {
                                 scheduler.setDateOfLastUpdate(Calendar.getInstance().getTime().toString());
                                 db.collection("users").document(user.getUid()).set(scheduler, SetOptions.merge());
                             } else { // another device is trying to update database since oldScheduler.getHashCode() != scheduler.hashCode()
-                                alertView("you are already trying to edit the data on another account. Please try again later.");
-                                reloadFragment(); // reload database to update to correct version
+                                alertView("You are already trying to edit the data on another account. Please try again later.");
                                 return;
                             }
                         } else { // oldScheduler.lastchangedate != scheduler.lastchangedate thus user needs to first load most recent version of scheduler
