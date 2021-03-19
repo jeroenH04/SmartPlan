@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:outlineProvider="none">
@@ -25,7 +25,7 @@
         android:id="@+id/time_extention"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="32dp"
         android:text="I need more time"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/time_extention_title"
@@ -59,11 +59,18 @@
         app:layout_constraintStart_toStartOf="@+id/time_extention"
         app:layout_constraintTop_toBottomOf="@+id/time_extention" />
 
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/time_extention_deadline_change"-->
+<!--        app:layout_constraintHorizontal_bias="0.292"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/time_extention_deadline_change"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/time_extention_deadline_change"-->
+        app:layout_constraintVertical_bias="1.0" />
+
     <EditText
         android:id="@+id/time_extention_deadline_change"
         android:layout_width="300dp"
         android:layout_height="30dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="28dp"
         android:background="#ffffff"
         android:ems="10"
         android:focusable="false"
@@ -78,23 +85,26 @@
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="288dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/colorAccent"
         android:text="Save"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/time_extention_deadline_change"
-        app:layout_constraintHorizontal_bias="0.141"
-        app:layout_constraintStart_toStartOf="@+id/time_extention_deadline_change" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/time_extention_deadline_change"
+        app:layout_constraintTop_toBottomOf="@+id/time_extention_deadline_change" />
 
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="288dp"
+        android:background="@color/colorAccent"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/time_extention_deadline_change"
-        app:layout_constraintHorizontal_bias="0.844"
-        app:layout_constraintStart_toStartOf="@+id/time_extention_deadline_change" />
+        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintStart_toStartOf="@+id/time_extention_deadline_change"
+        app:layout_constraintTop_toBottomOf="@+id/time_extention_deadline_change"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
