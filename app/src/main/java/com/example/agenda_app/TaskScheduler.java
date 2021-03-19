@@ -213,12 +213,13 @@ public class TaskScheduler {
      * @modifies @code{availabilityList}
      * @post @code{availabilityList.contains(new Availability(date, time))}
      */
-    public void addAvailability(String date, String time) { // i.e. "26-02-2021","8:00-16:00"
+    public void addAvailability(String date, String time) { // i.e. "26-02-2021","08:00-16:00"
         if (date == null || time == null) {
             throw new NullPointerException("Date or time is null");
         }
-        if (date.isEmpty() || time.length() == 1) {
-            throw new IllegalArgumentException("Date or time is empty");
+        if (date.isEmpty() || time.length() == 1 || time.length() < 11 || time.charAt(2) != ':' ||
+            time.charAt(8) != ':' ){
+            throw new IllegalArgumentException("Date input is incorrect");
         }
         Availability availability = new Availability(date, time);
         availabilityList.add(availability);

@@ -61,7 +61,7 @@ public class PlanningFragment extends Fragment {
         studyModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    startStudyMode();
+                    //startStudyMode();
                     scheduler.setStudyMode("On");
                 } else {
                     scheduler.setStudyMode("Off");

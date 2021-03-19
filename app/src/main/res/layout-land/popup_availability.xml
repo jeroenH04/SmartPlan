@@ -57,7 +57,7 @@
         android:layout_width="65dp"
         android:layout_height="25dp"
         android:background="@color/colorAccent"
-        android:text="Cancel"
+        android:text="Go back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/ScrollView"
         app:layout_constraintHorizontal_bias="1.0"

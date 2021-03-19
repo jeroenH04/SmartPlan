@@ -358,7 +358,8 @@ public class SettingsFragment extends Fragment {
                         alertView("The end time should be later than the begin time.");
                     }
                     else if (e.getMessage().equals("minutes >= 60") ||
-                            e.getMessage().equals("invalid time")) {
+                            e.getMessage().equals("invalid time") ||
+                            e.getMessage().equals("Date input is incorrect") ) {
                         alertView("Your time input is incorrect.");
                     } else {
                         alertView("Please fill in all details.");
