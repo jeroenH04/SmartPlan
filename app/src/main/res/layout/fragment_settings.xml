@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
 
-    tools:context=".ui.settings.SettingsFragment">
+    tools:context=".ui.SettingsFragment">
 
     <TextView
         android:id="@+id/resetPlanTxt"
@@ -35,33 +35,6 @@
         app:layout_constraintVertical_bias="0.015" />
 
     <TextView
-        android:id="@+id/aiPrefTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="I would like to reset my planning preferences"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/resetPlanBtn"
-        app:layout_constraintHorizontal_bias="0.011"
-        app:layout_constraintStart_toStartOf="@+id/resetPlanBtn"
-        app:layout_constraintTop_toBottomOf="@+id/resetPlanBtn"
-        app:layout_constraintVertical_bias="0.044" />
-
-    <Button
-        android:id="@+id/aiPrefBtn"
-        android:layout_width="293dp"
-        android:layout_height="36dp"
-        android:background="@color/colorAccent"
-        android:text="Reset AI planning preferences"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/aiPrefTxt"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/aiPrefTxt"
-        app:layout_constraintTop_toBottomOf="@+id/aiPrefTxt"
-        app:layout_constraintVertical_bias="0.023" />
-
-    <TextView
         android:id="@+id/ampTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,10 +42,10 @@
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/aiPrefBtn"
+        app:layout_constraintEnd_toEndOf="@+id/resetPlanBtn"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/aiPrefBtn"
-        app:layout_constraintTop_toBottomOf="@+id/aiPrefBtn"
+        app:layout_constraintStart_toStartOf="@+id/resetPlanBtn"
+        app:layout_constraintTop_toBottomOf="@+id/resetPlanBtn"
         app:layout_constraintVertical_bias="0.039" />
 
     <Button

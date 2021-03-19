@@ -1,43 +1,42 @@
 package com.example.agenda_app;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.agenda_app.ui.Login;
+import com.example.agenda_app.ui.Register;
 
 public class Authentication extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
-        Button btn = (Button)findViewById(R.id.button);
+        Button btn = (Button) findViewById(R.id.button);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Authentication.this, Login.class));
+            public void onClick(final View v) {
+                startActivity(new Intent(Authentication.this,
+                        Login.class));
                 finish();
             }
         });
 
-        TextView txt = (TextView)findViewById(R.id.textView2);
+        TextView txt = (TextView) findViewById(R.id.textView2);
 
         txt.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Authentication.this,Register.class));
+            public void onClick(final View v) {
+                startActivity(new Intent(Authentication.this,
+                        Register.class));
                 finish();
             }
         });
     }
-
-
-
 }

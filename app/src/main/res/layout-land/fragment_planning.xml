@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/planning_layout"
     android:background="@color/colorPrimary"
-    tools:context=".ui.planning.PlanningFragment"
+    tools:context=".ui.PlanningFragment"
     >
 
     <Button

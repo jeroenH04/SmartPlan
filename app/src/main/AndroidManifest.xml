@@ -11,14 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ForgotPass" android:screenOrientation="sensor"> </activity>
-        <activity android:name=".Register"  android:screenOrientation="sensor" />
+        <activity android:name=".ui.ForgotPass" android:screenOrientation="sensor"> </activity>
+        <activity android:name=".ui.Register"  android:screenOrientation="sensor" />
         <activity android:name=".Authentication"  android:screenOrientation="sensor" />
-        <activity android:name=".Login"  android:screenOrientation="sensor"/>
-        <activity android:name=".SplashActivity"  android:screenOrientation="sensor">
+        <activity android:name=".ui.Login"  android:screenOrientation="sensor"/>
+        <activity android:name=".ui.SplashActivity"  android:screenOrientation="sensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER"  />
             </intent-filter>
         </activity>

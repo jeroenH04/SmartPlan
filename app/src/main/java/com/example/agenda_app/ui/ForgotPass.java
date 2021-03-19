@@ -1,4 +1,4 @@
-package com.example.agenda_app;
+package com.example.agenda_app.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,18 +9,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.agenda_app.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPass extends AppCompatActivity {
-
-    EditText mEmail;
-    Button btn;
-    FirebaseAuth fAuth;
+    private EditText mEmail;
+    private Button btn;
+    private FirebaseAuth fAuth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_pass);
 
@@ -30,20 +30,24 @@ public class ForgotPass extends AppCompatActivity {
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 String Email = mEmail.getText().toString();
-                fAuth.sendPasswordResetEmail(Email).addOnSuccessListener(new OnSuccessListener<Void>() {
+                fAuth.sendPasswordResetEmail(Email)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(ForgotPass.this,"Reset mail sent",Toast.LENGTH_SHORT).show();
+                    public void onSuccess(final Void aVoid) {
+                        Toast.makeText(ForgotPass.this,
+                                "Reset mail sent",
+                                Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ForgotPass.this,"Reset mail NOT sent" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                    public void onFailure(@NonNull final Exception e) {
+                        Toast.makeText(ForgotPass.this,
+                                "Reset mail NOT sent" + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         });
 

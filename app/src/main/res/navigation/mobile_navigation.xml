@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.agenda_app.ui.profile.ProfileFragment"
+        android:name="com.example.agenda_app.ui.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.agenda_app.ui.dashboard.DashboardFragment"
+        android:name="com.example.agenda_app.ui.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_planning"
-        android:name="com.example.agenda_app.ui.planning.PlanningFragment"
+        android:name="com.example.agenda_app.ui.PlanningFragment"
         android:label="@string/title_planning"
         tools:layout="@layout/fragment_planning" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.example.agenda_app.ui.settings.SettingsFragment"
+        android:name="com.example.agenda_app.ui.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>
