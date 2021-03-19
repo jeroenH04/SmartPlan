@@ -1,16 +1,15 @@
 package com.example.agenda_app.ui.planning;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,7 +22,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
-import com.example.agenda_app.ForgotPass;
 import com.example.agenda_app.Item;
 import com.example.agenda_app.R;
 import com.example.agenda_app.Task;
@@ -36,13 +34,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class PlanningFragment extends Fragment {
 
@@ -263,9 +256,45 @@ public class PlanningFragment extends Fragment {
         dialog.show();
 
         //find the buttons and textView
+        Button taskExtend = (Button) taskPopUpView.findViewById(R.id.extendButton);
         Button taskDelete = (Button) taskPopUpView.findViewById(R.id.deleteButton);
         Button taskCancel = (Button) taskPopUpView.findViewById(R.id.cancelButton);
-        TextView taskDeleteText = (TextView) taskPopUpView.findViewById(R.id.deleteTextView);
+
+        //add onclick listener to the extension button
+        taskExtend.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                extendTask(view, date, task, dateText);
+            }
+        });
+
+        //add onclick listener to the delete button
+        taskDelete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                deleteTask(view, date, task, dateText);
+            }
+        });
+
+        //add onclick listener to the cancel button which closes the popup
+        taskCancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void deleteTask(final View view, final String date, final Task task, final TextView dateText) {
+
+        //show modify task layout as popup
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this.getActivity());
+        final View taskDeleteView = getLayoutInflater().inflate(R.layout.popup_delete_task, null);
+        dialogBuilder.setView(taskDeleteView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        //find the buttons and textView
+        Button taskDelete = (Button) taskDeleteView.findViewById(R.id.deleteButton);
+        Button taskCancel = (Button) taskDeleteView.findViewById(R.id.cancelButton);
+        TextView taskDeleteText = (TextView) taskDeleteView.findViewById(R.id.deleteTextView);
         //get task name from task object
         final String taskName = (String) task.getName();
 
@@ -300,6 +329,26 @@ public class PlanningFragment extends Fragment {
                 dialog.dismiss();
             }
         });
+    }
+
+    private void extendTask(final View view, final String date, final Task task, final TextView dateText) {
+
+        //show modify task layout as popup
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this.getActivity());
+        final View taskExtensionView = getLayoutInflater().inflate(R.layout.popup_time_extension, null);
+        dialogBuilder.setView(taskExtensionView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        //find the buttons and textView
+        Button extensionSave = (Button) taskExtensionView.findViewById(R.id.saveButton);
+        Button extensionCancel = (Button) taskExtensionView.findViewById(R.id.cancelButton);
+        EditText extensionDuration = (EditText) taskExtensionView.findViewById(R.id.time_extention_duration);
+        EditText extensionDeadline = (EditText) taskExtensionView.findViewById(R.id.time_extention_deadline_change);
+
+        //get task name from task object
+        final String taskName = (String) task.getName();
+
     }
 
     private void alertView( String message ) {
