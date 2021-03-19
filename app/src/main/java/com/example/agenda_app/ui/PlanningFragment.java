@@ -1,9 +1,11 @@
 package com.example.agenda_app.ui;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -307,7 +309,7 @@ public class PlanningFragment extends Fragment {
         //add onclick listener to the extension button
         taskExtend.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
-                extendTask(view, date, task, dateText);
+                extendTask(view, date, task, dateText, dialog);
             }
         });
 
@@ -315,6 +317,7 @@ public class PlanningFragment extends Fragment {
         taskDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
                 deleteTask(view, date, task, dateText);
+                dialog.dismiss();
             }
         });
 
@@ -398,7 +401,7 @@ public class PlanningFragment extends Fragment {
      * @param dateText, the date in text
      */
     private void extendTask(final View view, final String date, final Task task,
-                            final TextView dateText) {
+                            final TextView dateText, final Dialog prevDialog) {
         //show modify task layout as popup
         AlertDialog.Builder dialogBuilder =
                 new AlertDialog.Builder(this.getActivity());
@@ -411,7 +414,7 @@ public class PlanningFragment extends Fragment {
         //find the buttons and textView
         Button extensionSave = (Button)
                 taskExtensionView.findViewById(R.id.saveButton);
-        Button extensionCancel = (Button)
+        final Button extensionCancel = (Button)
                 taskExtensionView.findViewById(R.id.cancelButton);
         EditText extensionDuration = (EditText)
                 taskExtensionView.findViewById(R.id.time_extention_duration);
@@ -419,8 +422,42 @@ public class PlanningFragment extends Fragment {
                 taskExtensionView.findViewById(R.id.
                         time_extention_deadline_change);
 
-        //get task name from task object
-        final String taskName = (String) task.getName();
+        extensionSave.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(final View v) {
+                // TODO: Get user input time extension
+                // TODO: Get (optional) new deadline
+                // TODO: automatically reschedule this newly created task
+                scheduler.completeTask(task.getName());
+
+                ArrayList<Task> tempTasklist = scheduler.getTaskList();
+                scheduler.clearTasklist();
+                scheduler.addTask(task.getName(), task.getDuration(),
+                        task.getIntensity(), task.getDifficulty(),
+                        task.getDeadline(), task.getToday());
+                scheduler.createSchedule();
+                for (Task t : tempTasklist) {
+                    scheduler.addTask(t.getName(), t.getDuration(),
+                            t.getIntensity(), t.getDifficulty(),
+                            t.getDeadline(), t.getToday());
+                }
+
+                Log.d("HTIEHIDJFKLDJFDLKSF", "onClick: " +scheduler.getTaskList().size());
+                updateDatabase();
+                dialog.dismiss();
+                prevDialog.dismiss();
+                agenda_dash.removeAllViews();
+                showPlanning();
+            }
+        });
+
+        extensionCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     /**
