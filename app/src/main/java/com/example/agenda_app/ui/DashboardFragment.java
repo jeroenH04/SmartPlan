@@ -299,14 +299,15 @@ public class DashboardFragment extends Fragment {
                 } catch (Exception e) {
                     if (e.getMessage().equals("name is not unique")) {
                         alertView("The task name should be unique.");
-                    } else if (e.getMessage().equals("minutes >= 60")) {
+                    } else if (e.getMessage().equals("minutes >= 60")
+                            || e.getMessage().equals("duration input is "
+                            + "invalid")) {
                         alertView("Your time input is incorrect.");
                     } else if (e.getMessage().equals("deadline <= today")) {
                         alertView("The deadline cannot be in the past.");
                     } else {
                         alertView("All details should be filled in.");
                     }
-                    System.out.println(e);
                 }
             }
         });

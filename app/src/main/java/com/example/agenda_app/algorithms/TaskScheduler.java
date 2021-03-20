@@ -96,6 +96,9 @@ public class TaskScheduler {
         if (!checkUniqueName(name)) {
             throw new IllegalArgumentException("name is not unique");
         }
+        if (duration.charAt(2) != ':' && duration.charAt(1) != ':') {
+            throw new IllegalArgumentException("duration input is invalid");
+        }
 
         // calculate the total time in minutes of the task
         int totalTime = getDurationMinutes(duration);
@@ -554,13 +557,17 @@ public class TaskScheduler {
             newMinutes -= 60;
             newHours++;
         }
+        String newMinutesString = String.valueOf(newMinutes);
+        if (newMinutes < 10) {
+            newMinutesString = "0" + newMinutesString;
+        }
         if (newHours < 10) {
             // declare newTime, add zero in case of single digit minutes
-            newTime = "0" + newHours + ":" + newMinutes + "0";
+            newTime = "0" + newHours + ":" + newMinutesString;
         } else {
-            newTime = newHours + ":" + newMinutes + "0";
+            newTime = newHours + ":" + newMinutesString;
         }
-        return newTime.substring(0, 5);
+        return newTime;
     }
 
     /**

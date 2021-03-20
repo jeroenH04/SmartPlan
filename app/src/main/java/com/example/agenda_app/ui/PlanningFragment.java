@@ -1,16 +1,19 @@
 package com.example.agenda_app.ui;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -36,11 +39,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class PlanningFragment extends Fragment {
     private AlertDialog dialog;
+    private AlertDialog dialog2;
     private ArrayList<Item> schedule;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance()
@@ -316,8 +322,7 @@ public class PlanningFragment extends Fragment {
         //add onclick listener to the delete button
         taskDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
-                deleteTask(view, date, task, dateText);
-                dialog.dismiss();
+                deleteTask(view, date, task, dateText, dialog);
             }
         });
 
@@ -338,15 +343,15 @@ public class PlanningFragment extends Fragment {
      * @param dateText, the date in text
      */
     private void deleteTask(final View view, final String date, final Task task,
-                            final TextView dateText) {
+                            final TextView dateText, final AlertDialog dialog) {
         //show modify task layout as popup
         AlertDialog.Builder dialogBuilder =
                 new AlertDialog.Builder(this.getActivity());
         final View taskDeleteView = getLayoutInflater().inflate(
                 R.layout.popup_delete_task, null);
         dialogBuilder.setView(taskDeleteView);
-        dialog = dialogBuilder.create();
-        dialog.show();
+        dialog2 = dialogBuilder.create();
+        dialog2.show();
 
         //find the buttons and textView
         Button taskDelete = (Button)
@@ -364,6 +369,7 @@ public class PlanningFragment extends Fragment {
         //add onclick listener to the cancel button which closes the popup
         taskCancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
+                dialog2.dismiss();
                 dialog.dismiss();
             }
         });
@@ -387,6 +393,7 @@ public class PlanningFragment extends Fragment {
                 if (!dateStillIn) {
                     dateText.setVisibility(View.GONE);
                 }
+                dialog2.dismiss();
                 dialog.dismiss();
             }
         });
@@ -409,46 +416,93 @@ public class PlanningFragment extends Fragment {
                 R.layout.popup_time_extension, null);
         dialogBuilder.setView(taskExtensionView);
         dialog = dialogBuilder.create();
-        dialog.show();
 
         //find the buttons and textView
         Button extensionSave = (Button)
                 taskExtensionView.findViewById(R.id.saveButton);
         final Button extensionCancel = (Button)
                 taskExtensionView.findViewById(R.id.cancelButton);
-        EditText extensionDuration = (EditText)
+        final EditText extensionDuration = (EditText)
                 taskExtensionView.findViewById(R.id.time_extention_duration);
-        EditText extensionDeadline = (EditText)
+        final EditText extensionDeadline = (EditText)
                 taskExtensionView.findViewById(R.id.
                         time_extention_deadline_change);
+
+        // Create date-picker for deadline
+        extensionDeadline.setInputType(InputType.TYPE_NULL);
+        extensionDeadline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                final NumberFormat f = new DecimalFormat("00");
+                // date picker dialog
+                DatePickerDialog picker = new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(final DatePicker view,
+                                                  final int year,
+                                                  final int monthOfYear,
+                                                  final int dayOfMonth) {
+                                extensionDeadline.setText(f.format(dayOfMonth)
+                                        + "-"
+                                        + f.format(monthOfYear + 1)
+                                        + "-" + year);
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
+
+        dialog.show();
 
         extensionSave.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(final View v) {
-                // TODO: Get user input time extension
-                // TODO: Get (optional) new deadline
-                // TODO: automatically reschedule this newly created task
                 scheduler.completeTask(task.getName());
+                try {
+                    String deadline = extensionDeadline.getText().toString();
+                    if (deadline.isEmpty()) {
+                        deadline = task.getDeadline();
+                    }
+                    final String duration = extensionDuration.getText()
+                            .toString();
 
-                ArrayList<Task> tempTasklist = scheduler.getTaskList();
-                scheduler.clearTasklist();
-                scheduler.addTask(task.getName(), task.getDuration(),
-                        task.getIntensity(), task.getDifficulty(),
-                        task.getDeadline(), task.getToday());
-                scheduler.createSchedule();
-                for (Task t : tempTasklist) {
-                    scheduler.addTask(t.getName(), t.getDuration(),
-                            t.getIntensity(), t.getDifficulty(),
-                            t.getDeadline(), t.getToday());
+                    // Save the current tasks
+                    ArrayList<Task> tempTasklist = new ArrayList<>(
+                            scheduler.getTaskList());
+                    scheduler.clearTasklist();
+                    scheduler.addTask(task.getName(), duration,
+                            task.getIntensity(), task.getDifficulty(),
+                            task.getDeadline(), task.getToday());
+                    scheduler.createSchedule(); // schedule the extension
+                    for (Task t : tempTasklist) { // add back all tasks
+                        scheduler.addTask(t.getName(), t.getDuration(),
+                                t.getIntensity(), t.getDifficulty(),
+                                deadline, t.getToday());
+                    }
+                    updateDatabase();
+                    dialog.dismiss();
+                    prevDialog.dismiss();
+                    agenda_dash.removeAllViews();
+                    showPlanning();
+                    Toast.makeText(getActivity(),
+                            "Extension succeeded",
+                            Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    if (e.getMessage().equals("minutes >= 60")
+                            || e.getMessage().equals("duration input is "
+                            + "invalid")) {
+                        alertView("Your time input is incorrect.");
+                    } else if (e.getMessage().equals("deadline <= today")) {
+                        alertView("The deadline cannot be in the past.");
+                    } else {
+                        alertView("Your time input is incorrect.");
+                    }
                 }
-
-                Log.d("HTIEHIDJFKLDJFDLKSF", "onClick: " +scheduler.getTaskList().size());
-                updateDatabase();
-                dialog.dismiss();
-                prevDialog.dismiss();
-                agenda_dash.removeAllViews();
-                showPlanning();
             }
         });
 

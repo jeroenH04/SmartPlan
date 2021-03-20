@@ -146,9 +146,9 @@ public class Availability {
             // if first minutes are 0, add another 0. i.e. 0 -> 00
             totalMinutesString2 = totalMinutes2 + "0";
         }
-        if (minutesNeeded == 0) {
+        if (minutesNeeded < 10) {
             // if second minutes are 0, add another 0. i.e. 0 -> 00
-            totalMinutesString1 = minutesNeeded + "0";
+            totalMinutesString1 = "0" + minutesNeeded;
         }
         if (hoursNeeded < 10) {
             hoursNeededString = "0" + hoursNeeded;
@@ -156,6 +156,7 @@ public class Availability {
         if (totalHours2 < 10) {
             totalHoursString = "0" + totalHours2;
         }
+        System.out.println(totalMinutesString1);
         this.duration = hoursNeededString + ":" + totalMinutesString1 + "-"
                 + totalHoursString + ":" + totalMinutesString2; // update duration
     }

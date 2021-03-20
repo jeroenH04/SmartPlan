@@ -732,6 +732,5 @@ public class TaskSchedulerTest {
         schedule.resetSchedule();
         assertEquals(schedule.getTaskList().size(), 2);
         assertEquals(schedule.getSchedule().size(), 0);
-        System.out.println(schedule.getTaskList());
     }
 }

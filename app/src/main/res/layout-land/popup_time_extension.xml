@@ -45,6 +45,16 @@
         app:layout_constraintStart_toStartOf="@+id/time_extention_duration"
         app:layout_constraintTop_toBottomOf="@+id/time_extention_duration" />
 
+    <TextView
+        android:id="@+id/subtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(Leave empty if unchanged)"
+        app:layout_constraintEnd_toEndOf="@+id/time_extention_deadline"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/time_extention_deadline"
+        app:layout_constraintTop_toBottomOf="@+id/time_extention_deadline" />
+
     <EditText
         android:id="@+id/time_extention_duration"
         android:layout_width="300dp"
@@ -52,6 +62,7 @@
         android:layout_marginTop="12dp"
         android:background="#ffffff"
         android:ems="10"
+        android:maxLength="5"
         android:hint="  hh:mm"
         android:inputType="time"
         app:layout_constraintEnd_toEndOf="@+id/time_extention"
@@ -69,10 +80,10 @@
         android:focusable="false"
         android:hint="  dd-mm-yyyy"
         android:maxLength="5"
-        app:layout_constraintEnd_toEndOf="@+id/time_extention_deadline"
+        app:layout_constraintEnd_toEndOf="@+id/subtext"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/time_extention_deadline"
-        app:layout_constraintTop_toBottomOf="@+id/time_extention_deadline" />
+        app:layout_constraintStart_toStartOf="@+id/subtext"
+        app:layout_constraintTop_toBottomOf="@+id/subtext" />
 
     <Button
         android:id="@+id/saveButton"
@@ -86,7 +97,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/time_extention_deadline_change"
         app:layout_constraintTop_toBottomOf="@+id/time_extention_deadline_change"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/cancelButton"
