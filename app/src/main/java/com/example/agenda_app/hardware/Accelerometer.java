@@ -8,6 +8,8 @@ import android.hardware.SensorManager;
 
 import com.example.agenda_app.ui.PlanningFragment;
 
+import java.net.ConnectException;
+
 public class Accelerometer {
     /*
      * Implementation of a design pattern "the observer" to decouple the sensor
@@ -27,7 +29,7 @@ public class Accelerometer {
     private final Sensor sensor;
     private final SensorEventListener sensorEventListener;
 
-    public Accelerometer(final PlanningFragment context) {
+    public Accelerometer(Context context) {
         sensorManager = (SensorManager)
                 context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);

@@ -27,7 +27,7 @@ public class Gyroscope {
     private Sensor sensor;
     private SensorEventListener sensorEventListener;
 
-    public Gyroscope(final PlanningFragment context) {
+    public Gyroscope(Context context) {
         sensorManager = (SensorManager)
                 context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);

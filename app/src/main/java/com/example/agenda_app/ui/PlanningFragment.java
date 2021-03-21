@@ -59,8 +59,6 @@ public class PlanningFragment extends Fragment {
     private Button createPlanningBtn;
     private LinearLayout agenda_dash;
     private Switch studyModeSwitch;
-    private Accelerometer accelerometer;
-    private Gyroscope gyroscope;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -674,45 +672,5 @@ public class PlanningFragment extends Fragment {
                 dialog.dismiss();
             }
         });
-
-        accelerometer = new Accelerometer(this);
-        gyroscope = new Gyroscope(this);
-        accelerometer.setListener(new Accelerometer.Listener() {
-            @Override
-            public void onTranslation(final float tx, final float ty,
-                                      final float tz) {
-                if (tx > 1.0f) {
-                    // to be implemented
-                } else if (tx < -1.0f) {
-                    // to be implemented
-                }
-            }
-        });
-
-        gyroscope.setListener(new Gyroscope.Listener() {
-            @Override
-            public void onRotation(final float rx, final float ry,
-                                   final float rz) {
-                if (rx > 1.0f) {
-                    // to be implemented
-                } else if (rx < -1.0f) {
-                    // to be implemented
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        accelerometer.register();
-        gyroscope.register();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        accelerometer.unregister();
-        gyroscope.unregister();
     }
 }
