@@ -1,5 +1,6 @@
 package com.example.agenda_app.hardware;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -27,9 +28,9 @@ public class Gyroscope {
     private Sensor sensor;
     private SensorEventListener sensorEventListener;
 
-    public Gyroscope(Context context) {
+    public Gyroscope(Activity activity) {
         sensorManager = (SensorManager)
-                context.getSystemService(Context.SENSOR_SERVICE);
+                activity.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         sensorEventListener = new SensorEventListener() {
             @Override
