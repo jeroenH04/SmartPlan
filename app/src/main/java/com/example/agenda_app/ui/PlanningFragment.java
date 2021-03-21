@@ -106,10 +106,12 @@ public class PlanningFragment extends Fragment {
                 scheduler.createSchedule();
                 updateDatabase();
                 if (scheduler.getTaskList().size() != 0) {
-                    Toast.makeText(getActivity(),
-                            "Not all tasks fit in your availability. \n"
-                                    + "Increase your availability in the "
-                                    + "settings.", Toast.LENGTH_LONG).show();
+                    for ( int i = 0; i < 2; i++) {
+                        Toast.makeText(getActivity(),
+                                "Not all tasks fit in your availability. \n"
+                                        + "Increase your availability in the "
+                                        + "settings.", Toast.LENGTH_LONG).show();
+                    }
                 }
                 agenda_dash.removeAllViews();
                 showPlanning();
@@ -472,6 +474,7 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onClick(final View v) {
                 scheduler.completeTask(task.getName());
+                int taskListSize;
                 try {
                     String deadline = extensionDeadline.getText().toString();
                     if (deadline.isEmpty()) {
@@ -488,6 +491,7 @@ public class PlanningFragment extends Fragment {
                             task.getIntensity(), task.getDifficulty(),
                             task.getDeadline(), task.getToday());
                     scheduler.createSchedule(); // schedule the extension
+                    taskListSize = scheduler.getTaskList().size();
                     for (Task t : tempTasklist) { // add back all tasks
                         scheduler.addTask(t.getName(), t.getDuration(),
                                 t.getIntensity(), t.getDifficulty(),
@@ -498,9 +502,20 @@ public class PlanningFragment extends Fragment {
                     prevDialog.dismiss();
                     agenda_dash.removeAllViews();
                     showPlanning();
-                    Toast.makeText(getActivity(),
-                            "Extension succeeded",
-                            Toast.LENGTH_SHORT).show();
+                    if (taskListSize > 0) {
+                        for ( int i = 0; i < 2; i++) {
+                            Toast.makeText(getActivity(),
+                                    "The extension does not completely"
+                                            + " fit in your availability."
+                                            + " Some tasks have been added to"
+                                            + " your task list.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(getActivity(),
+                                "Extension succeeded",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception e) {
                     if (e.getMessage().equals("minutes >= 60")
                             || e.getMessage().equals("duration input is "

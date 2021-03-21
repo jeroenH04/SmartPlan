@@ -549,7 +549,7 @@ public class TaskSchedulerTest {
     @Test()
     public void testCreateSchedule7() {
         createBasicAvailability();
-        schedule.addTask("task1", "100:30","a",
+        schedule.addTask("task1", "99:30","a",
                 "b", "16-02-2021", "14-01-2021");
         schedule.createSchedule();
         assertEquals(schedule.getSchedule().size(), 0);
