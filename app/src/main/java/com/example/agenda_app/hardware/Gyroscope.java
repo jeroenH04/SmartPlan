@@ -6,6 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import com.example.agenda_app.ui.PlanningFragment;
+
 public class Gyroscope {
     /*
      * Implementation of a design pattern "the observer" to decouple the sensor
@@ -25,7 +27,7 @@ public class Gyroscope {
     private Sensor sensor;
     private SensorEventListener sensorEventListener;
 
-    public Gyroscope(final Context context) {
+    public Gyroscope(final PlanningFragment context) {
         sensorManager = (SensorManager)
                 context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
