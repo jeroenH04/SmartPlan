@@ -76,13 +76,13 @@ public class PlanningFragment extends Fragment {
             public void onCheckedChanged(final CompoundButton buttonView,
                                          final boolean isChecked) {
                 if (isChecked) {
-                    // startStudyMode();
-                    // accelerometer.register();
-                    // gyroscope.register();
+                    startStudyMode();
+                    accelerometer.register();
+                    gyroscope.register();
                     scheduler.setStudyMode("On");
                 } else {
-                    // accelerometer.unregister();
-                    // gyroscope.unregister();
+                    accelerometer.unregister();
+                    gyroscope.unregister();
                     scheduler.setStudyMode("Off");
                 }
                 updateDatabase();
@@ -652,34 +652,6 @@ public class PlanningFragment extends Fragment {
      * Show study mode pop-up.
      */
     private void startStudyMode() {
-        //show modify task layout as popup
-        AlertDialog.Builder dialogBuilder =
-                new AlertDialog.Builder(this.getActivity());
-        final View studyModeView = getLayoutInflater().inflate(
-                R.layout.popup_start_studymode, null);
-        dialogBuilder.setView(studyModeView);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-        //find the buttons and textView
-        Button studymodeSave = (Button)
-                studyModeView.findViewById(R.id.saveButton);
-        Button studymodeCancel = (Button)
-                studyModeView.findViewById(R.id.cancelButton);
-        EditText studymodeDuration = (EditText)
-                studyModeView.findViewById(R.id.studymode_duration);
-        EditText studymodeSplitDuration = (EditText)
-                studyModeView.findViewById(R.id.studymode_split_duration);
-        EditText studymodeBreakDuration = (EditText)
-                studyModeView.findViewById(R.id.studymode_break_duration);
-
-        //add onclick listener to the cancel button which closes the popup
-        studymodeCancel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View v) {
-                dialog.dismiss();
-            }
-        });
-
         accelerometer = new Accelerometer(getActivity());
         gyroscope = new Gyroscope(getActivity());
         accelerometer.setListener(new Accelerometer.Listener() {

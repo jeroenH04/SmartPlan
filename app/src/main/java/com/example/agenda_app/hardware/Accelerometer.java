@@ -31,9 +31,9 @@ public class Accelerometer {
     private final SensorManager sensorManager;
     private final Sensor sensor;
     private final SensorEventListener sensorEventListener;
-    public Accelerometer(Activity activity) {
+    public Accelerometer(Context context) {
         sensorManager = (SensorManager)
-                activity.getSystemService(Context.SENSOR_SERVICE);
+                context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorEventListener = new SensorEventListener() {
             @Override

@@ -28,9 +28,9 @@ public class Gyroscope {
     private Sensor sensor;
     private SensorEventListener sensorEventListener;
 
-    public Gyroscope(Activity activity) {
+    public Gyroscope(Context context) {
         sensorManager = (SensorManager)
-                activity.getSystemService(Context.SENSOR_SERVICE);
+                context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         sensorEventListener = new SensorEventListener() {
             @Override
