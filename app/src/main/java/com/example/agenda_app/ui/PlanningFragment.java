@@ -662,6 +662,23 @@ public class PlanningFragment extends Fragment {
             }
         }, 200); // myHandler is run after 200 ms
     }
+    
+    
+    //Send notification
+    public void sendNotify(){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My not");
+        builder.setContentTitle("My title");
+        builder.setContentText("Hello from Easy, it bloody works");
+        builder.setSmallIcon(R.drawable.ic_launcher_background);
+        builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+
+
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+        managerCompat.notify(1,builder.build());
+
+    }
+    
 
     /**
      * Show study mode pop-up.
@@ -674,9 +691,9 @@ public class PlanningFragment extends Fragment {
             public void onTranslation(final float tx, final float ty,
                                       final float tz) {
                 if (tx > 1.0f) {
-                    // to be implemented
+                    sendNotify();
                 } else if (tx < -1.0f) {
-                    // to be implemented
+                    sendNotify();
                 }
             }
         });
@@ -686,9 +703,9 @@ public class PlanningFragment extends Fragment {
             public void onRotation(final float rx, final float ry,
                                    final float rz) {
                 if (rx > 1.0f) {
-                    // to be implemented
+                    sendNotify();
                 } else if (rx < -1.0f) {
-                    // to be implemented
+                    sendNotify();
                 }
             }
         });
