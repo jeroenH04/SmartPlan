@@ -26,6 +26,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.agenda_app.algorithms.Item;
@@ -42,8 +44,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -190,7 +195,7 @@ public class PlanningFragment extends Fragment {
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 50, 0, 0);
             date.setLayoutParams(params);
-
+            date.setId(i.getDate().hashCode());
             date.setText(i.getDate());
             date.setTextSize(20);
             agenda_dash.addView(date);
@@ -215,6 +220,7 @@ public class PlanningFragment extends Fragment {
                                     ConstraintLayout.LayoutParams.WRAP_CONTENT);
                     conParams.setMargins(0, 20, 0, 0);
                     cLayOut.setLayoutParams(conParams);
+                    cLayOut.setId(j.hashCode());
                     agenda_dash.addView(cLayOut);
 
                     // Name Textview
@@ -292,6 +298,76 @@ public class PlanningFragment extends Fragment {
                             ConstraintSet.BOTTOM);
                     constraintSet.applyTo(cLayOut);
                 }
+            }
+        }
+        askTimeExtension();
+    }
+
+    /**
+     * method to check whether the planning contains a task that is past its end time
+     * if so ask the user if they finished the task or need an extension
+     */
+    private void askTimeExtension() {
+        schedule = scheduler.getSchedule();
+        for (final Item i : schedule) {
+
+            String unparsedTaskDate = i.getDate() + "T" + i.getTime().split("-")[1];
+            DateFormat f = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm");
+            try {
+                if (Calendar.getInstance().getTime().after(f.parse(unparsedTaskDate))) {
+                    //show complete task layout as popup
+                    AlertDialog.Builder dialogBuilder =
+                            new AlertDialog.Builder(this.getActivity());
+                    final View taskCompleteView = getLayoutInflater().inflate(
+                            R.layout.popup_complete_task, null);
+                    dialogBuilder.setView(taskCompleteView);
+                    dialog = dialogBuilder.create();
+                    dialog.show();
+
+                    Button taskCompleted = taskCompleteView.findViewById(R.id.completeButton);
+                    Button taskNotCompleted = taskCompleteView
+                            .findViewById(R.id.completeCancelButton);
+                    TextView textTaskCompleted = taskCompleteView
+                            .findViewById(R.id.completeTextView);
+
+                    textTaskCompleted.setText("Did you complete " + i.getTask().getName());
+
+                    taskCompleted.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(final View v) {
+                            dialog.dismiss();
+                            scheduler.completeTask(i.getTask().getName());
+                            updateDatabase();
+
+                            getView().findViewById(i.hashCode()).setVisibility(View.GONE);
+                            boolean dateStillIn = false;
+                            for (Item j : schedule) {
+                                if (i.getDate().equals(j.getDate())) {
+                                    dateStillIn = true;
+                                    break;
+                                }
+                            }
+                            if (!dateStillIn) {
+                                getView().findViewById(i.getDate().hashCode())
+                                        .setVisibility(View.GONE);
+                            }
+                        }
+                    });
+
+                    taskNotCompleted.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(final View v) {
+                            dialog.dismiss();
+                            extendTask(getView(), i.getDate(), i.getTask(),
+                                    (TextView) getView().findViewById(i.getDate().hashCode()),
+                                    dialog);
+                        }
+                    });
+
+                } else {
+                    break;
+                }
+                //alertView(f.parse(unparsedTaskDate).toString());
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(e);
             }
         }
     }
