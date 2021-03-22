@@ -300,6 +300,7 @@ public class PlanningFragment extends Fragment {
                 }
             }
         }
+        //see if any planned task should be done
         askTimeExtension();
     }
 
@@ -310,10 +311,13 @@ public class PlanningFragment extends Fragment {
     private void askTimeExtension() {
         schedule = scheduler.getSchedule();
         for (final Item i : schedule) {
-
+            //get date and end time of task i
             String unparsedTaskDate = i.getDate() + "T" + i.getTime().split("-")[1];
+            //date format to show year month hours and minutes
             DateFormat f = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm");
             try {
+                //parse unparsedTaskDate to type Data and compare if current time is after
+                //the task endtime
                 if (Calendar.getInstance().getTime().after(f.parse(unparsedTaskDate))) {
                     //show complete task layout as popup
                     AlertDialog.Builder dialogBuilder =
@@ -332,6 +336,7 @@ public class PlanningFragment extends Fragment {
 
                     textTaskCompleted.setText("Did you complete " + i.getTask().getName());
 
+                    //if task is completed delete it
                     taskCompleted.setOnClickListener(new View.OnClickListener() {
                         public void onClick(final View v) {
                             dialog.dismiss();
@@ -352,7 +357,7 @@ public class PlanningFragment extends Fragment {
                             }
                         }
                     });
-
+                    //if task is not completed forward to extendTask
                     taskNotCompleted.setOnClickListener(new View.OnClickListener() {
                         public void onClick(final View v) {
                             dialog.dismiss();
@@ -365,7 +370,6 @@ public class PlanningFragment extends Fragment {
                 } else {
                     break;
                 }
-                //alertView(f.parse(unparsedTaskDate).toString());
             } catch (ParseException e) {
                 throw new IllegalArgumentException(e);
             }
