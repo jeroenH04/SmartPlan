@@ -100,31 +100,30 @@
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="74dp"
+        android:layout_height="38dp"
         android:layout_marginEnd="336dp"
-        android:text="Save"
         android:background="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@+id/cancelButton"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/newtask_deadline"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/newtask_deadline"
         app:layout_constraintTop_toBottomOf="@+id/newtask_deadline"
-        app:layout_constraintVertical_bias="0.219" />
+        app:layout_constraintVertical_bias="0.274" />
 
     <Button
         android:id="@+id/cancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="168dp"
-        android:text="Cancel"
+        android:layout_width="74dp"
+        android:layout_height="38dp"
         android:background="@color/colorAccent"
+        android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/saveButton"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="@+id/newtask_deadline"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/newtask_deadline"
         app:layout_constraintTop_toBottomOf="@+id/newtask_deadline"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.274" />
 
     <RadioGroup
         android:id="@+id/intensityGroup"

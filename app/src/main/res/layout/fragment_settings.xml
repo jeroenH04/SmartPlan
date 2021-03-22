@@ -88,7 +88,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/setAvailability"
         app:layout_constraintTop_toBottomOf="@+id/setAvailability"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintVertical_bias="0.155" />
 
     <Button
         android:id="@+id/delAcntBtn"
@@ -99,10 +99,10 @@
         android:text="Delete Account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/delAcntTxt"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.006"
         app:layout_constraintStart_toStartOf="@+id/delAcntTxt"
         app:layout_constraintTop_toBottomOf="@+id/delAcntTxt"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.054" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

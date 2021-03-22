@@ -746,10 +746,11 @@ public class PlanningFragment extends Fragment {
     
     //Send notification
     public void sendNotify(){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My not");
-        builder.setContentTitle("My title");
-        builder.setContentText("Hello from Easy, it bloody works");
-        builder.setSmallIcon(R.drawable.ic_launcher_background);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),
+                "My not");
+        builder.setContentTitle("Stop using your phone");
+        builder.setContentText("Please go back to studying!");
+        builder.setSmallIcon(R.drawable.ic_baseline_error_outline_24);
         builder.setAutoCancel(true);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
