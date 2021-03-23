@@ -771,9 +771,11 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onTranslation(final float tx, final float ty,
                                       final float tz) {
-                if (tx > 1.0f) {
+                if (tx > 1.0f || tx < -1.0f) {
                     sendNotify();
-                } else if (tx < -1.0f) {
+                } else if (ty > 1.0f || ty < -1.0f) {
+                    sendNotify();
+                } else if (tz > 1.0f || tz < -1.0f) {
                     sendNotify();
                 }
             }
@@ -783,9 +785,11 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onRotation(final float rx, final float ry,
                                    final float rz) {
-                if (rx > 1.0f) {
+                if (rx > 1.0f || rx < -1.0f) {
                     sendNotify();
-                } else if (rx < -1.0f) {
+                } else if (ry > 1.0f || ry < -1.0f) {
+                    sendNotify();
+                } else if (rz > 1.0f || rz < -1.0f) {
                     sendNotify();
                 }
             }
