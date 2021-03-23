@@ -67,8 +67,8 @@
         android:text="Sign in"
         android:textColorLink="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="@+id/forgotTxt"
+        app:layout_constraintStart_toStartOf="@+id/forgotTxt"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
         app:layout_constraintVertical_bias="0.421" />
 
@@ -76,14 +76,11 @@
         android:id="@+id/forgotTxt"
         android:layout_width="115dp"
         android:layout_height="30dp"
-        android:layout_marginBottom="196dp"
         android:text="Forgot Password?"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
-        app:layout_constraintVertical_bias="0.477" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <EditText
         android:id="@+id/lgEmail"
@@ -145,19 +142,6 @@
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toTopOf="@+id/textView5"
         app:srcCompat="@drawable/ic_baseline_person_24" />
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="196dp"
-        android:text="Remember me"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
-        app:layout_constraintVertical_bias="0.452" />
 
     <ProgressBar
         android:id="@+id/lgBar"

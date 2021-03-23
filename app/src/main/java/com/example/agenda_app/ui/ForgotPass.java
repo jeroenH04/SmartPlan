@@ -43,9 +43,11 @@ public class ForgotPass extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull final Exception e) {
-                        Toast.makeText(ForgotPass.this,
-                                "Reset mail NOT sent" + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        for (int i = 0; i < 2; i++) {
+                            Toast.makeText(ForgotPass.this,
+                                    "Reset mail NOT sent. \n" + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             }

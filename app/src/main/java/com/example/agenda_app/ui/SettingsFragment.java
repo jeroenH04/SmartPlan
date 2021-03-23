@@ -205,9 +205,9 @@ public class SettingsFragment extends Fragment {
         infoDialog.show();
     }
 
-    /* Method to create alert pop-up for add availability dialog
+    /** Method to create alert pop-up for add availability dialog
     *
-    * @param String message, message to be displayed in pop-up
+    * @param message, message to be displayed in pop-up
      */
     private void alertView(final String message) {
         AlertDialog.Builder alertDialog =

@@ -68,11 +68,10 @@
         android:textAlignment="center"
         android:textColorLink="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
-        app:layout_constraintVertical_bias="0.408" />
+        app:layout_constraintEnd_toEndOf="@+id/forgotTxt"
+        app:layout_constraintStart_toStartOf="@+id/forgotTxt"
+        app:layout_constraintTop_toBottomOf="@+id/forgotTxt"
+        app:layout_constraintVertical_bias="0.163" />
 
     <TextView
         android:id="@+id/forgotTxt"
@@ -81,10 +80,10 @@
         android:text="Forgot Password?"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.134" />
 
     <EditText
         android:id="@+id/lgEmail"
@@ -153,20 +152,6 @@
         app:layout_constraintTop_toTopOf="@+id/textView5"
         app:layout_constraintVertical_bias="0.321"
         app:srcCompat="@drawable/ic_baseline_person_24" />
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="119dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="4dp"
-        android:text="Remember me"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/lgPassword"
-        app:layout_constraintVertical_bias="0.0" />
 
     <ProgressBar
         android:id="@+id/lgBar"
