@@ -469,7 +469,8 @@ public class TaskScheduler {
                         - neededTime;
                 if (timeDifference >= 0 && timeDifference < minimum
                         && compareDates(e.getDeadline(), avail.getDate())
-                        && !subtaskPlannedOnDate(avail, e)) {
+                        && !subtaskPlannedOnDate(avail, e)
+                        && compareDates(avail.getDate(), e.getToday()) ) {
                         bestDate = avail.getDate();
                         index = availabilityList.indexOf(avail);
                         minimum = timeDifference;

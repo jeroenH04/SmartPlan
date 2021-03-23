@@ -434,10 +434,21 @@ public class SettingsFragment extends Fragment {
                     scheduler.getDurationMinutes(time1);
                     scheduler.getDurationMinutes(time2);
 
-                    // Add availability to the list
-                    scheduler.addAvailability(date, time1 + "-" + time2);
-                    updateDatabase(true, availabilityPopUpView);
-                    drawAvailability(availabilityPopUpView);
+                    Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat dateFormat = new
+                            SimpleDateFormat("dd/MM/yyyy");
+                    String dateToday = dateFormat.format(calendar.getTime());
+                    if (date.compareTo(dateToday) < 0) {
+                        Toast.makeText(getActivity(),
+                                "Error! You cannot set an availability for today"
+                                        + " or the past.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        // Add availability to the list
+                        scheduler.addAvailability(date, time1 + "-" + time2);
+                        updateDatabase(true, availabilityPopUpView);
+                        drawAvailability(availabilityPopUpView);
+                    }
                     dialog.dismiss(); // Close pop-up window
                 } catch (Exception e) {
                     if (e.getMessage().equals("negative time available")) {
