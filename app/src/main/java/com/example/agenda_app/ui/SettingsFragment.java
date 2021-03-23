@@ -3,11 +3,13 @@ package com.example.agenda_app.ui;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+
+import com.example.agenda_app.MainActivity;
 import com.example.agenda_app.algorithms.Availability;
 import com.example.agenda_app.R;
 import com.example.agenda_app.algorithms.TaskScheduler;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -130,6 +137,15 @@ public class SettingsFragment extends Fragment {
                         alertView("Please fill in all details.");
                     }
                 }
+            }
+        });
+
+        // Delete the account and the corresponding data
+        Button deleteAccountBtn = (Button) root.findViewById(R.id.delAcntBtn);
+        deleteAccountBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                alertDeleteAccount();
             }
         });
 
@@ -282,6 +298,54 @@ public class SettingsFragment extends Fragment {
                 alertRestoreTasks();
             }
         });
+        alertDialog.show();
+    }
+
+    /**
+     * Create pop-up dialog for account deletion.
+     */
+    private void alertDeleteAccount() {
+        AlertDialog.Builder alertDialog =
+                new AlertDialog.Builder(this.getActivity());
+        alertDialog.setTitle("Confirm Deletion")
+                .setIcon(R.drawable.ic_baseline_error_outline_24)
+                .setMessage("Are you sure you want to permanently delete your"
+                        + " account?")
+                .setPositiveButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface
+                                                        dialoginterface,
+                                                final int i) {
+                            }
+                        });
+        alertDialog.setNegativeButton("Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialoginterface,
+                                        final int i) {
+                        // Delete the user's authentication
+                        user.delete()
+                                .addOnCompleteListener(
+                                        new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(
+                                            @NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            startActivity(new Intent(getActivity()
+                                                    .getApplicationContext(),
+                                                    Login.class));
+                                            Toast.makeText(getActivity(),
+                                                    "Your account has been "
+                                                            + "deleted.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            // Delete the users data
+                                            db.collection("users")
+                                                    .document(user.getUid())
+                                                    .delete();
+                                        }
+                                    }
+                                });
+                    }
+                });
         alertDialog.show();
     }
 

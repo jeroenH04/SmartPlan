@@ -82,9 +82,11 @@ public class Login extends AppCompatActivity {
                             lgBar.setVisibility(View.INVISIBLE);
                             finish();
                         } else {
-                            Toast.makeText(Login.this, "Error! "
-                                            + task.getException().getMessage(),
-                                    Toast.LENGTH_LONG).show();
+                            for (int i = 0; i < 2; i++) {
+                                Toast.makeText(Login.this, "Error! "
+                                                + task.getException().getMessage(),
+                                        Toast.LENGTH_LONG).show();
+                            }
                             lgBar.setVisibility(View.INVISIBLE);
                         }
                     }
