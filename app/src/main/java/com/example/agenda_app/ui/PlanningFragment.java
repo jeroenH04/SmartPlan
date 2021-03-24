@@ -384,6 +384,7 @@ public class PlanningFragment extends Fragment {
      * @param task, task currently clicked
      * @param dateText, the date in text
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void modifyTask(final View view, final String date, final Task task,
                             final TextView dateText) {
         //show modify task layout as popup
@@ -419,6 +420,7 @@ public class PlanningFragment extends Fragment {
 
         //add onclick listener to the cancel button which closes the popup
         taskCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(final View v) {
                 dialog.dismiss();
             }
