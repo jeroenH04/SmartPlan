@@ -1,6 +1,7 @@
 package com.example.agenda_app;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +18,7 @@ public class Authentication extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
-        Button btn = (Button) findViewById(R.id.button);
+        Button btn = findViewById(R.id.button);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,7 +29,7 @@ public class Authentication extends AppCompatActivity {
             }
         });
 
-        TextView txt = (TextView) findViewById(R.id.textView2);
+        TextView txt = findViewById(R.id.textView2);
 
         txt.setOnClickListener(new View.OnClickListener() {
             @Override

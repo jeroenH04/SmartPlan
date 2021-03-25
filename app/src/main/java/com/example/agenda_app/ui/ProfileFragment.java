@@ -30,7 +30,7 @@ public class ProfileFragment extends Fragment {
     private AlertDialog dialog;
     private AlertDialog dialogShow;
     private final String TAG = "ProfileFragment";
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              final ViewGroup container,
@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_profile, container,
                 false);
 
-        Button btnResetPass = (Button) root.findViewById(R.id.buttonResetPass);
+        Button btnResetPass = root.findViewById(R.id.buttonResetPass);
         btnResetPass.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -47,8 +47,9 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        final TextView emailField = (TextView) root.findViewById(R.id.setEmail);
-        final TextView usernameField = (TextView) root.findViewById(R.id.setUserName);
+        final TextView emailField = root.findViewById(R.id.setEmail);
+        final TextView usernameField =
+                root.findViewById(R.id.setUserName);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -85,14 +86,10 @@ public class ProfileFragment extends Fragment {
                 AlertDialog.Builder(this.getActivity());
         final View resetPassPopUpView = getLayoutInflater().inflate(
                 R.layout.reset_pw_popup, null);
-        Button btnSave = (Button)
-                resetPassPopUpView.findViewById(R.id.button_Save);
-        Button btnCancel = (Button)
-                resetPassPopUpView.findViewById(R.id.button_Cancel);
-        final TextView editOldPass = (TextView)
-                resetPassPopUpView.findViewById(R.id.edit_passOld);
-        final TextView editNewPass = (TextView)
-                resetPassPopUpView.findViewById(R.id.edit_passNew);
+        Button btnSave = resetPassPopUpView.findViewById(R.id.button_Save);
+        Button btnCancel = resetPassPopUpView.findViewById(R.id.button_Cancel);
+        final TextView editOldPass = resetPassPopUpView.findViewById(R.id.edit_passOld);
+        final TextView editNewPass = resetPassPopUpView.findViewById(R.id.edit_passNew);
 
         dialogBuilder.setView(resetPassPopUpView);
         dialogShow = dialogBuilder.create();
@@ -131,22 +128,24 @@ public class ProfileFragment extends Fragment {
                 } else {
                     user.updatePassword(newPass).addOnCompleteListener(
                             new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull final Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG,
-                                        "Password updated successfully!");
-                                Toast.makeText(getActivity(),
-                                        "Password replaced",
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.d(TAG, "Error password not updated!");
-                                Toast.makeText(getActivity(),
-                                        "Password not replaced",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                                @Override
+                                public void onComplete(@NonNull final Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG,
+                                                "Password updated " +
+                                                        "successfully!");
+                                        Toast.makeText(getActivity(),
+                                                "Password replaced",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Log.d(TAG, "Error password not " +
+                                                "updated!");
+                                        Toast.makeText(getActivity(),
+                                                "Password not replaced",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                     dialogShow.dismiss();
                 }
             }

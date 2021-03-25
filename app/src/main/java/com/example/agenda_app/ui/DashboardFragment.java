@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -59,8 +60,8 @@ public class DashboardFragment extends Fragment {
                              final Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_dashboard,
                 container, false);
-        Button popBtn = (Button) root.findViewById(R.id.popUpButton);
-        Button deleteBtn = (Button) root.findViewById(R.id.deleteButton);
+        Button popBtn = root.findViewById(R.id.popUpButton);
+        Button deleteBtn = root.findViewById(R.id.deleteButton);
         popBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -79,12 +80,13 @@ public class DashboardFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                scheduler = documentSnapshot.toObject(TaskScheduler.class);
-                drawTasks(root); // draw the tasks on the root view
-            }
-        });
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        scheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        drawTasks(root); // draw the tasks on the root view
+                    }
+                });
         myHandler = new Handler();
         return root;
     }
@@ -94,24 +96,25 @@ public class DashboardFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                scheduler = documentSnapshot.toObject(TaskScheduler.class);
-                drawTasks(getView());
-            }
-        });
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        scheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        drawTasks(getView());
+                    }
+                });
     }
 
     /**
      * Create info view when clicking onto a task.
      *
-     * @param name, name of the task to display
-     * @param duration, duration of the task to display
-     * @param deadline, deadline of the task to display
-     * @param intensity, intensity of the task to display
+     * @param name,       name of the task to display
+     * @param duration,   duration of the task to display
+     * @param deadline,   deadline of the task to display
+     * @param intensity,  intensity of the task to display
      * @param difficulty, difficulty of the task to display
-     * @param button, button task is put onto
+     * @param button,     button task is put onto
      */
     private void infoView(final String name, final String duration,
                           final String deadline, final String intensity,
@@ -127,10 +130,10 @@ public class DashboardFragment extends Fragment {
                 )
                 .setPositiveButton("Ok", new
                         DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                });
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        });
         infoDialog.setNegativeButton("Delete",
                 new DialogInterface.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -158,10 +161,10 @@ public class DashboardFragment extends Fragment {
                 .setMessage(message)
                 .setPositiveButton("Ok",
                         new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                }).show();
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        }).show();
     }
 
     /**
@@ -176,21 +179,22 @@ public class DashboardFragment extends Fragment {
                         + "these tasks?")
                 .setPositiveButton("Cancel", new
                         DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                });
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        });
         alertDialog.setNegativeButton("Ok",
                 new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            public void onClick(final DialogInterface dialoginterface,
-                                final int i) {
-                scheduler.clearTasklist();
-                updateDatabase();
-                drawTasks(getView()); // clear all the buttons from the screen
-                buttonArrayList.clear(); // clear the button ArrayList
-            }
-        });
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    public void onClick(final DialogInterface dialoginterface,
+                                        final int i) {
+                        scheduler.clearTasklist();
+                        updateDatabase();
+                        drawTasks(getView()); // clear all the buttons from
+                        // the screen
+                        buttonArrayList.clear(); // clear the button ArrayList
+                    }
+                });
         alertDialog.show();
     }
 
@@ -203,11 +207,11 @@ public class DashboardFragment extends Fragment {
                 AlertDialog.Builder(this.getActivity());
         final View taskPopUpView = getLayoutInflater()
                 .inflate(R.layout.popup_add_task, null);
-        Button newTaskSave = (Button) taskPopUpView
+        Button newTaskSave = taskPopUpView
                 .findViewById(R.id.saveButton);
-        Button newTaskCancel = (Button) taskPopUpView
+        Button newTaskCancel = taskPopUpView
                 .findViewById(R.id.cancelButton);
-        final EditText eText = (EditText) taskPopUpView
+        final EditText eText = taskPopUpView
                 .findViewById(R.id.newtask_deadline);
 
         dialogBuilder.setView(taskPopUpView);
@@ -254,37 +258,37 @@ public class DashboardFragment extends Fragment {
 
                 try {
                     // Get the tasks name
-                    EditText nameField = (EditText) taskPopUpView
+                    EditText nameField = taskPopUpView
                             .findViewById(R.id.newtask_name);
                     final String name = nameField.getText().toString()
                             .toLowerCase();
 
                     // Get the tasks duration
-                    EditText durationField = (EditText) taskPopUpView
+                    EditText durationField = taskPopUpView
                             .findViewById(R.id.newtask_duration);
                     final String duration = durationField.getText().toString();
 
                     // Get the tasks deadline
-                    EditText deadlineField = (EditText) taskPopUpView
+                    EditText deadlineField = taskPopUpView
                             .findViewById(R.id.newtask_deadline);
                     final String deadline = deadlineField.getText().toString();
 
                     // Get the tasks intensity
-                    RadioGroup intensityGroup = (RadioGroup) taskPopUpView
+                    RadioGroup intensityGroup = taskPopUpView
                             .findViewById(R.id.intensityGroup);
                     int selectedIdIntensity = intensityGroup
                             .getCheckedRadioButtonId();
-                    RadioButton radioButtonIntens = (RadioButton) taskPopUpView
+                    RadioButton radioButtonIntens = taskPopUpView
                             .findViewById(selectedIdIntensity);
                     final String intensity = (String) radioButtonIntens
                             .getText();
 
                     // Get the tasks intensity
-                    RadioGroup difficultyGroup = (RadioGroup) taskPopUpView
+                    RadioGroup difficultyGroup = taskPopUpView
                             .findViewById(R.id.difficultyGroup);
                     int selectedIdDifficulty = difficultyGroup
                             .getCheckedRadioButtonId();
-                    RadioButton radioButtonDiff = (RadioButton) taskPopUpView
+                    RadioButton radioButtonDiff = taskPopUpView
                             .findViewById(selectedIdDifficulty);
                     final String difficulty = (String) radioButtonDiff
                             .getText();
@@ -321,72 +325,72 @@ public class DashboardFragment extends Fragment {
         });
 
         // Get RadioButtons from intensity and change colors when selected
-        final RadioGroup intensityGroup = (RadioGroup) taskPopUpView
+        final RadioGroup intensityGroup = taskPopUpView
                 .findViewById(R.id.intensityGroup);
-        final RadioButton relaxed = (RadioButton) taskPopUpView
+        final RadioButton relaxed = taskPopUpView
                 .findViewById(R.id.relaxedBtn);
-        final RadioButton normal = (RadioButton) taskPopUpView
+        final RadioButton normal = taskPopUpView
                 .findViewById(R.id.normalBtn);
-        final RadioButton intense = (RadioButton) taskPopUpView
+        final RadioButton intense = taskPopUpView
                 .findViewById(R.id.intenseBtn);
 
         intensityGroup.setOnCheckedChangeListener(
                 new RadioGroup.OnCheckedChangeListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onCheckedChanged(final RadioGroup group,
-                                         final int checkedId) {
-                if (relaxed.isChecked()) {
-                    relaxed.setBackgroundResource(R.color.colorAccent);
-                    normal.setBackgroundColor(Color.WHITE);
-                    intense.setBackgroundColor(Color.WHITE);
-                }
-                if (normal.isChecked()) {
-                    normal.setBackgroundResource(R.color.colorAccent);
-                    relaxed.setBackgroundColor(Color.WHITE);
-                    intense.setBackgroundColor(Color.WHITE);
-                }
-                if (intense.isChecked()) {
-                    intense.setBackgroundResource(R.color.colorAccent);
-                    normal.setBackgroundColor(Color.WHITE);
-                    relaxed.setBackgroundColor(Color.WHITE);
-                }
-            }
-        });
+                    @SuppressLint("ResourceAsColor")
+                    @Override
+                    public void onCheckedChanged(final RadioGroup group,
+                                                 final int checkedId) {
+                        if (relaxed.isChecked()) {
+                            relaxed.setBackgroundResource(R.color.colorAccent);
+                            normal.setBackgroundColor(Color.WHITE);
+                            intense.setBackgroundColor(Color.WHITE);
+                        }
+                        if (normal.isChecked()) {
+                            normal.setBackgroundResource(R.color.colorAccent);
+                            relaxed.setBackgroundColor(Color.WHITE);
+                            intense.setBackgroundColor(Color.WHITE);
+                        }
+                        if (intense.isChecked()) {
+                            intense.setBackgroundResource(R.color.colorAccent);
+                            normal.setBackgroundColor(Color.WHITE);
+                            relaxed.setBackgroundColor(Color.WHITE);
+                        }
+                    }
+                });
 
         // Get RadioButtons from difficulty and change colors when selected
-        final RadioGroup difficultyGroup = (RadioGroup) taskPopUpView
+        final RadioGroup difficultyGroup = taskPopUpView
                 .findViewById(R.id.difficultyGroup);
-        final RadioButton easy = (RadioButton) taskPopUpView
+        final RadioButton easy = taskPopUpView
                 .findViewById(R.id.easyBtn);
-        final RadioButton medium = (RadioButton) taskPopUpView
+        final RadioButton medium = taskPopUpView
                 .findViewById(R.id.mediumBtn);
-        final RadioButton hard = (RadioButton) taskPopUpView
+        final RadioButton hard = taskPopUpView
                 .findViewById(R.id.hardBtn);
 
         difficultyGroup.setOnCheckedChangeListener(
                 new RadioGroup.OnCheckedChangeListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onCheckedChanged(final RadioGroup group,
-                                         final int checkedId) {
-                if (easy.isChecked()) {
-                    easy.setBackgroundResource(R.color.colorAccent);
-                    medium.setBackgroundColor(Color.WHITE);
-                    hard.setBackgroundColor(Color.WHITE);
-                }
-                if (medium.isChecked()) {
-                    medium.setBackgroundResource(R.color.colorAccent);
-                    easy.setBackgroundColor(Color.WHITE);
-                    hard.setBackgroundColor(Color.WHITE);
-                }
-                if (hard.isChecked()) {
-                    hard.setBackgroundResource(R.color.colorAccent);
-                    medium.setBackgroundColor(Color.WHITE);
-                    easy.setBackgroundColor(Color.WHITE);
-                }
-            }
-        });
+                    @SuppressLint("ResourceAsColor")
+                    @Override
+                    public void onCheckedChanged(final RadioGroup group,
+                                                 final int checkedId) {
+                        if (easy.isChecked()) {
+                            easy.setBackgroundResource(R.color.colorAccent);
+                            medium.setBackgroundColor(Color.WHITE);
+                            hard.setBackgroundColor(Color.WHITE);
+                        }
+                        if (medium.isChecked()) {
+                            medium.setBackgroundResource(R.color.colorAccent);
+                            easy.setBackgroundColor(Color.WHITE);
+                            hard.setBackgroundColor(Color.WHITE);
+                        }
+                        if (hard.isChecked()) {
+                            hard.setBackgroundResource(R.color.colorAccent);
+                            medium.setBackgroundColor(Color.WHITE);
+                            easy.setBackgroundColor(Color.WHITE);
+                        }
+                    }
+                });
     }
 
     /**
@@ -397,7 +401,7 @@ public class DashboardFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawTasks(final View root) {
         // Find the dashboard layout
-        final ConstraintLayout layout = (ConstraintLayout) root
+        final ConstraintLayout layout = root
                 .findViewById(R.id.availabilityBoxDashboard);
         final ConstraintSet set = new ConstraintSet();
         set.clone(layout);
@@ -456,45 +460,57 @@ public class DashboardFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener
                 (new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                //set the old schedule to oldScheduler
-                TaskScheduler oldScheduler = documentSnapshot
-                        .toObject(TaskScheduler.class);
-                // if the date of last update from the oldScheduler is the same
-                // as the date of last update on the current scheduler
-                // you have the most updated database
-                if (scheduler.getDateOfLastUpdate().equals(oldScheduler
-                        .getDateOfLastUpdate())) {
-                    // if no device is changing the database or if the change is
-                    // the same
-                    if (oldScheduler.getSchedulerHashcode() == 0 || oldScheduler
-                            .getSchedulerHashcode() == scheduler.hashCode()) {
-                        // set hashCode of the current change to the oldScheduler
-                        oldScheduler.setSchedulerHashcode(scheduler.hashCode());
-                        // upload oldScheduler with updated hashCode to the
-                        // database
-                        db.collection("users").document(
-                                user.getUid()).set(oldScheduler,
-                                SetOptions.merge());
-                    } else {
-                        // oldScheduler hashcode != 0 or is different from
-                        // scheduler.hashCode() thus an other device is changing
-                        // database already
-                        alertView("You are already trying to edit the data on "
-                                + "another account. Please try again later");
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        //set the old schedule to oldScheduler
+                        TaskScheduler oldScheduler = documentSnapshot
+                                .toObject(TaskScheduler.class);
+                        // if the date of last update from the oldScheduler
+                        // is the same
+                        // as the date of last update on the current scheduler
+                        // you have the most updated database
+                        if (scheduler.getDateOfLastUpdate().equals(oldScheduler
+                                .getDateOfLastUpdate())) {
+                            // if no device is changing the database or if
+                            // the change is
+                            // the same
+                            if (oldScheduler.getSchedulerHashcode() == 0 || oldScheduler
+                                    .getSchedulerHashcode() == scheduler.hashCode()) {
+                                // set hashCode of the current change to the
+                                // oldScheduler
+                                oldScheduler.setSchedulerHashcode(scheduler.hashCode());
+                                // upload oldScheduler with updated hashCode
+                                // to the
+                                // database
+                                db.collection("users").document(
+                                        user.getUid()).set(oldScheduler,
+                                        SetOptions.merge());
+                            } else {
+                                // oldScheduler hashcode != 0 or is different
+                                // from
+                                // scheduler.hashCode() thus an other device
+                                // is changing
+                                // database already
+                                alertView("You are already trying to edit the" +
+                                        " data on "
+                                        + "another account. Please try again " +
+                                        "later");
+                            }
+                        } else {
+                            // oldScheduler.lastchangedate != scheduler
+                            // .lastchangedate
+                            // thus user needs to first load most recent
+                            // version of
+                            // scheduler
+                            alertView("This device was still on an old " +
+                                    "version of the "
+                                    + "Planning, The planning has been " +
+                                    "reloaded. "
+                                    + "Please try again.");
+                            reloadFragment();
+                        }
                     }
-                } else {
-                    // oldScheduler.lastchangedate != scheduler.lastchangedate
-                    // thus user needs to first load most recent version of
-                    // scheduler
-                    alertView("This device was still on an old version of the "
-                            + "Planning, The planning has been reloaded. "
-                            + "Please try again.");
-                    reloadFragment();
-                }
-            }
-        });
+                });
 
         // function to be delayed for 200 ms
         myHandler.postDelayed(new Runnable() {

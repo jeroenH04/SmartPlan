@@ -32,8 +32,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        TextView signUp = (TextView) findViewById(R.id.signUp);
-        Button btn = (Button) findViewById(R.id.linBtn);
+        TextView signUp = findViewById(R.id.signUp);
+        Button btn = findViewById(R.id.linBtn);
         fAuth = FirebaseAuth.getInstance();
         mEmail = findViewById(R.id.lgEmail);
         mPassword = findViewById(R.id.lgPassword);
@@ -70,27 +70,27 @@ public class Login extends AppCompatActivity {
                 fAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(
                                 new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull
-                                           final Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(Login.this,
-                                    "Logged in successfully",
-                                    Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),
-                                    MainActivity.class));
-                            lgBar.setVisibility(View.INVISIBLE);
-                            finish();
-                        } else {
-                            for (int i = 0; i < 2; i++) {
-                                Toast.makeText(Login.this, "Error! "
-                                                + task.getException().getMessage(),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                            lgBar.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                });
+                                    @Override
+                                    public void onComplete(@NonNull final Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(Login.this,
+                                                    "Logged in successfully",
+                                                    Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(getApplicationContext(),
+                                                    MainActivity.class));
+                                            lgBar.setVisibility(View.INVISIBLE);
+                                            finish();
+                                        } else {
+                                            for (int i = 0; i < 2; i++) {
+                                                Toast.makeText(Login.this,
+                                                        "Error! "
+                                                                + task.getException().getMessage(),
+                                                        Toast.LENGTH_LONG).show();
+                                            }
+                                            lgBar.setVisibility(View.INVISIBLE);
+                                        }
+                                    }
+                                });
             }
         });
 

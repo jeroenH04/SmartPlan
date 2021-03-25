@@ -74,26 +74,26 @@ public class PlanningFragment extends Fragment {
                              final Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_planning,
                 container, false);
-        agenda_dash = (LinearLayout) root.findViewById(R.id.agenda_dashboard);
-        studyModeSwitch = (Switch) root.findViewById(R.id.studyModeSwitch);
+        agenda_dash = root.findViewById(R.id.agenda_dashboard);
+        studyModeSwitch = root.findViewById(R.id.studyModeSwitch);
         studyModeSwitch.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(final CompoundButton buttonView,
-                                         final boolean isChecked) {
-                if (isChecked) {
-                    startStudyMode();
-                    accelerometer.register();
-                    gyroscope.register();
-                    scheduler.setStudyMode("On");
-                } else {
-                    accelerometer.unregister();
-                    gyroscope.unregister();
-                    scheduler.setStudyMode("Off");
-                }
-                updateDatabase();
-            }
-        });
-        createPlanningBtn = (Button) root.findViewById(R.id.createPlanning);
+                    public void onCheckedChanged(final CompoundButton buttonView,
+                                                 final boolean isChecked) {
+                        if (isChecked) {
+                            startStudyMode();
+                            accelerometer.register();
+                            gyroscope.register();
+                            scheduler.setStudyMode("On");
+                        } else {
+                            accelerometer.unregister();
+                            gyroscope.unregister();
+                            scheduler.setStudyMode("Off");
+                        }
+                        updateDatabase();
+                    }
+                });
+        createPlanningBtn = root.findViewById(R.id.createPlanning);
         createPlanningBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -111,7 +111,7 @@ public class PlanningFragment extends Fragment {
                 scheduler.createSchedule();
                 updateDatabase();
                 if (scheduler.getTaskList().size() != 0) {
-                    for ( int i = 0; i < 2; i++) {
+                    for (int i = 0; i < 2; i++) {
                         Toast.makeText(getActivity(),
                                 "Not all tasks fit in your availability. \n"
                                         + "Increase your availability in the "
@@ -128,22 +128,23 @@ public class PlanningFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                scheduler = documentSnapshot.toObject(TaskScheduler.class);
-                studyModeState = scheduler.getStudyMode();
-                showPlanning();
-                if (scheduler.getSchedule().size() == 0) {
-                    createPlanningBtn.setText("Create schedule");
-                } else {
-                    createPlanningBtn.setText("Update schedule");
-                }
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        scheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        studyModeState = scheduler.getStudyMode();
+                        showPlanning();
+                        if (scheduler.getSchedule().size() == 0) {
+                            createPlanningBtn.setText("Create schedule");
+                        } else {
+                            createPlanningBtn.setText("Update schedule");
+                        }
 
-                if (studyModeState.equals("On")) {
-                    studyModeSwitch.setChecked(true);
-                }
-            }
-        });
+                        if (studyModeState.equals("On")) {
+                            studyModeSwitch.setChecked(true);
+                        }
+                    }
+                });
         myHandler = new Handler();
         return root;
     }
@@ -153,22 +154,23 @@ public class PlanningFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                scheduler = documentSnapshot.toObject(TaskScheduler.class);
-                studyModeState = scheduler.getStudyMode();
-                showPlanning();
-                if (scheduler.getSchedule().size() == 0) {
-                    createPlanningBtn.setText("Create schedule");
-                } else {
-                    createPlanningBtn.setText("Update schedule");
-                }
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        scheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        studyModeState = scheduler.getStudyMode();
+                        showPlanning();
+                        if (scheduler.getSchedule().size() == 0) {
+                            createPlanningBtn.setText("Create schedule");
+                        } else {
+                            createPlanningBtn.setText("Update schedule");
+                        }
 
-                if (studyModeState.equals("On")) {
-                    studyModeSwitch.setChecked(true);
-                }
-            }
-        });
+                        if (studyModeState.equals("On")) {
+                            studyModeSwitch.setChecked(true);
+                        }
+                    }
+                });
     }
 
     /**
@@ -187,7 +189,7 @@ public class PlanningFragment extends Fragment {
             }
             //add date to datesDone if date is not yet displayed
             datesDone.add(i.getDate());
-            
+
             //create TextView for the date of the task
             final TextView date = new TextView(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -279,7 +281,8 @@ public class PlanningFragment extends Fragment {
                     // Constrain time to be to the left of difficulty
                     constraintSet.connect(time.getId(), ConstraintSet.RIGHT,
                             difficulty.getId(), ConstraintSet.LEFT, 100);
-                    // Constrain difficulty to be on the right side of the screen
+                    // Constrain difficulty to be on the right side of the
+                    // screen
                     constraintSet.connect(difficulty.getId(),
                             ConstraintSet.RIGHT, ConstraintSet.PARENT_ID,
                             ConstraintSet.RIGHT);
@@ -305,18 +308,21 @@ public class PlanningFragment extends Fragment {
     }
 
     /**
-     * method to check whether the planning contains a task that is past its end time
+     * method to check whether the planning contains a task that is past its
+     * end time
      * if so ask the user if they finished the task or need an extension
      */
     private void askTimeExtension() {
         schedule = scheduler.getSchedule();
         for (final Item i : schedule) {
             //get date and end time of task i
-            String unparsedTaskDate = i.getDate() + "T" + i.getTime().split("-")[1];
+            String unparsedTaskDate = i.getDate() + "T" + i.getTime().split(
+                    "-")[1];
             //date format to show year month hours and minutes
             DateFormat f = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm");
             try {
-                //parse unparsedTaskDate to type Data and compare if current time is after
+                //parse unparsedTaskDate to type Data and compare if current
+                // time is after
                 //the task endtime
                 if (Calendar.getInstance().getTime().after(f.parse(unparsedTaskDate))) {
                     //show complete task layout as popup
@@ -328,7 +334,8 @@ public class PlanningFragment extends Fragment {
                     dialog = dialogBuilder.create();
                     dialog.show();
 
-                    Button taskCompleted = taskCompleteView.findViewById(R.id.completeButton);
+                    Button taskCompleted =
+                            taskCompleteView.findViewById(R.id.completeButton);
                     Button taskNotCompleted = taskCompleteView
                             .findViewById(R.id.completeCancelButton);
                     TextView textTaskCompleted = taskCompleteView
@@ -379,9 +386,9 @@ public class PlanningFragment extends Fragment {
     /**
      * Show pop up to modify the task.
      *
-     * @param view, view to show pop-up on
-     * @param date, date of the scheduled task
-     * @param task, task currently clicked
+     * @param view,     view to show pop-up on
+     * @param date,     date of the scheduled task
+     * @param task,     task currently clicked
      * @param dateText, the date in text
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -397,12 +404,9 @@ public class PlanningFragment extends Fragment {
         dialog.show();
 
         //find the buttons and textView
-        Button taskExtend = (Button)
-                taskPopUpView.findViewById(R.id.extendButton);
-        Button taskDelete = (Button)
-                taskPopUpView.findViewById(R.id.deleteButton);
-        Button taskCancel = (Button)
-                taskPopUpView.findViewById(R.id.cancelButton);
+        Button taskExtend = taskPopUpView.findViewById(R.id.extendButton);
+        Button taskDelete = taskPopUpView.findViewById(R.id.deleteButton);
+        Button taskCancel = taskPopUpView.findViewById(R.id.cancelButton);
 
         //add onclick listener to the extension button
         taskExtend.setOnClickListener(new View.OnClickListener() {
@@ -430,9 +434,9 @@ public class PlanningFragment extends Fragment {
     /**
      * Method to delete a task.
      *
-     * @param view, view to show pop-up on
-     * @param date, date of the scheduled task
-     * @param task, task currently clicked
+     * @param view,     view to show pop-up on
+     * @param date,     date of the scheduled task
+     * @param task,     task currently clicked
      * @param dateText, the date in text
      */
     private void deleteTask(final View view, final String date, final Task task,
@@ -447,14 +451,11 @@ public class PlanningFragment extends Fragment {
         dialog2.show();
 
         //find the buttons and textView
-        Button taskDelete = (Button)
-                taskDeleteView.findViewById(R.id.deleteButton);
-        Button taskCancel = (Button)
-                taskDeleteView.findViewById(R.id.cancelButton);
-        TextView taskDeleteText = (TextView)
-                taskDeleteView.findViewById(R.id.deleteTextView);
+        Button taskDelete = taskDeleteView.findViewById(R.id.deleteButton);
+        Button taskCancel = taskDeleteView.findViewById(R.id.cancelButton);
+        TextView taskDeleteText = taskDeleteView.findViewById(R.id.deleteTextView);
         //get task name from task object
-        final String taskName = (String) task.getName();
+        final String taskName = task.getName();
 
         //set textView to contain name of the clicked task
         taskDeleteText.setText("Delete " + taskName + " from the planning");
@@ -495,9 +496,9 @@ public class PlanningFragment extends Fragment {
     /**
      * Method to extend the duration of a task.
      *
-     * @param view, view to show pop-up on
-     * @param date, date of the scheduled task
-     * @param task, task currently clicked
+     * @param view,     view to show pop-up on
+     * @param date,     date of the scheduled task
+     * @param task,     task currently clicked
      * @param dateText, the date in text
      */
     private void extendTask(final View view, final String date, final Task task,
@@ -511,15 +512,11 @@ public class PlanningFragment extends Fragment {
         dialog = dialogBuilder.create();
 
         //find the buttons and textView
-        Button extensionSave = (Button)
-                taskExtensionView.findViewById(R.id.saveButton);
-        final Button extensionCancel = (Button)
-                taskExtensionView.findViewById(R.id.cancelButton);
-        final EditText extensionDuration = (EditText)
-                taskExtensionView.findViewById(R.id.time_extention_duration);
-        final EditText extensionDeadline = (EditText)
-                taskExtensionView.findViewById(R.id.
-                        time_extention_deadline_change);
+        Button extensionSave = taskExtensionView.findViewById(R.id.saveButton);
+        final Button extensionCancel = taskExtensionView.findViewById(R.id.cancelButton);
+        final EditText extensionDuration = taskExtensionView.findViewById(R.id.time_extention_duration);
+        final EditText extensionDeadline = taskExtensionView.findViewById(R.id.
+                time_extention_deadline_change);
 
         // Create date-picker for deadline
         extensionDeadline.setInputType(InputType.TYPE_NULL);
@@ -585,7 +582,7 @@ public class PlanningFragment extends Fragment {
                     agenda_dash.removeAllViews();
                     showPlanning();
                     if (taskListSize > 0) {
-                        for ( int i = 0; i < 2; i++) {
+                        for (int i = 0; i < 2; i++) {
                             Toast.makeText(getActivity(),
                                     "The extension does not completely"
                                             + " fit in your availability."
@@ -633,10 +630,10 @@ public class PlanningFragment extends Fragment {
                 .setMessage(message)
                 .setPositiveButton("Ok",
                         new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                }).show();
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        }).show();
     }
 
     public void updateDatabase() {
@@ -645,47 +642,59 @@ public class PlanningFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                //set the old schedule to oldScheduler
-                TaskScheduler oldScheduler =
-                        documentSnapshot.toObject(TaskScheduler.class);
-                // if the date of last update from the oldScheduler is the same
-                // as the date of last update on the current scheduler you have
-                // the most updated database
-                if (scheduler.getDateOfLastUpdate().equals(
-                        oldScheduler.getDateOfLastUpdate())) {
-                    //if no device is changing the database or if the change is
-                    // the same
-                    if (oldScheduler.getSchedulerHashcode() == 0
-                            || oldScheduler.getSchedulerHashcode()
-                            == scheduler.hashCode()) {
-                        // set hashCode of the current change to the
-                        // oldScheduler
-                        oldScheduler.setSchedulerHashcode(scheduler.hashCode());
-                        // upload oldScheduler with updated hashCode to the
-                        // database
-                        db.collection("users").document(
-                                user.getUid()).set(oldScheduler,
-                                SetOptions.merge());
-                    } else {
-                        // oldScheduler hashcode != 0 or is different from
-                        // scheduler.hashCode() thus an other device is changing
-                        // database already
-                        alertView("You are already trying to edit the data on "
-                                + "another account. Please try again later");
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        //set the old schedule to oldScheduler
+                        TaskScheduler oldScheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        // if the date of last update from the oldScheduler
+                        // is the same
+                        // as the date of last update on the current
+                        // scheduler you have
+                        // the most updated database
+                        if (scheduler.getDateOfLastUpdate().equals(
+                                oldScheduler.getDateOfLastUpdate())) {
+                            //if no device is changing the database or if the
+                            // change is
+                            // the same
+                            if (oldScheduler.getSchedulerHashcode() == 0
+                                    || oldScheduler.getSchedulerHashcode()
+                                    == scheduler.hashCode()) {
+                                // set hashCode of the current change to the
+                                // oldScheduler
+                                oldScheduler.setSchedulerHashcode(scheduler.hashCode());
+                                // upload oldScheduler with updated hashCode
+                                // to the
+                                // database
+                                db.collection("users").document(
+                                        user.getUid()).set(oldScheduler,
+                                        SetOptions.merge());
+                            } else {
+                                // oldScheduler hashcode != 0 or is different
+                                // from
+                                // scheduler.hashCode() thus an other device
+                                // is changing
+                                // database already
+                                alertView("You are already trying to edit the" +
+                                        " data on "
+                                        + "another account. Please try again " +
+                                        "later");
+                            }
+                        } else {
+                            // oldScheduler.lastchangedate != scheduler
+                            // .lastchangedate
+                            // thus user needs to first load most recent
+                            // version of
+                            // scheduler
+                            alertView("This device was still on an old " +
+                                    "version of the "
+                                    + "Planning, The planning has been " +
+                                    "reloaded. "
+                                    + "Please try again.");
+                            reloadFragment();
+                        }
                     }
-                } else {
-                    // oldScheduler.lastchangedate != scheduler.lastchangedate
-                    // thus user needs to first load most recent version of
-                    // scheduler
-                    alertView("This device was still on an old version of the "
-                            + "Planning, The planning has been reloaded. "
-                            + "Please try again.");
-                    reloadFragment();
-                }
-            }
-        });
+                });
 
         // function to be delayed for 200 ms
         myHandler.postDelayed(new Runnable() {
@@ -696,59 +705,72 @@ public class PlanningFragment extends Fragment {
                         .document(user.getUid());
                 docRef.get().addOnSuccessListener(
                         new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(
-                            final DocumentSnapshot documentSnapshot) {
-                        //set the old schedule to oldScheduler
-                        TaskScheduler oldScheduler =
-                                documentSnapshot.toObject(TaskScheduler.class);
-                        // if the date of last update from the oldScheduler is
-                        // the same as the date of last update on the current
-                        // scheduler you have the most updated database
-                        if (scheduler.getDateOfLastUpdate().equals(oldScheduler.
-                                getDateOfLastUpdate())) {
-                            // if database was to busy and thus not yet updated
-                            // oldScheduler.hashCode run updateDatabase again
-                            if (oldScheduler.getSchedulerHashcode() == 0) {
-                                updateDatabase();
-                                return;
+                            @Override
+                            public void onSuccess(
+                                    final DocumentSnapshot documentSnapshot) {
+                                //set the old schedule to oldScheduler
+                                TaskScheduler oldScheduler =
+                                        documentSnapshot.toObject(TaskScheduler.class);
+                                // if the date of last update from the
+                                // oldScheduler is
+                                // the same as the date of last update on the
+                                // current
+                                // scheduler you have the most updated database
+                                if (scheduler.getDateOfLastUpdate().equals(oldScheduler.
+                                        getDateOfLastUpdate())) {
+                                    // if database was to busy and thus not
+                                    // yet updated
+                                    // oldScheduler.hashCode run
+                                    // updateDatabase again
+                                    if (oldScheduler.getSchedulerHashcode() == 0) {
+                                        updateDatabase();
+                                        return;
+                                    }
+                                    // if this device updated the hashCode of
+                                    // the
+                                    // oldScheduler then they can update the
+                                    // database
+                                    if (oldScheduler.getSchedulerHashcode()
+                                            == scheduler.hashCode()) {
+                                        scheduler.setDateOfLastUpdate(Calendar
+                                                .getInstance().getTime().toString());
+                                        db.collection("users")
+                                                .document(user.getUid()).set(scheduler,
+                                                SetOptions.merge());
+                                    } else {
+                                        // another device is trying to update
+                                        // database
+                                        // since oldScheduler.getHashCode() !=
+                                        // scheduler.hashCode()
+                                        alertView("You are already trying to " +
+                                                "edit the "
+                                                + "data on another account. " +
+                                                "Please try "
+                                                + "again later.");
+                                    }
+                                } else {
+                                    // oldScheduler.lastchangedate != scheduler
+                                    // .lastchangedate thus user needs to
+                                    // first load
+                                    // most recent version of scheduler
+                                    alertView("This device was still on an " +
+                                            "old version"
+                                            + " of the Planning, The planning" +
+                                            " has been "
+                                            + "reloaded. Please try again.");
+                                    reloadFragment();
+                                }
                             }
-                            // if this device updated the hashCode of the
-                            // oldScheduler then they can update the database
-                            if (oldScheduler.getSchedulerHashcode()
-                                    == scheduler.hashCode()) {
-                                scheduler.setDateOfLastUpdate(Calendar
-                                        .getInstance().getTime().toString());
-                                db.collection("users")
-                                        .document(user.getUid()).set(scheduler,
-                                        SetOptions.merge());
-                            } else {
-                                // another device is trying to update database
-                                // since oldScheduler.getHashCode() !=
-                                // scheduler.hashCode()
-                                alertView("You are already trying to edit the "
-                                        + "data on another account. Please try "
-                                        + "again later.");
-                            }
-                        } else {
-                            // oldScheduler.lastchangedate != scheduler
-                            // .lastchangedate thus user needs to first load
-                            // most recent version of scheduler
-                            alertView("This device was still on an old version"
-                                    + " of the Planning, The planning has been "
-                                    + "reloaded. Please try again.");
-                            reloadFragment();
-                        }
-                    }
-                });
+                        });
             }
         }, 200); // myHandler is run after 200 ms
     }
-    
-    
+
+
     //Send notification
-    public void sendNotify(){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),
+    public void sendNotify() {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getContext(),
                 "My not");
         builder.setContentTitle("Stop using your phone");
         builder.setContentText("Please go back to studying!");
@@ -757,11 +779,12 @@ public class PlanningFragment extends Fragment {
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
 
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
-        managerCompat.notify(1,builder.build());
+        NotificationManagerCompat managerCompat =
+                NotificationManagerCompat.from(getContext());
+        managerCompat.notify(1, builder.build());
 
     }
-    
+
 
     /**
      * Show study mode pop-up.

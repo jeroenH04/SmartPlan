@@ -32,13 +32,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Register extends AppCompatActivity {
-    
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        Button btn = (Button) findViewById(R.id.regBtn);
-        TextView signIn = (TextView) findViewById(R.id.signIn);
+        Button btn = findViewById(R.id.regBtn);
+        TextView signIn = findViewById(R.id.signIn);
         final FirebaseAuth fAuth;
         final ProgressBar pBar;
         final EditText mEmail;
@@ -78,49 +78,51 @@ public class Register extends AppCompatActivity {
                 fAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(
                                 new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull
-                                           final Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            createUser(username);
-                            // verify email
-                            FirebaseUser uSer = fAuth.getCurrentUser();
-                            uSer.sendEmailVerification()
-                                    .addOnSuccessListener(
-                                            new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(final Void aVoid) {
-                                    Toast.makeText(Register.this,
-                                            "Verification mail sent",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "onFailure: Email not sent " 
-                                            + e.getMessage());
-                                }
-                            });
+                                    @Override
+                                    public void onComplete(@NonNull final Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            createUser(username);
+                                            // verify email
+                                            FirebaseUser uSer =
+                                                    fAuth.getCurrentUser();
+                                            uSer.sendEmailVerification()
+                                                    .addOnSuccessListener(
+                                                            new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(final Void aVoid) {
+                                                                    Toast.makeText(Register.this,
+                                                                            "Verification mail sent",
+                                                                            Toast.LENGTH_LONG).show();
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d(TAG, "onFailure: " +
+                                                            "Email not sent "
+                                                            + e.getMessage());
+                                                }
+                                            });
 
-                            Toast.makeText(Register.this,
-                                    "User created",
-                                    Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(getApplicationContext(), 
-                                    MainActivity.class));
-                            finish();
-                        } else {
-                            Toast.makeText(Register.this, "Error! " 
-                                    + task.getException().getMessage(),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+                                            Toast.makeText(Register.this,
+                                                    "User created",
+                                                    Toast.LENGTH_LONG).show();
+                                            startActivity(new Intent(getApplicationContext(),
+                                                    MainActivity.class));
+                                            finish();
+                                        } else {
+                                            Toast.makeText(Register.this,
+                                                    "Error! "
+                                                            + task.getException().getMessage(),
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
             }
         });
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                startActivity(new Intent(Register.this, 
+                startActivity(new Intent(Register.this,
                         Login.class));
             }
         });
@@ -128,7 +130,7 @@ public class Register extends AppCompatActivity {
 
     /**
      * Create a new user.
-     * 
+     *
      * @param name, name of the user
      */
     public void createUser(final String name) {
@@ -139,19 +141,19 @@ public class Register extends AppCompatActivity {
         // Firestore entry
         final String TAG = "Register";
         final TaskScheduler scheduler = new TaskScheduler(
-                new ArrayList<com.example.agenda_app.algorithms.Task>(), 
+                new ArrayList<com.example.agenda_app.algorithms.Task>(),
                 new ArrayList<Availability>(),
                 new ArrayList<Item>(), name, "Off", 120,
-                240, 480, 0, 
+                240, 480, 0,
                 Calendar.getInstance().getTime().toString());
-        
+
         // Add a new document with a generated ID
         db.collection("users").document(uSer.getUid())
                 .set(scheduler)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(final Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " 
+                        Log.d(TAG, "DocumentSnapshot added with ID: "
                                 + uSer.getUid());
                     }
                 })

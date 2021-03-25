@@ -1,16 +1,10 @@
 package com.example.agenda_app.hardware;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
-import com.example.agenda_app.ui.PlanningFragment;
-
-import java.net.ConnectException;
-import java.util.ConcurrentModificationException;
 
 public class Accelerometer {
 
@@ -31,10 +25,12 @@ public class Accelerometer {
     private final SensorManager sensorManager;
     private final Sensor sensor;
     private final SensorEventListener sensorEventListener;
+
     public Accelerometer(Context context) {
         sensorManager = (SensorManager)
                 context.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        sensor =
+                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(final SensorEvent sensorEvent) {
@@ -60,7 +56,7 @@ public class Accelerometer {
     }
 
     /**
-     *  Method to unregister from sensor notifications.
+     * Method to unregister from sensor notifications.
      */
     public void unregister() {
         sensorManager.unregisterListener(sensorEventListener);

@@ -1,13 +1,10 @@
 package com.example.agenda_app.hardware;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
-import com.example.agenda_app.ui.PlanningFragment;
 
 public class Gyroscope {
     /*
@@ -24,9 +21,9 @@ public class Gyroscope {
         listener = l;
     }
 
-    private SensorManager sensorManager;
-    private Sensor sensor;
-    private SensorEventListener sensorEventListener;
+    private final SensorManager sensorManager;
+    private final Sensor sensor;
+    private final SensorEventListener sensorEventListener;
 
     public Gyroscope(Context context) {
         sensorManager = (SensorManager)

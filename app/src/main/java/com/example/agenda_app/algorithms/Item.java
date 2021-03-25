@@ -8,14 +8,15 @@ public class Item {
     /**
      * Public constructor that takes no arguments, necessary for Firestore.
      */
-    public Item() { }
+    public Item() {
+    }
 
     /**
      * Class that represents an item in the schedule
      *
-     * @param date  date of the item
-     * @param task  task details of the item
-     * @param time  time of the item
+     * @param date date of the item
+     * @param task task details of the item
+     * @param time time of the item
      */
     public Item(final String date, final Task task, final String time) {
         this.date = date;
@@ -24,7 +25,7 @@ public class Item {
     }
 
     /**
-     *  Get date of item
+     * Get date of item
      *
      * @return String date
      */
@@ -33,7 +34,7 @@ public class Item {
     }
 
     /**
-     *  Get task of item
+     * Get task of item
      *
      * @return String date
      */

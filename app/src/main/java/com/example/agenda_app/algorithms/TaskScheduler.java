@@ -1,6 +1,7 @@
 package com.example.agenda_app.algorithms;
 
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
 
 import com.example.agenda_app.algorithms.sorters.DateSorterItem;
@@ -8,6 +9,7 @@ import com.example.agenda_app.algorithms.sorters.DeadlineSorterAvailability;
 import com.example.agenda_app.algorithms.sorters.DeadlineSorterTask;
 
 import java.util.ArrayList;
+
 import static java.lang.Integer.parseInt;
 
 public class TaskScheduler {
@@ -25,7 +27,8 @@ public class TaskScheduler {
     /**
      * Public constructor that takes no arguments, necessary for Firestore.
      */
-    public TaskScheduler() { }
+    public TaskScheduler() {
+    }
 
     /**
      * Class that handles the creation of the schedule.
@@ -63,18 +66,18 @@ public class TaskScheduler {
     /**
      * Add task to the schedule.
      *
-     * @param name, name of the task
-     * @param duration, duration of the task
-     * @param intensity, intensity of the task
+     * @param name,       name of the task
+     * @param duration,   duration of the task
+     * @param intensity,  intensity of the task
      * @param difficulty, difficulty of the task
-     * @param deadline, deadline of the task
-     * @param today, today's date
+     * @param deadline,   deadline of the task
+     * @param today,      today's date
+     * @throws NullPointerException     if precondition is violated
+     * @throws IllegalArgumentException if @code{deadline <= today}
+     *                                  || name is not unique
      * @pre @code{name != null && name != empty && duration != null &&
      * intensity != null && difficulty != null && deadline != null
      * && today != null && deadline > today} && name is unique
-     * @throws NullPointerException if precondition is violated
-     * @throws IllegalArgumentException if @code{deadline <= today}
-     * || name is not unique
      * @modifies taskList
      * @post @code{taskList.contains(new task(name, duration, intensity,
      * difficulty, deadline, today))]
@@ -141,10 +144,10 @@ public class TaskScheduler {
                                 task.getToday());
                         combineTask(taskList); // continue recursively
                         return;
-                    // Check if the task is from the parent task
+                        // Check if the task is from the parent task
                     } else if (task2.getName().contains(".")
                             && taskName.equals(taskName2.substring(0,
-                                    taskName2.length() - 2))) {
+                            taskName2.length() - 2))) {
                         // remove old tasks
                         removeTask(taskName);
                         removeTask(taskName2);
@@ -166,9 +169,9 @@ public class TaskScheduler {
      * Remove task from task list.
      *
      * @param taskName, task to be removed
+     * @throws IllegalArgumentException if pre is violated
      * @pre @code{\exists i; taskList.contains(i); i.name == taskName}
      * @modifies taskList
-     * @throws IllegalArgumentException if pre is violated
      */
     public void removeTask(final String taskName) {
         // Create a list of tasks that need to be removed
@@ -191,13 +194,13 @@ public class TaskScheduler {
     /**
      * Remove item from schedule.
      *
-     * @param date, date of item to be removed
+     * @param date,     date of item to be removed
      * @param taskName, name of the item to be removed
-     * @param time, time of the item to be removed
+     * @param time,     time of the item to be removed
+     * @throws IllegalArgumentException if pre is violated
      * @pre @code{\exists i; schedule.contains(i); i.date == date
      * && i.name == taskName && i.time == time}
      * @modifies taskList
-     * @throws IllegalArgumentException if pre is violated
      */
     public void removeItem(final String date, final String taskName,
                            final String time) {
@@ -223,9 +226,9 @@ public class TaskScheduler {
      * Remove task from schedule and restore availability.
      *
      * @param taskName, task to be removed
+     * @throws IllegalArgumentException if pre is violated
      * @pre @code{\exists i; schedule.contains(i); i.name == taskName}
      * @modifies schedule
-     * @throws IllegalArgumentException if pre is violated
      */
     public void completeTask(final String taskName) {
         for (Item i : schedule) {
@@ -244,11 +247,11 @@ public class TaskScheduler {
      * Add availability of user.
      *
      * @param date, date of availability
+     * @throws NullPointerException     if @code{date != null && time != null}
+     * @throws IllegalArgumentException if @code{date != empty && time.length()
+     *                                  != 1}
      * @pre @code{date != null && time != null && date != empty &&
      * time.length() != 1}
-     * @throws NullPointerException if @code{date != null && time != null}
-     * @throws IllegalArgumentException if @code{date != empty && time.length()
-     * != 1}
      * @modifies @code{availabilityList}
      * @post @code{availabilityList.contains(new Availability(date, time))}
      */
@@ -350,10 +353,10 @@ public class TaskScheduler {
      * Set the intensity of the different modes.
      *
      * @param relaxed, duration for relaxed mode in hours
-     * @param normal, duration for normal mode in hours
+     * @param normal,  duration for normal mode in hours
      * @param intense, duration for intense mode in hours
-     * @pre @code{relaxed > 0 && normal > 0 && intense > 0}
      * @throws IllegalArgumentException if pre is violated
+     * @pre @code{relaxed > 0 && normal > 0 && intense > 0}
      * @modifies relaxedIntensity, normalIntensity, intenseIntensity
      */
     public void setIntensity(final int relaxed, final int normal,
@@ -372,7 +375,7 @@ public class TaskScheduler {
      *
      * @param task, task to be split into subtasks
      * @pre @code{task.intensity == 'relaxed' || task.intensity == 'normal'
-     *              || task.intensity = 'intense'}
+     * || task.intensity = 'intense'}
      * @modifies taskList
      * @post
      */
@@ -428,10 +431,10 @@ public class TaskScheduler {
     }
 
     /**
-     *  Create schedule of tasks based on availability.
+     * Create schedule of tasks based on availability.
      *
-     *  @pre @code{availability.size() != 0}
-     *  @throws IllegalArgumentException if @code{availability.size() == 0}
+     * @throws IllegalArgumentException if @code{availability.size() == 0}
+     * @pre @code{availability.size() != 0}
      */
     @RequiresApi(api = Build.VERSION_CODES.N) // needed for sort
     public void createSchedule() {
@@ -470,11 +473,11 @@ public class TaskScheduler {
                 if (timeDifference >= 0 && timeDifference < minimum
                         && compareDates(e.getDeadline(), avail.getDate())
                         && !subtaskPlannedOnDate(avail, e)
-                        && compareDates(avail.getDate(), e.getToday()) ) {
-                        bestDate = avail.getDate();
-                        index = availabilityList.indexOf(avail);
-                        minimum = timeDifference;
-                        startTime = avail.getStartTime();
+                        && compareDates(avail.getDate(), e.getToday())) {
+                    bestDate = avail.getDate();
+                    index = availabilityList.indexOf(avail);
+                    minimum = timeDifference;
+                    startTime = avail.getStartTime();
                 }
             }
             if (bestDate.equals("")) { // no date available
@@ -492,11 +495,11 @@ public class TaskScheduler {
     }
 
     /**
-     *  Check if no subtasks of a task is planned on the same date.
+     * Check if no subtasks of a task is planned on the same date.
      *
-     *  @param avail, availability to check subtasks on
-     *  @param e, task to check
-     *  @return @code{true} if subtask of task e is planned on the same date
+     * @param avail, availability to check subtasks on
+     * @param e,     task to check
+     * @return @code{true} if subtask of task e is planned on the same date
      */
     boolean subtaskPlannedOnDate(final Availability avail, final Task e) {
         for (Item i : schedule) {
@@ -511,7 +514,7 @@ public class TaskScheduler {
                         .equals(taskNameNew.substring(0,
                                 taskNameNew.length() - 1))
                         && taskNameOld.substring(taskNameOld.length() - 2,
-                                taskNameOld.length() - 1).equals(".")) {
+                        taskNameOld.length() - 1).equals(".")) {
                     return true;
                 }
             }
@@ -523,9 +526,9 @@ public class TaskScheduler {
      * Get the total time of a task in minutes.
      *
      * @param duration ("hh:mm")
-     * @pre mm < 60
-     * @throws IllegalArgumentException if pre is violated
      * @return int totalDuration
+     * @throws IllegalArgumentException if pre is violated
+     * @pre mm < 60
      */
     public int getDurationMinutes(final String duration) {
         int totalHours = parseInt(duration.substring(0, duration.indexOf(":")));
@@ -541,13 +544,14 @@ public class TaskScheduler {
      * Update a time variable.
      *
      * @param startTime ("hh:mm")
-     * @param duration in minutes
+     * @param duration  in minutes
      * @return String newTime
      */
     public String updateTime(final String startTime, final int duration) {
         int updateMinutes = duration % 60;
         int updateHours = (duration - updateMinutes) / 60;
-        int startHours = parseInt(startTime.substring(0, startTime.indexOf(":")));
+        int startHours = parseInt(startTime.substring(0, startTime.indexOf(
+                ":")));
         int startMinutes = parseInt(startTime.substring(startTime.indexOf(":")
                 + 1));
         String newTime;
@@ -591,7 +595,7 @@ public class TaskScheduler {
      * Replace the integer time value (minutes) to a string time value "h:mm"
      *
      * @param deadline
-     * @param  today
+     * @param today
      * @return deadline > today
      */
     public boolean compareDates(final String deadline, final String today) {
@@ -611,15 +615,15 @@ public class TaskScheduler {
      * task list.
      *
      * @param taskName
-     * @pre @code{taskName != null}
      * @return @code{(! \exists i; taskList.contains(i); i.name == taskName) &&
      * (! \exists j; schedule.contains(j); j.name == taskName)}
+     * @pre @code{taskName != null}
      */
     public boolean checkUniqueName(final String taskName) {
         if (taskName == null) {
             throw new NullPointerException("precondition is validated");
         }
-        for (Task e: taskList) {
+        for (Task e : taskList) {
             if (e.getName().equals(taskName)) {
                 return false;
             }
@@ -662,7 +666,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get updated availability ordered on date.
+     * Get updated availability ordered on date.
      *
      * @return availabilityList
      */
@@ -673,7 +677,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get task taskList.
+     * Get task taskList.
      *
      * @return taskList
      */
@@ -682,7 +686,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get name.
+     * Get name.
      *
      * @return name
      */
@@ -691,7 +695,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get studyMode.
+     * Get studyMode.
      *
      * @return studyMode
      */
@@ -700,7 +704,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Set studyMode.
+     * Set studyMode.
      *
      * @param studyMode
      */
@@ -709,7 +713,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get intense intensity duration.
+     * Get intense intensity duration.
      *
      * @return intenseIntensity
      */
@@ -718,7 +722,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get normal intensity duration.
+     * Get normal intensity duration.
      *
      * @return normalIntensity
      */
@@ -727,7 +731,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get relaxed intensity duration.
+     * Get relaxed intensity duration.
      *
      * @return relaxedIntensity
      */
@@ -736,8 +740,8 @@ public class TaskScheduler {
     }
 
     /**
-     *  Get hashcode of the scheduler currently wanting to edit database or 0
-     *  if there is none.
+     * Get hashcode of the scheduler currently wanting to edit database or 0
+     * if there is none.
      *
      * @return schedulerHashcode
      */
@@ -746,7 +750,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Set schedulerHashcode.
+     * Set schedulerHashcode.
      *
      * @param schedulerHashcode
      */
@@ -754,7 +758,8 @@ public class TaskScheduler {
         this.schedulerHashcode = schedulerHashcode;
     }
 
-    /** Get the date and time of last update.
+    /**
+     * Get the date and time of last update.
      *
      * @return String dateOfLastUpdate
      */
@@ -763,7 +768,7 @@ public class TaskScheduler {
     }
 
     /**
-     *  Set dateOfLastUpdate.
+     * Set dateOfLastUpdate.
      *
      * @param dateOfLastUpdate
      */

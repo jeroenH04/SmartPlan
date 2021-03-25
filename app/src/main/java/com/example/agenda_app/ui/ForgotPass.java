@@ -34,13 +34,13 @@ public class ForgotPass extends AppCompatActivity {
                 String Email = mEmail.getText().toString();
                 fAuth.sendPasswordResetEmail(Email)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(final Void aVoid) {
-                        Toast.makeText(ForgotPass.this,
-                                "Reset mail sent",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onSuccess(final Void aVoid) {
+                                Toast.makeText(ForgotPass.this,
+                                        "Reset mail sent",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull final Exception e) {
                         for (int i = 0; i < 2; i++) {

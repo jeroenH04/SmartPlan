@@ -12,20 +12,22 @@ public class Task {
     /**
      * Public constructor that takes no arguments, necessary for Firestore.
      */
-    public Task() { }
+    public Task() {
+    }
 
     /**
      * Class that represents a task.
      *
-     * @param name          name of the task
-     * @param duration      duration of the task
-     * @param intensity     intensity of the task
-     * @param difficulty    difficulty of the task
-     * @param deadline      deadline of the task
-     * @param today         today's date
-     * @param totalTime     total time of the task in minutes
+     * @param name       name of the task
+     * @param duration   duration of the task
+     * @param intensity  intensity of the task
+     * @param difficulty difficulty of the task
+     * @param deadline   deadline of the task
+     * @param today      today's date
+     * @param totalTime  total time of the task in minutes
      */
-    public Task(final String name, final String duration, final String intensity,
+    public Task(final String name, final String duration,
+                final String intensity,
                 final String difficulty, final String deadline,
                 final String today, final int totalTime) {
         this.name = name;

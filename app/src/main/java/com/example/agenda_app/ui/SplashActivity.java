@@ -23,7 +23,7 @@ public class SplashActivity extends Activity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(fAuth.getCurrentUser() == null) {
+                if (fAuth.getCurrentUser() == null) {
                     Intent intent = new Intent(
                             SplashActivity.this,
                             Authentication.class);

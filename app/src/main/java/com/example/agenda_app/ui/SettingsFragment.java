@@ -78,20 +78,20 @@ public class SettingsFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                scheduler = documentSnapshot.toObject(TaskScheduler.class);
-                editRelaxNumber.setText(String.valueOf(
-                        scheduler.getRelaxedIntensity() / 60));
-                editNormalNumber.setText(String.valueOf(
-                        scheduler.getNormalIntensity() / 60));
-                editIntenseNumber.setText(String.valueOf(
-                        scheduler.getIntenseIntensity() / 60));
-            }
-        });
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        scheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        editRelaxNumber.setText(String.valueOf(
+                                scheduler.getRelaxedIntensity() / 60));
+                        editNormalNumber.setText(String.valueOf(
+                                scheduler.getNormalIntensity() / 60));
+                        editIntenseNumber.setText(String.valueOf(
+                                scheduler.getIntenseIntensity() / 60));
+                    }
+                });
 
-        Button resetPlanningButton = (Button)
-                root.findViewById(R.id.resetPlanBtn);
+        Button resetPlanningButton = root.findViewById(R.id.resetPlanBtn);
         resetPlanningButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -101,8 +101,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        Button setAvailabilityButton = (Button)
-                root.findViewById(R.id.setAvailability);
+        Button setAvailabilityButton = root.findViewById(R.id.setAvailability);
         setAvailabilityButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -111,7 +110,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        Button btn_save = (Button) root.findViewById(R.id.btn_save);
+        Button btn_save = root.findViewById(R.id.btn_save);
         btn_save.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -141,7 +140,7 @@ public class SettingsFragment extends Fragment {
         });
 
         // Delete the account and the corresponding data
-        Button deleteAccountBtn = (Button) root.findViewById(R.id.delAcntBtn);
+        Button deleteAccountBtn = root.findViewById(R.id.delAcntBtn);
         deleteAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -159,36 +158,37 @@ public class SettingsFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                scheduler = documentSnapshot.toObject(TaskScheduler.class);
-                if (drawAvailability) {
-                    drawAvailability(availabilityPopUpView);
-                }
-                final EditText editRelaxNumber =
-                        getView().findViewById(R.id.editRelaxNumber);
-                final EditText editNormalNumber =
-                        getView().findViewById(R.id.editNormalNumber);
-                final EditText editIntenseNumber =
-                        getView().findViewById(R.id.editIntenseNumber);
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        scheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        if (drawAvailability) {
+                            drawAvailability(availabilityPopUpView);
+                        }
+                        final EditText editRelaxNumber =
+                                getView().findViewById(R.id.editRelaxNumber);
+                        final EditText editNormalNumber =
+                                getView().findViewById(R.id.editNormalNumber);
+                        final EditText editIntenseNumber =
+                                getView().findViewById(R.id.editIntenseNumber);
 
-                editRelaxNumber.setText(String.valueOf(
-                        scheduler.getRelaxedIntensity() / 60));
-                editNormalNumber.setText(String.valueOf(
-                        scheduler.getNormalIntensity() / 60));
-                editIntenseNumber.setText(String.valueOf(
-                        scheduler.getIntenseIntensity() / 60));
-            }
-        });
+                        editRelaxNumber.setText(String.valueOf(
+                                scheduler.getRelaxedIntensity() / 60));
+                        editNormalNumber.setText(String.valueOf(
+                                scheduler.getNormalIntensity() / 60));
+                        editIntenseNumber.setText(String.valueOf(
+                                scheduler.getIntenseIntensity() / 60));
+                    }
+                });
     }
 
     /**
      * Create info pop-up for the availability.
      *
-     * @param date, date of the availability
-     * @param time, time of the availability
-     * @param button, button of the availability
+     * @param date,                  date of the availability
+     * @param time,                  time of the availability
+     * @param button,                button of the availability
      * @param availabilityPopUpView, the pop-up the availabiltiy is shown on
      */
     private void infoView(final String date, final String time,
@@ -201,29 +201,30 @@ public class SettingsFragment extends Fragment {
                 .setMessage("Date: " + date + '\n' + "Time: " + time)
                 .setPositiveButton("Cancel",
                         new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                });
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        });
         infoDialog.setNegativeButton("Delete",
                 new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            public void onClick(final DialogInterface dialoginterface,
-                                final int i) {
-                scheduler.resetSchedule();
-                scheduler.removeAvailability(date, time);
-                updateDatabase(true, availabilityPopUpView);
-                // redraw the availability buttons
-                drawAvailability(availabilityPopUpView);
-                buttonArrayList.remove(button);
-            }
-        });
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    public void onClick(final DialogInterface dialoginterface,
+                                        final int i) {
+                        scheduler.resetSchedule();
+                        scheduler.removeAvailability(date, time);
+                        updateDatabase(true, availabilityPopUpView);
+                        // redraw the availability buttons
+                        drawAvailability(availabilityPopUpView);
+                        buttonArrayList.remove(button);
+                    }
+                });
         infoDialog.show();
     }
 
-    /** Method to create alert pop-up for add availability dialog
-    *
-    * @param message, message to be displayed in pop-up
+    /**
+     * Method to create alert pop-up for add availability dialog
+     *
+     * @param message, message to be displayed in pop-up
      */
     private void alertView(final String message) {
         AlertDialog.Builder alertDialog =
@@ -233,10 +234,10 @@ public class SettingsFragment extends Fragment {
                 .setMessage(message)
                 .setPositiveButton("Ok",
                         new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                }).show();
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        }).show();
     }
 
     /**
@@ -253,25 +254,25 @@ public class SettingsFragment extends Fragment {
                         + "your availability?")
                 .setPositiveButton("Cancel",
                         new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                });
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        });
         alertDialog.setNegativeButton("Ok",
                 new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            public void onClick(final DialogInterface dialoginterface,
-                                final int i) {
-                if (scheduler.getSchedule().size() != 0) {
-                    alertDeleteSchedule();
-                }
-                scheduler.clearAvailability(); // clear the tasklist
-                updateDatabase(true, availabilityPopUpView);
-                // clear all the buttons from the screen
-                drawAvailability(availabilityPopUpView);
-                buttonArrayList.clear(); // clear the button ArrayList
-            }
-        });
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    public void onClick(final DialogInterface dialoginterface,
+                                        final int i) {
+                        if (scheduler.getSchedule().size() != 0) {
+                            alertDeleteSchedule();
+                        }
+                        scheduler.clearAvailability(); // clear the tasklist
+                        updateDatabase(true, availabilityPopUpView);
+                        // clear all the buttons from the screen
+                        drawAvailability(availabilityPopUpView);
+                        buttonArrayList.clear(); // clear the button ArrayList
+                    }
+                });
         alertDialog.show();
     }
 
@@ -286,18 +287,18 @@ public class SettingsFragment extends Fragment {
                 .setMessage("Do you want to clear your created schedule?")
                 .setPositiveButton("Cancel",
                         new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialoginterface,
-                                        final int i) {
-                    }
-                });
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                            }
+                        });
         alertDialog.setNegativeButton("Ok",
                 new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            public void onClick(final DialogInterface dialoginterface,
-                                final int i) {
-                alertRestoreTasks();
-            }
-        });
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    public void onClick(final DialogInterface dialoginterface,
+                                        final int i) {
+                        alertRestoreTasks();
+                    }
+                });
         alertDialog.show();
     }
 
@@ -326,24 +327,26 @@ public class SettingsFragment extends Fragment {
                         user.delete()
                                 .addOnCompleteListener(
                                         new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(
-                                            @NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            startActivity(new Intent(getActivity()
-                                                    .getApplicationContext(),
-                                                    Login.class));
-                                            Toast.makeText(getActivity(),
-                                                    "Your account has been "
-                                                            + "deleted.",
-                                                    Toast.LENGTH_SHORT).show();
-                                            // Delete the users data
-                                            db.collection("users")
-                                                    .document(user.getUid())
-                                                    .delete();
-                                        }
-                                    }
-                                });
+                                            @Override
+                                            public void onComplete(
+                                                    @NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    startActivity(new Intent(getActivity()
+                                                            .getApplicationContext(),
+                                                            Login.class));
+                                                    Toast.makeText(getActivity(),
+                                                            "Your account has" +
+                                                                    " been "
+                                                                    +
+                                                                    "deleted.",
+                                                            Toast.LENGTH_SHORT).show();
+                                                    // Delete the users data
+                                                    db.collection("users")
+                                                            .document(user.getUid())
+                                                            .delete();
+                                                }
+                                            }
+                                        });
                     }
                 });
         alertDialog.show();
@@ -361,22 +364,22 @@ public class SettingsFragment extends Fragment {
                         + "task list?")
                 .setPositiveButton("No",
                         new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialoginterface,
+                                                final int i) {
+                                scheduler.resetSchedule(); // reset the schedule
+                                scheduler.clearTasklist();
+                                updateDatabase();
+                            }
+                        });
+        alertDialog.setNegativeButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     public void onClick(final DialogInterface dialoginterface,
                                         final int i) {
                         scheduler.resetSchedule(); // reset the schedule
-                        scheduler.clearTasklist();
                         updateDatabase();
                     }
                 });
-        alertDialog.setNegativeButton("Yes",
-                new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            public void onClick(final DialogInterface dialoginterface,
-                                final int i) {
-                scheduler.resetSchedule(); // reset the schedule
-                updateDatabase();
-            }
-        });
         alertDialog.show();
     }
 
@@ -390,11 +393,11 @@ public class SettingsFragment extends Fragment {
                 new AlertDialog.Builder(this.getActivity());
         final View availabilityPopUpView = getLayoutInflater()
                 .inflate(R.layout.popup_availability, null);
-        Button addAvailabilityButton = (Button) availabilityPopUpView
+        Button addAvailabilityButton = availabilityPopUpView
                 .findViewById(R.id.addAvailabilityButton);
-        Button cancelAvailabilityButton = (Button) availabilityPopUpView
+        Button cancelAvailabilityButton = availabilityPopUpView
                 .findViewById(R.id.cancelAvailabilityButton);
-        Button clearAvailabilityButton = (Button) availabilityPopUpView
+        Button clearAvailabilityButton = availabilityPopUpView
                 .findViewById(R.id.clearAvailabilityButton);
         dialogBuilder.setView(availabilityPopUpView);
         dialogShow = dialogBuilder.create();
@@ -439,20 +442,19 @@ public class SettingsFragment extends Fragment {
                 new AlertDialog.Builder(this.getActivity());
         final View addAvailabilityPopUpView = getLayoutInflater()
                 .inflate(R.layout.popup_add_availability, null);
-        Button saveButtonAvailability = (Button) addAvailabilityPopUpView
+        Button saveButtonAvailability = addAvailabilityPopUpView
                 .findViewById(R.id.saveButtonAvailability);
-        final Button cancelButtonAvailability = (Button)
-                addAvailabilityPopUpView.findViewById(
-                        R.id.cancelButtonAvailability);
+        final Button cancelButtonAvailability = addAvailabilityPopUpView.findViewById(
+                R.id.cancelButtonAvailability);
         dialogBuilder.setView(addAvailabilityPopUpView);
         dialog = dialogBuilder.create();
 
         // Get the input fields
-        final EditText timeField1 = (EditText) addAvailabilityPopUpView
+        final EditText timeField1 = addAvailabilityPopUpView
                 .findViewById(R.id.inputTimeAvailable1);
-        final EditText timeField2 = (EditText) addAvailabilityPopUpView
+        final EditText timeField2 = addAvailabilityPopUpView
                 .findViewById(R.id.inputTimeAvailable2);
-        final EditText dateField = (EditText) addAvailabilityPopUpView
+        final EditText dateField = addAvailabilityPopUpView
                 .findViewById(R.id.inputDateAvailable);
 
         // Create date-picker for deadline
@@ -504,7 +506,8 @@ public class SettingsFragment extends Fragment {
                     String dateToday = dateFormat.format(calendar.getTime());
                     if (date.compareTo(dateToday) < 0) {
                         Toast.makeText(getActivity(),
-                                "Error! You cannot set an availability for today"
+                                "Error! You cannot set an availability for " +
+                                        "today"
                                         + " or the past.",
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -547,8 +550,7 @@ public class SettingsFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void drawAvailability(final View availabilityPopUpView) {
         // Find the dashboard layout
-        final ConstraintLayout layout = (ConstraintLayout)
-                availabilityPopUpView.findViewById(R.id.availabilityBox);
+        final ConstraintLayout layout = availabilityPopUpView.findViewById(R.id.availabilityBox);
         final ConstraintSet set = new ConstraintSet();
         set.clone(layout);
 
@@ -611,9 +613,12 @@ public class SettingsFragment extends Fragment {
     public void updateDatabase() {
         updateDatabase(false, null);
     }
-    //call updateDatabase(true, availabilityPopUpView) if after updating database drawAvailability is called
+
+    //call updateDatabase(true, availabilityPopUpView) if after updating
+    // database drawAvailability is called
     //else call updateDatabase or call updateDatabase(false, null)
-    //necessary because drawAvailability will finish before updateDatabase and thus draw incorrect information
+    //necessary because drawAvailability will finish before updateDatabase
+    // and thus draw incorrect information
     public void updateDatabase(final boolean drawAvailability,
                                final View availabilityPopUpView) {
         //get database reference to load and write to database
@@ -621,46 +626,59 @@ public class SettingsFragment extends Fragment {
                 .document(user.getUid());
         docRef.get().addOnSuccessListener(
                 new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                //set the old schedule to oldScheduler
-                TaskScheduler oldScheduler =
-                        documentSnapshot.toObject(TaskScheduler.class);
-                // if the date of last update from the oldScheduler is the same
-                // as the date of last update on the current scheduler you have
-                // the most updated database
-                if (scheduler.getDateOfLastUpdate().equals(oldScheduler
-                        .getDateOfLastUpdate())) {
-                    //if no device is changing the database or if the change
-                    // is the same
-                    if (oldScheduler.getSchedulerHashcode() == 0 || oldScheduler
-                            .getSchedulerHashcode() == scheduler.hashCode()) {
-                        // set hashCode of the current change to the
-                        // oldScheduler
-                        oldScheduler.setSchedulerHashcode(scheduler.hashCode());
-                        // upload oldScheduler with updated hashCode to the
-                        // database
-                        db.collection("users").document(
-                                user.getUid()).set(oldScheduler,
-                                SetOptions.merge());
-                    } else { // oldScheduler hashcode != 0 or is different from
-                        // scheduler.hashCode() thus an other device is changing
-                        // database already
-                        alertView("You are already trying to edit the data on "
-                                + "another account. Please try again later");
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        //set the old schedule to oldScheduler
+                        TaskScheduler oldScheduler =
+                                documentSnapshot.toObject(TaskScheduler.class);
+                        // if the date of last update from the oldScheduler
+                        // is the same
+                        // as the date of last update on the current
+                        // scheduler you have
+                        // the most updated database
+                        if (scheduler.getDateOfLastUpdate().equals(oldScheduler
+                                .getDateOfLastUpdate())) {
+                            //if no device is changing the database or if the
+                            // change
+                            // is the same
+                            if (oldScheduler.getSchedulerHashcode() == 0 || oldScheduler
+                                    .getSchedulerHashcode() == scheduler.hashCode()) {
+                                // set hashCode of the current change to the
+                                // oldScheduler
+                                oldScheduler.setSchedulerHashcode(scheduler.hashCode());
+                                // upload oldScheduler with updated hashCode
+                                // to the
+                                // database
+                                db.collection("users").document(
+                                        user.getUid()).set(oldScheduler,
+                                        SetOptions.merge());
+                            } else { // oldScheduler hashcode != 0 or is
+                                // different from
+                                // scheduler.hashCode() thus an other device
+                                // is changing
+                                // database already
+                                alertView("You are already trying to edit the" +
+                                        " data on "
+                                        + "another account. Please try again " +
+                                        "later");
 
+                            }
+                        } else {
+                            // oldScheduler.lastchangedate != scheduler
+                            // .lastchangedate
+                            // thus user needs to first load most recent
+                            // version of
+                            // scheduler
+                            alertView("This device was still on an old " +
+                                    "version of the "
+                                    + "Planning, The planning has been " +
+                                    "reloaded."
+                                    + " Please try again.");
+                            reloadFragment(drawAvailability,
+                                    availabilityPopUpView);
+                        }
                     }
-                } else {
-                    // oldScheduler.lastchangedate != scheduler.lastchangedate
-                    // thus user needs to first load most recent version of
-                    // scheduler
-                    alertView("This device was still on an old version of the "
-                            + "Planning, The planning has been reloaded."
-                            + " Please try again.");
-                    reloadFragment(drawAvailability, availabilityPopUpView);
-                }
-            }
-        });
+                });
 
         // function to be delayed for 200 ms
         myHandler.postDelayed(new Runnable() {
@@ -671,53 +689,59 @@ public class SettingsFragment extends Fragment {
                         .document(user.getUid());
                 docRef.get().addOnSuccessListener(
                         new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(final DocumentSnapshot
-                                                  documentSnapshot) {
-                        //set the old schedule to oldScheduler
-                        TaskScheduler oldScheduler =
-                                documentSnapshot.toObject(TaskScheduler.class);
-                        // if the date of last update from the oldScheduler is
-                        // the same as the date of last update on the current
-                        // scheduler you have the most updated database
-                        if (scheduler.getDateOfLastUpdate()
-                                .equals(oldScheduler.getDateOfLastUpdate())) {
-                            // if database was to busy and thus not yet updated
-                            // oldScheduler.hashCode run updateDatabase again
-                            if (oldScheduler.getSchedulerHashcode() == 0) {
-                                //alertView("reupdating database");
-                                updateDatabase();
-                                return;
+                            @Override
+                            public void onSuccess(final DocumentSnapshot
+                                                          documentSnapshot) {
+                                //set the old schedule to oldScheduler
+                                TaskScheduler oldScheduler =
+                                        documentSnapshot.toObject(TaskScheduler.class);
+                                // if the date of last update from the
+                                // oldScheduler is
+                                // the same as the date of last update on the
+                                // current
+                                // scheduler you have the most updated database
+                                if (scheduler.getDateOfLastUpdate()
+                                        .equals(oldScheduler.getDateOfLastUpdate())) {
+                                    // if database was to busy and thus not
+                                    // yet updated
+                                    // oldScheduler.hashCode run
+                                    // updateDatabase again
+                                    if (oldScheduler.getSchedulerHashcode() == 0) {
+                                        //alertView("reupdating database");
+                                        updateDatabase();
+                                        return;
+                                    }
+                                    // if this device updated the hashCode of
+                                    // the
+                                    // oldScheduler then they can update the
+                                    // database
+                                    if (oldScheduler.getSchedulerHashcode()
+                                            == scheduler.hashCode()) {
+                                        scheduler.setDateOfLastUpdate(Calendar
+                                                .getInstance().getTime().toString());
+                                        db.collection("users").document(
+                                                user.getUid()).set(scheduler,
+                                                SetOptions.merge());
+                                    } else {
+                                        // another device is trying to update database
+                                        // since oldScheduler.getHashCode() !=
+                                        // scheduler.hashCode()
+                                        alertView("You are already trying to edit the "
+                                                + "data on another account. Please try "
+                                                + "again later.");
+                                    }
+                                } else {
+                                    // oldScheduler.lastchangedate !=
+                                    // scheduler.lastchangedate thus user needs
+                                    // to first load most recent version of scheduler
+                                    alertView("This device was still on an old version"
+                                            + " of the Planning, The planning has been "
+                                            + "reloaded. Please try again.");
+                                    reloadFragment(drawAvailability,
+                                            availabilityPopUpView);
+                                }
                             }
-                            // if this device updated the hashCode of the
-                            // oldScheduler then they can update the database
-                            if (oldScheduler.getSchedulerHashcode()
-                                    == scheduler.hashCode()) {
-                                scheduler.setDateOfLastUpdate(Calendar
-                                        .getInstance().getTime().toString());
-                                db.collection("users").document(
-                                        user.getUid()).set(scheduler,
-                                        SetOptions.merge());
-                            } else {
-                                // another device is trying to update database
-                                // since oldScheduler.getHashCode() !=
-                                // scheduler.hashCode()
-                                alertView("You are already trying to edit the "
-                                        + "data on another account. Please try "
-                                        + "again later.");
-                            }
-                        } else {
-                            // oldScheduler.lastchangedate !=
-                            // scheduler.lastchangedate thus user needs
-                            // to first load most recent version of scheduler
-                            alertView("This device was still on an old version"
-                                    + " of the Planning, The planning has been "
-                                    + "reloaded. Please try again.");
-                            reloadFragment(drawAvailability,
-                                    availabilityPopUpView);
-                        }
-                    }
-                });
+                        });
             }
         }, 200); // myHandler is run after 200 ms
     }

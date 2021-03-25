@@ -12,13 +12,14 @@ public class Availability {
     /**
      * Public constructor that takes no arguments, necessary for Firestore.
      */
-    public Availability() { }
+    public Availability() {
+    }
 
     /**
      * Class that represents an availability.
      *
-     * @param date      date of the availability
-     * @param duration  duration of the availability
+     * @param date     date of the availability
+     * @param duration duration of the availability
      */
     public Availability(final String date, final String duration) {
         this.date = date;
@@ -77,10 +78,10 @@ public class Availability {
      * Get total available time from string duration "hh:mm-hh:mm".
      *
      * @param duration
+     * @return @code{totalTime}
+     * @throws IllegalArgumentException if pre is violated
      * @pre @code{(hourDifference == 0 && minutesDifference > 0) ||
      * (hourDifference > 0)}
-     * @throws IllegalArgumentException if pre is violated
-     * @return @code{totalTime}
      */
     public String getAvailableTimeInt(final String duration) {
         int totalHours1 = parseInt(duration.substring(0,
@@ -113,19 +114,21 @@ public class Availability {
         }
     }
 
-    /** Update the duration of the availability.
+    /**
+     * Update the duration of the availability.
      *
      * @param neededTime, time needed to be removed from availability
      * @modifies this.duration
      */
     public void updateDuration(final int neededTime) {
-        int totalHours1 = parseInt(duration.substring(0, duration.indexOf(":")));
+        int totalHours1 = parseInt(duration.substring(0,
+                duration.indexOf(":")));
         int totalHours2 = parseInt(duration.substring(duration.indexOf("-") + 1,
                 duration.indexOf(":", duration.indexOf(":") + 1)));
         int totalMinutes1 = parseInt(duration.substring(duration.indexOf(":")
-                        + 1, duration.indexOf("-")));
+                + 1, duration.indexOf("-")));
         int totalMinutes2 = parseInt(duration.substring(
-                duration.indexOf(":",duration.indexOf(":") + 1)
+                duration.indexOf(":", duration.indexOf(":") + 1)
                         + 1));
         int hoursNeeded = (int) Math.floor(neededTime / 60.0);
         int minutesNeeded = neededTime - 60 * hoursNeeded;
@@ -158,7 +161,8 @@ public class Availability {
         }
         System.out.println(totalMinutesString1);
         this.duration = hoursNeededString + ":" + totalMinutesString1 + "-"
-                + totalHoursString + ":" + totalMinutesString2; // update duration
+                + totalHoursString + ":" + totalMinutesString2; // update
+        // duration
     }
 
     @Override
