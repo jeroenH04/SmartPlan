@@ -234,8 +234,8 @@ public class TaskScheduler {
         for (Item i : schedule) {
             if (i.getTask().getName().equals(taskName)) {
                 String time = i.getTime();
-                addAvailability(i.getDate(), time); // add back the availability
                 removeItem(i.getDate(), i.getTask().getName(), i.getTime());
+                addAvailability(i.getDate(), time); // add back the availability
                 return;
             }
         }
@@ -263,7 +263,16 @@ public class TaskScheduler {
                 || time.charAt(2) != ':' || time.charAt(8) != ':') {
             throw new IllegalArgumentException("Date input is incorrect");
         }
-        Availability availability = new Availability(date, time);
+        // Update the new availability with the schedules items
+        ArrayList<Item> schedule = getSchedule();
+        String updatedTime = time;
+        for (Item item : schedule) {
+            if (item.getDate().equals(date)) {
+                updatedTime = compareTime(item.getTime(), time, date);
+            }
+        }
+
+        Availability availability = new Availability(date, updatedTime);
         availabilityList.add(availability);
         combineAvailability(availabilityList);
     }
@@ -608,6 +617,71 @@ public class TaskScheduler {
         return yearDifference >= 0 && (yearDifference != 0
                 || monthDifference >= 0) && (yearDifference != 0
                 || monthDifference != 0 || dayDifference > 0);
+    }
+
+    /**
+     * Check if two durations overlap in time and modify accordingly
+     *
+     * @param duration1
+     * @param duration2
+     * @param date
+     */
+    public String compareTime(final String duration1, final String duration2,
+                              final String date) {
+        // compareTime(item.getTime(), time);
+        // Get the start time
+        String stringStartTime1 = duration1.substring(0, duration1.indexOf("-"));
+        String stringStartTime2 = duration2.substring(0, duration2.indexOf("-"));
+        String stringStartTimeHours1 = stringStartTime1.substring(0,
+                stringStartTime1.indexOf(":"));
+        String stringStartTimeHours2 = stringStartTime2.substring(0,
+                stringStartTime1.indexOf(":"));
+        System.out.println(stringStartTime1);
+        String stringStartTimeMin1 = stringStartTime1.substring(
+                stringStartTime1.indexOf(":") + 1);
+        String stringStartTimeMin2 = stringStartTime2.substring(
+                stringStartTime2.indexOf(":") + 1);
+        int startTimeHours1 = Integer.parseInt(stringStartTimeHours1);
+        int startTimeHours2 = Integer.parseInt(stringStartTimeHours2);
+        int startTimeMin2 = Integer.parseInt(stringStartTimeMin2);
+        // Get the end time
+        String stringEndTime1 = duration1.substring(duration1.indexOf("-") + 1);
+        String stringEndTime2 = duration2.substring(duration2.indexOf("-") + 1);
+        String stringEndTimeHours1 = stringEndTime1.substring(0,
+                stringStartTime1.indexOf(":"));
+        String stringEndTimeHours2 = stringEndTime2.substring(0,
+                stringStartTime1.indexOf(":"));
+        int endTimeHours1 = Integer.parseInt(stringEndTimeHours1);
+        int endTimeHours2 = Integer.parseInt(stringEndTimeHours2);
+        String stringEndTimeMin1 = stringEndTime1.substring(
+                stringStartTime1.indexOf(":") + 1);
+        int endTimeMin1 = Integer.parseInt(stringEndTimeMin1);
+
+        // Check if the times overlap
+        if (startTimeHours1 > startTimeHours2 &&
+                startTimeHours1 < endTimeHours2) {
+            // Check if the availability completely overlaps
+            if (endTimeHours2 > endTimeHours1) {
+                String newTime = stringEndTime1 + "-" + stringEndTime2;
+                addAvailability(date, newTime);
+            }
+            return stringStartTime2 + "-" + stringStartTime1;
+        } else if (startTimeHours1 < startTimeHours2 &&
+                endTimeHours1 < endTimeHours2) {
+            return stringEndTime1 + "-" + stringEndTime2;
+        } else if (startTimeHours1 > startTimeHours2 &&
+                endTimeHours1 < endTimeHours2) {
+            return stringStartTime2 + "-" + stringStartTime1;
+        } else if (startTimeHours1 == startTimeHours2 &&
+                endTimeHours1 < endTimeHours2) {
+            if (endTimeMin1 < startTimeMin2) {
+                return stringStartTime2 + "-" + stringEndTime2;
+            } else {
+                return stringEndTime1 + "-" + stringEndTime2;
+            }
+
+        }
+        return duration2;
     }
 
     /**

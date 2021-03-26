@@ -319,6 +319,42 @@ public class TaskSchedulerTest {
         assertEquals(schedule.getAvailabilityList().size(),2);
     }
 
+    /** Tests of the addAvailability method after resetting availability */
+    @Test()
+    public void testAddAvailability2() {
+        schedule.addAvailability("26-02-2021","08:00-16:00");
+        schedule.addTask("task1", "1:00","relaxed",
+                "b", "30-02-2021", "18-01-2020");
+        schedule.createSchedule();
+        schedule.clearAvailability();
+
+        schedule.addAvailability("26-02-2021","08:00-16:00");
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
+        for (Availability a : newAvail) {
+            assertEquals(a.getDate(), "26-02-2021");
+            assertEquals(a.getDuration(), "09:00-16:00");
+        }
+        showCreatedSchedule();
+    }
+
+    /** Tests of the addAvailability method after resetting availability */
+    @Test()
+    public void testAddAvailability3() {
+        schedule.addAvailability("26-02-2021","08:00-16:00");
+        schedule.addTask("task1", "1:44","relaxed",
+                "b", "30-02-2021", "18-01-2020");
+        schedule.createSchedule();
+        schedule.clearAvailability();
+
+        schedule.addAvailability("26-02-2021","08:00-16:00");
+        ArrayList<Availability> newAvail = schedule.getAvailabilityList();
+        for (Availability a : newAvail) {
+            assertEquals(a.getDate(), "26-02-2021");
+            assertEquals(a.getDuration(), "09:44-16:00");
+        }
+        showCreatedSchedule();
+    }
+
     /** Tests of the clearAvailability method */
     @Test()
     public void testClearAvailability() {
@@ -732,5 +768,33 @@ public class TaskSchedulerTest {
         schedule.resetSchedule();
         assertEquals(schedule.getTaskList().size(), 2);
         assertEquals(schedule.getSchedule().size(), 0);
+    }
+
+    /** Test of compare time method */
+    @Test()
+    public void testCompareTime() {
+        assertEquals(schedule.compareTime("05:00-06:00",
+                "05:00-21:00", "26-02-2021"),
+                "06:00-21:00");
+        assertEquals(schedule.compareTime("20:00-21:00",
+                "05:00-21:00", "26-02-2021"),
+                "05:00-20:00");
+        assertEquals(schedule.compareTime("05:00-16:00",
+                "13:00-21:00", "26-02-2021"),
+                "16:00-21:00");
+        assertEquals(schedule.compareTime("05:00-16:00",
+                "03:00-08:00", "26-02-2021"),
+                "03:00-05:00");
+        assertEquals(schedule.compareTime("14:00-21:00",
+                "13:00-22:00", "26-02-2021"),
+                "13:00-14:00");
+        // availability from 21:00-22:00 is added
+        assertEquals(schedule.getAvailabilityList().size(), 1);
+        assertEquals(schedule.compareTime("05:00-05:30",
+                "05:10-21:00", "26-02-2021"),
+                "05:30-21:00");
+        assertEquals(schedule.compareTime("05:00-05:30",
+                "05:45-21:00", "26-02-2021"),
+                "05:45-21:00");
     }
 }

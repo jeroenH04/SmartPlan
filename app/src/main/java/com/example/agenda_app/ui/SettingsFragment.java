@@ -210,7 +210,6 @@ public class SettingsFragment extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     public void onClick(final DialogInterface dialoginterface,
                                         final int i) {
-                        scheduler.resetSchedule();
                         scheduler.removeAvailability(date, time);
                         updateDatabase(true, availabilityPopUpView);
                         // redraw the availability buttons

@@ -45,12 +45,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 public class DashboardFragment extends Fragment {
-    private AlertDialog dialog;
-    private int buttonCount;
     private final ArrayList<Button> buttonArrayList = new ArrayList<>();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance()
             .getCurrentUser();
+    private AlertDialog dialog;
+    private int buttonCount;
     private Handler myHandler;
     private TaskScheduler scheduler;
 

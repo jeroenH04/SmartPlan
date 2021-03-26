@@ -149,6 +149,10 @@ public class PlanningFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Reload the planning fragment based on the loaded data.
+     * Update the study-mode switch and the create schedule button.
+     */
     private void reloadFragment() {
         DocumentReference docRef = db.collection("users")
                 .document(user.getUid());
@@ -266,6 +270,7 @@ public class PlanningFragment extends Fragment {
 
                     //set onclick listener to all tasks to modify them
                     cLayOut.setOnClickListener(new View.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.N)
                         public void onClick(final View v) {
                             //parameters View v on which was clicked
                             //j is the date on which this task was planned
@@ -636,6 +641,9 @@ public class PlanningFragment extends Fragment {
                         }).show();
     }
 
+    /**
+     * Update the Firestore database with the newly created planning
+     */
     public void updateDatabase() {
         //get database reference to load and write to database
         DocumentReference docRef = db.collection("users")
