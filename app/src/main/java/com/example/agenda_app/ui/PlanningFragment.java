@@ -560,9 +560,9 @@ public class PlanningFragment extends Fragment {
                 scheduler.completeTask(task.getName());
                 int taskListSize;
                 try {
-                    String deadline = extensionDeadline.getText().toString();
-                    if (deadline.isEmpty()) {
-                        deadline = task.getDeadline();
+                    String newDeadline = extensionDeadline.getText().toString();
+                    if (newDeadline.length() == 0) {
+                        newDeadline = task.getDeadline();
                     }
                     final String duration = extensionDuration.getText()
                             .toString();
@@ -573,13 +573,13 @@ public class PlanningFragment extends Fragment {
                     scheduler.clearTasklist();
                     scheduler.addTask(task.getName(), duration,
                             task.getIntensity(), task.getDifficulty(),
-                            task.getDeadline(), task.getToday());
+                            newDeadline, task.getToday());
                     scheduler.createSchedule(); // schedule the extension
                     taskListSize = scheduler.getTaskList().size();
                     for (Task t : tempTasklist) { // add back all tasks
                         scheduler.addTask(t.getName(), t.getDuration(),
                                 t.getIntensity(), t.getDifficulty(),
-                                deadline, t.getToday());
+                                t.getDeadline(), t.getToday());
                     }
                     updateDatabase();
                     dialog.dismiss();
