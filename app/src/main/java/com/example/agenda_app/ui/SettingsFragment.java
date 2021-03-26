@@ -55,7 +55,7 @@ public class SettingsFragment extends Fragment {
     private int buttonCount;
     private final ArrayList<Button> buttonArrayList = new ArrayList<>();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final FirebaseUser user = FirebaseAuth.getInstance()
+    private FirebaseUser user = FirebaseAuth.getInstance()
             .getCurrentUser();
     private Handler myHandler;
     private TaskScheduler scheduler;
@@ -323,7 +323,8 @@ public class SettingsFragment extends Fragment {
                     public void onClick(final DialogInterface dialoginterface,
                                         final int i) {
                         // Delete the user's authentication
-                        user.delete()
+                        FirebaseAuth.getInstance()
+                                .getCurrentUser().delete()
                                 .addOnCompleteListener(
                                         new OnCompleteListener<Void>() {
                                             @Override
@@ -501,9 +502,11 @@ public class SettingsFragment extends Fragment {
 
                     Calendar calendar = Calendar.getInstance();
                     SimpleDateFormat dateFormat = new
-                            SimpleDateFormat("dd/MM/yyyy");
+                            SimpleDateFormat("dd-MM-yyyy");
                     String dateToday = dateFormat.format(calendar.getTime());
-                    if (date.compareTo(dateToday) < 0) {
+                    Date strDate = dateFormat.parse(date);
+                    Date strDateToday = dateFormat.parse(dateToday);
+                    if (strDateToday.after(strDate)) {
                         Toast.makeText(getActivity(),
                                 "Error! You cannot set an availability for " +
                                         "today"
@@ -528,6 +531,7 @@ public class SettingsFragment extends Fragment {
                     } else {
                         alertView("Please fill in all details.");
                     }
+                    System.out.println(e);
                 }
             }
         });
