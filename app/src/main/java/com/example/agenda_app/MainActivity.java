@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     DocumentReference docRef;
     boolean b;
     String uid;
+    String o;
 
 
     @Override
@@ -74,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     b = documentSnapshot.getBoolean("moved");
-                                    if(b){
+                                    o = documentSnapshot.getString("studyMode");
+                                    if(b && o.equals("On")){
                                         sendNotify();
-                                        try{Thread.sleep(3000);}
+                                        try{Thread.sleep(1550);}
                                         catch(Exception e){}
                                         docRef.update("moved",false);
 
