@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -203,7 +204,18 @@ public class PlanningFragment extends Fragment {
             date.setLayoutParams(params);
             date.setId(i.getDate().hashCode());
             date.setText(i.getDate());
-            date.setTextSize(20);
+            //set textSize based on screen size
+            if ((getResources().getConfiguration().screenLayout &
+                    Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                    Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+                date.setTextSize(28);
+            } else if ((getResources().getConfiguration().screenLayout &
+                    Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                    Configuration.SCREENLAYOUT_SIZE_LARGE) {
+                date.setTextSize((24));
+            } else {
+                date.setTextSize(20);
+            }
             agenda_dash.addView(date);
 
             //for all tasks i planned on date j
@@ -233,7 +245,18 @@ public class PlanningFragment extends Fragment {
                     final TextView task = new TextView(getContext());
                     task.setLayoutParams(new ViewGroup.LayoutParams(0,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
-                    task.setTextSize(22);
+                    //set textSize based on screen size
+                    if ((getResources().getConfiguration().screenLayout &
+                            Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                            Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+                        task.setTextSize(32);
+                    } else if ((getResources().getConfiguration().screenLayout &
+                            Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                            Configuration.SCREENLAYOUT_SIZE_LARGE) {
+                        task.setTextSize((28));
+                    } else {
+                        task.setTextSize(22);
+                    }
                     task.setText(taskName);
                     task.setId("taskName".hashCode());
                     cLayOut.addView(task);
@@ -244,7 +267,18 @@ public class PlanningFragment extends Fragment {
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
                     time.setText(taskTime);
-                    time.setTextSize(18);
+                    //set textSize based on screen size
+                    if ((getResources().getConfiguration().screenLayout &
+                            Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                            Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+                        time.setTextSize(28);
+                    } else if ((getResources().getConfiguration().screenLayout &
+                            Configuration.SCREENLAYOUT_SIZE_MASK) ==
+                            Configuration.SCREENLAYOUT_SIZE_LARGE) {
+                        time.setTextSize((24));
+                    } else {
+                        time.setTextSize(18);
+                    }
                     time.setId(taskTime.hashCode());
                     cLayOut.addView(time);
 
