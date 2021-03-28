@@ -845,8 +845,9 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onTranslation(final float tx, final float ty,
                                       final float tz) {
-                if (tx > 3.0f || tx < -3.0f || ty > 3.0f || ty < -3.0f || tz > 3.0f || tz < -3.0f) {
+                if (tx > 2.0f || tx < -2.0f || ty > 2.0f || ty < -2.0f || tz > 2.0f || tz < -2.0f) {
                     docRef.update("moved",true);
+                    accelerometer.unregister();
                 }
             }
         });
@@ -855,8 +856,9 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onRotation(final float rx, final float ry,
                                    final float rz) {
-                if (rx > 10.0f || rx < -10.0f || ry > 10.0f || ry < -10.0f || rz > 10.0f || rz < -10.0f) {
+                if (rx > 3.0f || rx < -3.0f || ry > 3.0f || ry < -3.0f || rz > 3.0f || rz < -3.0f) {
                     docRef.update("moved",true);
+                    gyroscope.unregister();
                 }
             }
         });
