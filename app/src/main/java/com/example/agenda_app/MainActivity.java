@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.agenda_app.hardware.Accelerometer;
-import com.example.agenda_app.hardware.Gyroscope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,9 +28,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user;
-    DocumentReference docRef;
     boolean b;
     String uid;
     String o;
@@ -56,29 +52,29 @@ public class MainActivity extends AppCompatActivity {
                 appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel("My not","My not", NotificationManager.IMPORTANCE_HIGH);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("My not", "My not", NotificationManager.IMPORTANCE_HIGH);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
 
         }
 
-        Thread t = new Thread(){
+        Thread t = new Thread() {
+            @SuppressWarnings("InfiniteLoopStatement")
             public void run() {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 user = FirebaseAuth.getInstance().getCurrentUser();
                 uid = user.getUid();
                 final DocumentReference docRef = db.collection("users").document(uid);
-                while(true){
+                while (true) {
                     docRef.get()
                             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     b = documentSnapshot.getBoolean("moved");
                                     o = documentSnapshot.getString("studyMode");
-                                    if(b && o.equals("On")){
+                                    if (b && o.equals("On")) {
                                         sendNotify();
-                                       
 
                                     }
 
@@ -91,18 +87,21 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println("oops");
                                 }
                             });
-                    if(b){
-                        try{Thread.sleep(5000);}
-                        catch(Exception e){}
-                        docRef.update("moved",false);
-                    } else{
-                        try{Thread.sleep(2000);}
-                        catch(Exception e){}
+                    if (b) {
+                        try {
+                            Thread.sleep(5000);
+                        } catch (Exception e) {
+                        }
+                        docRef.update("moved", false);
+                    } else {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (Exception e) {
+                        }
                     }
                 }
-                }
-
             }
+
 
             public void sendNotify() {
                 NotificationCompat.Builder builder =
@@ -120,15 +119,12 @@ public class MainActivity extends AppCompatActivity {
                 managerCompat.notify(1, builder.build());
 
             }
-
-
-
         };
 
+
         t.start();
-
-
     }
+
 
     public void logout(final View view) {
         FirebaseAuth.getInstance().signOut();
