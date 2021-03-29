@@ -331,19 +331,21 @@ public class SettingsFragment extends Fragment {
                                             public void onComplete(
                                                     @NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
+                                                    // Delete the users data
+                                                    db.collection("users")
+                                                            .document(user.getUid())
+                                                            .delete();
+                                                    // Redirect to the main page
                                                     startActivity(new Intent(getActivity()
                                                             .getApplicationContext(),
-                                                            Login.class));
+                                                            SplashActivity.class));
                                                     Toast.makeText(getActivity(),
                                                             "Your account has" +
                                                                     " been "
                                                                     +
                                                                     "deleted.",
                                                             Toast.LENGTH_SHORT).show();
-                                                    // Delete the users data
-                                                    db.collection("users")
-                                                            .document(user.getUid())
-                                                            .delete();
+
                                                 }
                                             }
                                         });
