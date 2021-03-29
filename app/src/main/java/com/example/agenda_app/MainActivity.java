@@ -78,9 +78,7 @@ public class MainActivity extends AppCompatActivity {
                                     o = documentSnapshot.getString("studyMode");
                                     if(b && o.equals("On")){
                                         sendNotify();
-                                        try{Thread.sleep(1550);}
-                                        catch(Exception e){}
-                                        docRef.update("moved",false);
+                                       
 
                                     }
 
@@ -93,8 +91,15 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println("oops");
                                 }
                             });
-                    try{Thread.sleep(10000);}
-                    catch(Exception e){}
+                    if(b){
+                        try{Thread.sleep(5000);}
+                        catch(Exception e){}
+                        docRef.update("moved",false);
+                    } else{
+                        try{Thread.sleep(2000);}
+                        catch(Exception e){}
+                    }
+                }
                 }
 
             }
