@@ -1,6 +1,6 @@
 package com.example.agenda_app.ui;
 
-import android.app.Activity;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.agenda_app.algorithms.Item;
@@ -809,25 +806,6 @@ public class PlanningFragment extends Fragment {
     }
 
 
-    //Send notification
-    public void sendNotify() {
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(getContext(),
-                "My not");
-        builder.setContentTitle("Stop using your phone");
-        builder.setContentText("Please go back to studying!");
-        builder.setSmallIcon(R.drawable.ic_baseline_error_outline_24);
-        builder.setAutoCancel(true);
-        builder.setPriority(NotificationCompat.PRIORITY_MAX);
-
-
-        NotificationManagerCompat managerCompat =
-                NotificationManagerCompat.from(getContext());
-        managerCompat.notify(1, builder.build());
-
-    }
-
-
     /**
      * Show study mode pop-up.
      */
@@ -846,7 +824,7 @@ public class PlanningFragment extends Fragment {
             public void onTranslation(final float tx, final float ty,
                                       final float tz) {
                 if (tx > 2.0f || tx < -2.0f || ty > 2.0f || ty < -2.0f || tz > 2.0f || tz < -2.0f) {
-                    docRef.update("moved",true);
+                    docRef.update("moved", true);
                     accelerometer.unregister();
                     accelerometer.register();
                 }
@@ -858,7 +836,7 @@ public class PlanningFragment extends Fragment {
             public void onRotation(final float rx, final float ry,
                                    final float rz) {
                 if (rx > 3.0f || rx < -3.0f || ry > 3.0f || ry < -3.0f || rz > 3.0f || rz < -3.0f) {
-                    docRef.update("moved",true);
+                    docRef.update("moved", true);
                     gyroscope.unregister();
                     gyroscope.register();
                 }
