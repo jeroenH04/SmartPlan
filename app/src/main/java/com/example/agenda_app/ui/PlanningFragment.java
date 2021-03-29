@@ -848,6 +848,7 @@ public class PlanningFragment extends Fragment {
                 if (tx > 2.0f || tx < -2.0f || ty > 2.0f || ty < -2.0f || tz > 2.0f || tz < -2.0f) {
                     docRef.update("moved",true);
                     accelerometer.unregister();
+                    accelerometer.register();
                 }
             }
         });
@@ -859,6 +860,7 @@ public class PlanningFragment extends Fragment {
                 if (rx > 3.0f || rx < -3.0f || ry > 3.0f || ry < -3.0f || rz > 3.0f || rz < -3.0f) {
                     docRef.update("moved",true);
                     gyroscope.unregister();
+                    gyroscope.register();
                 }
             }
         });
