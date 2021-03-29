@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:outlineProvider="none">
+
+    <TextView
+        android:id="@+id/textDateAvailable"
+        android:layout_width="302dp"
+        android:layout_height="26dp"
+        android:text="Date available"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.106" />
+
+    <EditText
+        android:id="@+id/inputDateAvailable"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:background="#ffffff"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="  dd-mm-yyyy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textDateAvailable"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textDateAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/textDateAvailable"
+        app:layout_constraintVertical_bias="0.021" />
+
+    <TextView
+        android:id="@+id/textTimeAvailable"
+        android:layout_width="302dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="20dp"
+        android:text="Time available"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/inputDateAvailable"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/inputDateAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/inputDateAvailable" />
+
+    <TextView
+        android:id="@+id/fromText"
+        android:layout_width="55dp"
+        android:layout_height="27dp"
+        android:text="From:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/inputTimeAvailable1"
+        app:layout_constraintEnd_toEndOf="@+id/textTimeAvailable"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textTimeAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/textTimeAvailable" />
+
+
+    <TextView
+        android:id="@+id/tillText"
+        android:layout_width="47dp"
+        android:layout_height="26dp"
+        android:text="Till:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/inputTimeAvailable2"
+        app:layout_constraintEnd_toEndOf="@+id/inputDateAvailable"
+        app:layout_constraintHorizontal_bias="0.711"
+        app:layout_constraintStart_toStartOf="@+id/textTimeAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/textTimeAvailable" />
+
+    <EditText
+        android:id="@+id/inputTimeAvailable1"
+        android:layout_width="122dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="28dp"
+        android:background="#ffffff"
+        android:ems="10"
+        android:hint="  hh:mm"
+        android:inputType="time"
+        android:maxLength="5"
+        app:layout_constraintEnd_toEndOf="@+id/textTimeAvailable"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textTimeAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/textTimeAvailable" />
+
+    <EditText
+        android:id="@+id/inputTimeAvailable2"
+        android:layout_width="122dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="28dp"
+        android:background="#ffffff"
+        android:ems="10"
+        android:hint="  hh:mm"
+        android:inputType="time"
+        android:maxLength="5"
+        app:layout_constraintEnd_toEndOf="@+id/textTimeAvailable"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/textTimeAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/textTimeAvailable" />
+
+    <Button
+        android:id="@+id/saveButtonAvailability"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorAccent"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textTimeAvailable"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textTimeAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/inputTimeAvailable1"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/cancelButtonAvailability"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:text="Cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textTimeAvailable"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/textTimeAvailable"
+        app:layout_constraintTop_toBottomOf="@+id/inputTimeAvailable1"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
