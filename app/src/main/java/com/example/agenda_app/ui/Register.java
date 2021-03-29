@@ -144,7 +144,7 @@ public class Register extends AppCompatActivity {
                 new ArrayList<com.example.agenda_app.algorithms.Task>(),
                 new ArrayList<Availability>(),
                 new ArrayList<Item>(), name, "Off", 120,
-                240, 480, 0,
+                240, 480, 0,false,
                 Calendar.getInstance().getTime().toString());
 
         // Add a new document with a generated ID

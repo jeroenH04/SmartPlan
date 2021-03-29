@@ -832,18 +832,22 @@ public class PlanningFragment extends Fragment {
      * Show study mode pop-up.
      */
     private void startStudyMode() {
+
+        FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = usr.getUid();
+
+        final DocumentReference docRef = db.collection("users").document(uid);
+
+
         accelerometer = new Accelerometer(getActivity());
         gyroscope = new Gyroscope(getActivity());
         accelerometer.setListener(new Accelerometer.Listener() {
             @Override
             public void onTranslation(final float tx, final float ty,
                                       final float tz) {
-                if (tx > 1.0f || tx < -1.0f) {
-                    sendNotify();
-                } else if (ty > 1.0f || ty < -1.0f) {
-                    sendNotify();
-                } else if (tz > 1.0f || tz < -1.0f) {
-                    sendNotify();
+                if (tx > 2.0f || tx < -2.0f || ty > 2.0f || ty < -2.0f || tz > 2.0f || tz < -2.0f) {
+                    docRef.update("moved",true);
+                    accelerometer.unregister();
                 }
             }
         });
@@ -852,12 +856,9 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onRotation(final float rx, final float ry,
                                    final float rz) {
-                if (rx > 1.0f || rx < -1.0f) {
-                    sendNotify();
-                } else if (ry > 1.0f || ry < -1.0f) {
-                    sendNotify();
-                } else if (rz > 1.0f || rz < -1.0f) {
-                    sendNotify();
+                if (rx > 3.0f || rx < -3.0f || ry > 3.0f || ry < -3.0f || rz > 3.0f || rz < -3.0f) {
+                    docRef.update("moved",true);
+                    gyroscope.unregister();
                 }
             }
         });

@@ -23,6 +23,7 @@ public class TaskScheduler {
     private int relaxedIntensity;
     private int normalIntensity;
     private int intenseIntensity;
+    private boolean moved;
 
     /**
      * Public constructor that takes no arguments, necessary for Firestore.
@@ -43,6 +44,7 @@ public class TaskScheduler {
      * @param intenseIntensity  duration of the intense intensity
      * @param schedulerHashcode current hash code
      * @param dateOfLastUpdate  date the last update has been made
+     * @param moved             used to determine if the app has been moved
      */
     public TaskScheduler(final ArrayList<Task> taskList,
                          final ArrayList<Availability> availabilityList,
@@ -50,6 +52,7 @@ public class TaskScheduler {
                          final String studyMode, final int relaxedIntensity,
                          final int normalIntensity, final int intenseIntensity,
                          final int schedulerHashcode,
+                         final boolean moved,
                          final String dateOfLastUpdate) {
         this.taskList = taskList;
         this.schedule = schedule;
@@ -848,5 +851,13 @@ public class TaskScheduler {
      */
     public void setDateOfLastUpdate(final String dateOfLastUpdate) {
         this.dateOfLastUpdate = dateOfLastUpdate;
+    }
+
+    public boolean isMoved() {
+        return moved;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
     }
 }
