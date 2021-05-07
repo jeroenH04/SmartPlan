@@ -8,7 +8,7 @@ A less organized planning might be the cause of cramming, all-nighters or study 
 SmartPlan helps to overcome these struggles. It helps students plan their schedules based on the priority of each deadline, so that they are well organized and on track. Besides, the app will help students stay focused when studying.
 
 # User manual
-An user manual is provided in the Group19Doc.zip\Product folder. 
+An user manual is provided in the Group19UserManual.pdf 
 
 # Developers
 Adriana Radu (1418548)
